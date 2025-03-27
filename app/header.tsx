@@ -39,3 +39,19 @@ function AccountDropdown() {
         </DropdownMenu>
     );
 }
+
+export function Header() {
+    const session = useSession();
+    return (
+      <header>
+        <div>
+          {session.data && <AccountDropdown></AccountDropdown>}
+          {!session.data && (
+            <Button onClick={() => signIn()} variant="link">
+              <LogInIcon className="mr-2" /> Sign In
+            </Button>
+          )}
+        </div>
+      </header>
+    );
+  }
