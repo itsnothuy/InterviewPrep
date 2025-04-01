@@ -16,7 +16,7 @@ export async function downloadFromS3(file_key: string): Promise<string> {
       };
 
       const obj = await s3.getObject(params);
-      const file_name = `/Users/huy/Desktop/interviewprep/tmp/pdf/${Date.now().toString()}.pdf`;
+      const file_name = `/Users/huy/Desktop/interview/tmp/pdf/${Date.now().toString()}.pdf`;
 
       if (obj.Body instanceof require("stream").Readable) {
         const file = fs.createWriteStream(file_name);

@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 75%;
+    /* --background: 0 0% 100%; */
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -66,4 +67,26 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+input:-webkit-autofill {
+  background-color: #1f2937 !important; /* A dark background to match your theme */
+  -webkit-text-fill-color: #8590a7 !important; /* White text */
+  transition: background-color 5000s ease-in-out 0s; /* Trick to remove the yellow background */
+}
+
+input:-webkit-autofill:focus {
+  background-color: #1f2937 !important;
+  -webkit-text-fill-color: #8590a7 !important;
 }

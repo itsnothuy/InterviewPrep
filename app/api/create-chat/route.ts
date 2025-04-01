@@ -9,7 +9,13 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request, res: Response) {
   try {
     const session = await getServerSession(authConfig);
+    console.log("Create-chat session:", session);
+
     const userId = session?.user?.id;
+    if (!userId) {
+      throw new Error("User ID is missing in session");
+    }
+    
     const body = await req.json();
     const { file_key, file_name } = body;
     await loadS3IntoPinecone(file_key);

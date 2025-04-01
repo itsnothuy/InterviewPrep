@@ -47,7 +47,7 @@ import {
   
     //4. Upload to Pinecone
     const client = await getPineconeClient();
-    const pineconeIndex = client.Index("interview-expert");
+    const pineconeIndex = client.Index("interview-prep");
     console.log("uploading to pinecone");
     const namespace = pineconeIndex.namespace(convertToAscii(fileKey));
   
@@ -64,7 +64,7 @@ import {
   
       return {
         id: hash,
-        values: embeddings,
+        values: embeddings, 
         metadata: {
           text: doc.metadata.text,
           pageNumber: doc.metadata.pageNumber,

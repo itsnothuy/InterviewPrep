@@ -14,6 +14,7 @@ import humanInterview from "../lotties/human-interview.json";
 import createRoom from "../lotties/create-room.json";
 import aiInterview from "../lotties/ai-interview.json";
 import Link from "next/link";
+import { custom } from "zod";
 
 const Dashboard = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,18 +22,18 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col items-center p-5 space-y-7">
       <div className="flex flex-col items-center p-6 h-fit w-1/2 text-center">
-        <h2 className="text-5xl font-extrabold opacity-85">Prepare for</h2>
-        <h1 className="text-6xl font-extrabold p-5 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+        <h2 className="text-5xl font-extrabold opacity-85 text-white">Prepare for</h2>
+        <h1 className="text-6xl font-extrabold p-5 bg-gradient-to-r from-gray-100 to-orange-300 bg-clip-text text-transparent">
           Mock Interview
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-5">
+        <p className="text-gray-200 dark:text-gray-400 mt-2">
           It's so easy. Just one click and you are on the way to practice!
         </p>
       </div>
       <div className="flex flex-row justify-between w-full max-w-6xl gap-10">
         <div className="flex flex-col items-center justify-center w-1/2">
           <div className="text-center p-3 mb-5">
-            <h1 className="text-3xl font-semibold">Create a Room</h1>
+            <h1 className="text-3xl font-semibold text-white">Create a Room</h1>
           </div>
           <Card className="shadow-md hover:shadow-lg transition-all cursor-pointer hover:translate-y-1 flex-grow flex flex-col justify-between">
             <CardContent>
@@ -70,13 +71,13 @@ const Dashboard = () => {
               </div>
             </CardContent>
             <CardFooter className="justify-center">
-              <Button onClick={() => setOpenDialog(true)}>Create Room</Button>
+              <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(true)}>Create Room</Button>
             </CardFooter>
           </Card>
         </div>
         <div className="flex flex-col items-center w-1/2">
           <div className="text-center p-3 mb-5">
-            <h1 className="text-3xl font-semibold">Join a Room</h1>
+            <h1 className="text-3xl font-semibold text-white">Join a Room</h1>
           </div>
           <div className="space-y-5 w-full">
             <Card className="shadow-md hover:shadow-lg transition-all cursor-pointer hover:translate-y-1 flex-grow flex flex-col justify-between">
@@ -101,7 +102,7 @@ const Dashboard = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>
+                <Button variant="dashboardAiOrHuman">
                   <Link href="/ai/create-room">Join AI Interview</Link>
                 </Button>
               </CardFooter>
@@ -128,7 +129,7 @@ const Dashboard = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>
+                <Button variant="dashboardAiOrHuman">
                   <Link href="/human">Join Human Interview</Link>
                 </Button>
               </CardFooter>

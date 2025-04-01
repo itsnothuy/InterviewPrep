@@ -11,7 +11,25 @@ import { UserAnswer } from "@/utils/schema";
 import moment from "moment";
 import toast from "react-hot-toast";
 
-const RecordAnswer = ({
+// Define a type for a speech result.
+interface SpeechResult {
+  transcript: string;
+}
+
+// Define props for RecordAnswer.
+interface RecordAnswerProps {
+  mockQuestions: Array<{ question: string; answer?: string }>;
+  activeQuestionIndex: number;
+  interviewData: { mockId: string } | null;
+}
+
+// Helper function to extract transcript.
+// Some results may be a string, so handle the union type.
+const getTranscript = (result: string | SpeechResult): string => {
+  return typeof result === "string" ? result : result.transcript;
+};
+
+const RecordAnswer: React.FC<RecordAnswerProps> = ({
   mockQuestions,
   activeQuestionIndex,
   interviewData,
@@ -32,8 +50,9 @@ const RecordAnswer = ({
   });
 
   useEffect(() => {
-    results.map((result) =>
-      setUserAnswer((prevAns) => prevAns + result?.transcript)
+    console.log("DEBUG: Speech results:", results);
+    results.forEach((result) =>
+      setUserAnswer((prevAns) => prevAns + getTranscript(result))
     );
   }, [results]);
 
@@ -51,6 +70,12 @@ const RecordAnswer = ({
     }
   };
   const updateUserAnswer = async () => {
+     // Ensure interviewData exists before proceeding.
+     if (!interviewData || !interviewData.mockId) {
+      console.error("Interview data is missing");
+      toast.error("Interview data is missing");
+      return;
+    }
     setLoading(true);
 
     const feedbackPrompt =
@@ -67,10 +92,13 @@ const RecordAnswer = ({
       .replace(/\\n/g, "")
       .replace(/\r/g, "")
       .trim();
-    console.log(mockJsonResp);
+    console.log("DEBUG: Feedback response:", mockJsonResp);
+
+
     const JsonFeedbackResp = JSON.parse(mockJsonResp);
+
     const resp = await db.insert(UserAnswer).values({
-      mockIdRef: interviewData?.mockId,
+      mockIdRef: interviewData.mockId,
       question: mockQuestions[activeQuestionIndex]?.question,
       correctAns: mockQuestions[activeQuestionIndex]?.answer,
       userAns: userAnswer,

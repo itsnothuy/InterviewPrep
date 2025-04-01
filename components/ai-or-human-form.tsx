@@ -24,18 +24,18 @@ const AIHumanForm: React.FC<AIHumanFormProps> = ({
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="items-center">
-          <DialogTitle className="text-2xl mb-5">Choose an Option</DialogTitle>
+          <DialogTitle className="text-2xl mb-5 text-gray-100">Choose an Option</DialogTitle>
           <DialogDescription className="text-center mt-5">
             Select whether you want to conduct an AI interview or a Human
             interview below
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-6 text-center">
-          <Button onClick={() => setOpenDialog(false)} className="w-full">
+          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(false)} className="w-full">
             <Link href="/ai/create-room">AI Interview</Link>
           </Button>
           <p className="text-xl font-semibold text-slate-500">OR</p>
-          <Button onClick={() => setOpenDialog(false)} className="w-full">
+          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(false)} className="w-full">
             <Link href="/human/create-room">Human Interview</Link>
           </Button>
         </div>

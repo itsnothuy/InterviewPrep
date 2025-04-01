@@ -15,7 +15,7 @@ const NavBar: React.FC = () => {
       <div className="flex left-0">
         <a href="/" className="flex mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
           <img src="/logo.png" className="w-auto h-12" alt="Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
             Interview Expert
           </span>
         </a>
@@ -23,25 +23,25 @@ const NavBar: React.FC = () => {
       <div className="hidden lg:flex items-center justify-center space-x-9 flex-1">
         <Link
           href="/"
-          className="text-lg font-medium text-black hover:text-orange-400"
+          className="text-lg font-medium text-white hover:text-gray-300"
         >
           Home
         </Link>
         <Link
           href="/dashboard"
-          className="text-lg font-medium text-black hover:text-orange-400"
+          className="text-lg font-medium text-white hover:text-gray-300"
         >
           Dashboard
         </Link>
         <Link
           href="/code-editor"
-          className="text-lg font-medium text-black hover:text-orange-400"
+          className="text-lg font-medium text-white hover:text-gray-300"
         >
           Code Editor
         </Link>
         <Link
           href="/chat-pdf"
-          className="text-lg font-medium text-black hover:text-orange-400"
+          className="text-lg font-medium text-white hover:text-gray-300"
         >
           Chat PDF
         </Link>
@@ -50,7 +50,7 @@ const NavBar: React.FC = () => {
         {!isOpen && (
           <button
             onClick={toggleMenu}
-            className="text-black focus:outline-none"
+            className="text-gray-300 focus:outline-none"
           >
             <svg
               className="h-6 w-6"
@@ -77,7 +77,7 @@ const NavBar: React.FC = () => {
           {isOpen && (
             <button
               onClick={toggleMenu}
-              className="absolute top-2 left-2 text-black focus:outline-none"
+              className="absolute top-2 left-2 text-gray-300 focus:outline-none"
             >
               <svg
                 className="h-6 w-6"
@@ -96,25 +96,25 @@ const NavBar: React.FC = () => {
           )}
           <Link
             href="/"
-            className="text-lg font-medium text-black hover:text-orange-400"
+            className="text-lg font-medium text-gray-300 hover:text-white"
           >
             Home
           </Link>
           <Link
             href="/dashboard"
-            className="text-lg font-medium text-black hover:text-orange-400"
+            className="text-lg font-medium text-gray-300 hover:text-white"
           >
             Dashboard
           </Link>
           <Link
             href="/code-editor"
-            className="text-lg font-medium text-black hover:text-orange-400"
+            className="text-lg font-medium text-gray-300 hover:text-white"
           >
             Code Editor
           </Link>
           <Link
             href="/chat-pdf"
-            className="text-lg font-medium text-black hover:text-orange-400"
+            className="text-lg font-medium text-gray-300 hover:text-white"
           >
             Chat PDF
           </Link>

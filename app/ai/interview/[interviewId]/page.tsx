@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { eq } from "drizzle-orm";
 import Webcam from "react-webcam";
 import { BellRing, WebcamIcon } from "lucide-react";
-import { Button } from "@mui/material";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface Params {
   interviewId: string;
@@ -46,7 +46,7 @@ const AIInterview = ({ params }: { params: Params }) => {
     <div className="flex flex-col items-center justify-center">
       <div className="p-5">
         <div className="text-center">
-          <h1 className="lg:text-4xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-yellow-300 to-orange-600 bg-clip-text text-transparent">
+          <h1 className="lg:text-4xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-white to-white bg-clip-text text-transparent">
             Let&apos;s Get Started
           </h1>
         </div>
@@ -62,7 +62,7 @@ const AIInterview = ({ params }: { params: Params }) => {
               <div className="text-center">
                 <WebcamIcon className="my-7 h-72 w-full p-20 bg-secondary rounded-lg border" />
                 <Button
-                  className="text-red-600"
+                  variant={"dashboardAiOrHuman"}
                   onClick={() => setCamEnabled(true)}
                 >
                   Enabled Webcam and Microphone
@@ -72,26 +72,26 @@ const AIInterview = ({ params }: { params: Params }) => {
           </div>
 
           <div className="mt-5 flex flex-col space-y-5 ">
-            <div className="p-5 rounded-lg border border-slate-500">
-              <h2 className="text-lg">
-                <strong>Job Role: </strong>
+            <div className="p-5 rounded-lg border border-white">
+              <h2 className="text-lg text-[#8290a4]">
+                <strong className="text-gray-600">Job Role: </strong>
                 {interviewData?.jobPosition}
               </h2>
-              <h2 className="text-lg">
-                <strong>Job Description: </strong>
+              <h2 className="text-lg text-[#8290a4]">
+                <strong className="text-gray-600">Job Description: </strong>
                 {interviewData?.jobDescription}
               </h2>
-              <h2 className="text-lg">
-                <strong>Years of Experience: </strong>
+              <h2 className="text-lg text-[#8290a4]">
+                <strong className="text-gray-600">Years of Experience: </strong>
                 {interviewData?.jobExperience}
               </h2>
             </div>
-            <div className="p-5 border rounded-lg border-slate-500 bg-red-100 space-y-3">
-              <h2 className="gap-2 items-center text-red-600 text-lg font-medium flex flex-row">
+            <div className="p-5 border rounded-lg border-white bg-white space-y-3">
+              <h2 className="gap-2 items-center text-gray-500 text-lg font-medium flex flex-row">
                 <BellRing />
                 <strong>Some Reminders!</strong>
               </h2>
-              <h2>
+              <h2 className="text-[#64748bb1]">
                 Before you start your mock AI interview, please ensure that your
                 webcam and microphone are enabled. This allows the AI to better
                 simulate a real-life interview experience by analyzing your body
@@ -102,9 +102,9 @@ const AIInterview = ({ params }: { params: Params }) => {
               </h2>
             </div>
             <div>
-              <div className="bg-orange-400 rounded-md w-fit text-md hover:bg-orange-500 p-1">
+              <div className="rounded-md w-fit text-md p-1">
                 <Link href={"/ai/interview/" + params.interviewId + "/start"}>
-                  <Button>
+                  <Button variant="dashboardAiOrHuman">
                     <p className="text-white">Start Interview</p>
                   </Button>
                 </Link>

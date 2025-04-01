@@ -114,7 +114,7 @@ const CreateRoomForm = () => {
   return (
     <>
       <div className="p-3 space-y-3">
-        <h1 className="text-4xl font-bold">Tell Us About Your Job Interview</h1>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-white bg-clip-text text-transparent">Tell Us About Your Job Interview</h1>
         <h2 className="text-lg font-md text-slate-500">
           Add details about your job position, description and years of
           experience
@@ -130,7 +130,7 @@ const CreateRoomForm = () => {
                 <FormItem>
                   <FormLabel>Job Role</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Software Engineer" {...field} />
+                    <Input className="text-[#64748B]" placeholder="Ex: Software Engineer" {...field} />
                   </FormControl>
                   <FormDescription>
                     This is the role you want to interview for.
@@ -148,6 +148,7 @@ const CreateRoomForm = () => {
                   <FormLabel>Job Description</FormLabel>
                   <FormControl>
                     <Input
+                      className="text-[#64748B]"
                       placeholder="Ex: This job requires me to be proficient in Java and C#"
                       {...field}
                     />
@@ -167,7 +168,7 @@ const CreateRoomForm = () => {
                 <FormItem>
                   <FormLabel>Years of Experience</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: 1-2 years" {...field} />
+                    <Input className="text-[#64748B]" placeholder="Ex: 1-2 years" {...field} />
                   </FormControl>
                   <FormDescription>
                     Years of experience the job requires.
@@ -176,7 +177,7 @@ const CreateRoomForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">
+            <Button variant="dashboardAiOrHuman" type="submit">
               {isLoading ? (
                 <div className="text-center items-center flex flex-row space-x-2">
                   <p>Generating from AI:</p>
