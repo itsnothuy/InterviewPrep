@@ -63,13 +63,13 @@ export function SearchBar() {
           )}
         />
 
-        <Button type="submit">
+        <Button variant="dashboardAiOrHuman" type="submit">
           <SearchIcon className="mr-2"></SearchIcon>Search
         </Button>
 
         {query.get("search") && (
           <Button
-            variant="link"
+            variant="dashboard"
             onClick={() => {
               form.setValue("search", "");
               router.push("/human");

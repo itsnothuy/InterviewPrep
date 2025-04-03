@@ -28,7 +28,7 @@ function RoomCard({ room }: { room: Room }) {
         {room.githubRepo && (
           <Link
             href={room.githubRepo}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 "
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -38,7 +38,7 @@ function RoomCard({ room }: { room: Room }) {
         )}
       </CardContent>
       <CardFooter>
-        <Button asChild>
+        <Button variant={"dashboardAiOrHuman"} asChild>
           <Link href={`/human-rooms/${room.id}`}>Join Room</Link>
         </Button>
       </CardFooter>
@@ -55,8 +55,8 @@ export default async function HumanInterviewRoom({
   return (
     <main className="min-h-screen p-16">
       <div className="flex justify-between w-full items-center mb-12">
-        <h1 className="text-4xl">Find Interview Room</h1>
-        <Button asChild>
+        <h1 className="text-4xl text-white">Find Interview Room</h1>
+        <Button variant={"dashboardAiOrHuman"} asChild>
           <Link href="/human/create-room">Create Room</Link>
         </Button>
       </div>

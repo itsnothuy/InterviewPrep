@@ -10,7 +10,7 @@ export function LanguagesList({ languages }: { languages: string[] }) {
     <div className="flex gap-2 flex-wrap">
       {languages.map((language) => (
         <button
-          className={cn(badgeVariants())}
+          className={cn(badgeVariants({ variant: "dashboardAiOrHuman" }))}
           key={language}
           onClick={() => {
             router.push(`/browse?search=${language}`);

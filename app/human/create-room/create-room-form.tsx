@@ -1,5 +1,6 @@
 "use client";
 import { z } from "zod";
+import { db } from "@/utils/db";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,15 +16,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { createRoomActions } from "./actions";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { uploadToS3 } from "@/app/s3";
+import axios from "axios";
 
 const formSchema = z.object({
   name: z.string().min(1).max(50),
   description: z.string().min(1).max(250),
   githubRepo: z.string().min(1).max(50),
   language: z.string().min(1).max(50),
+  // Optional field for uploading a new resume
+  resume: z.any().optional(),
+  // Optional field for selecting an existing resume (file key)
+  existingResume: z.string().optional(),
 });
 
 export function CreateRoomForm() {
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumes, setResumes] = useState<any[]>([]);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,12 +42,42 @@ export function CreateRoomForm() {
       description: "",
       githubRepo: "",
       language: "",
+      resume: undefined,
+      existingResume: "",
     },
   });
 
+  // Fetch existing resumes on mount from your API endpoint (e.g., /api/get-resumes)
+  useEffect(() => {
+    async function fetchResumes() {
+      try {
+        const res = await axios.get("/api/get-resumes");
+        setResumes(res.data.resumes);
+      } catch (error) {
+        console.error("Failed to fetch resumes:", error);
+      }
+    }
+    fetchResumes();
+  }, []);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Determine which resume to use:
+    // If the user selected an existing resume, use that file key.
+    // Otherwise, if a new file was uploaded, upload it to S3.
+    let resumeData = null;
+    if (values.existingResume) {
+      resumeData = { file_key: values.existingResume };
+    } else if (resumeFile) {
+      resumeData = await uploadToS3(resumeFile);
+    }
+
+
     //invoke server action to store data to our database
-    await createRoomActions({ ...values, createdAt: new Date() });
+    await createRoomActions({ 
+      ...values, 
+      resumeFile: resumeData ? resumeData.file_key : null,
+      createdAt: new Date(),
+    });
     router.push("/human");
   }
 
@@ -92,7 +132,7 @@ export function CreateRoomForm() {
               <FormControl>
                 <Input
                   className="w-[85%]"
-                  placeholder="https://github.com/phananhnguyen1204"
+                  placeholder="https://github.com/iloveInterviewPrep123"
                   {...field}
                 />
               </FormControl>
@@ -126,7 +166,63 @@ export function CreateRoomForm() {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+<FormField
+          control={form.control}
+          name="resume"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel> New Resume (Optional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    setResumeFile(file ?? null);
+                    field.onChange(file);
+                  }}
+                  className="text-[#64748B] p-2 border rounded-md"
+                />
+              </FormControl>
+              <FormDescription>
+                Upload your resume if you want to add a new one.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Dropdown to Select an Existing Resume */}
+        {resumes.length > 0 && (
+          <FormField
+            control={form.control}
+            name="existingResume"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Existing Resume</FormLabel>
+                <FormControl>
+                  <select
+                    {...field}
+                    className="ml-2 p-2 bg-transparent border rounded-md text-sm text-[#64748B]"
+                  >
+                    <option value="">-- Choose a resume --</option>
+                    {resumes.map((r) => (
+                      <option key={r.id} value={r.fileKey}>
+                        {r.pdfName}
+                      </option>
+                    ))}
+                  </select>
+                </FormControl>
+                <FormDescription>
+                  Choose a previously uploaded resume from your records.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <Button variant="dashboardAiOrHuman" type="submit">Submit</Button>
       </form>
     </Form>
   );

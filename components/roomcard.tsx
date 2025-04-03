@@ -36,7 +36,7 @@ function RoomCard({ room }: { room: Room }) {
         )}
       </CardContent>
       <CardFooter>
-        <Button asChild>
+        <Button variant="dashboardAiOrHuman" asChild>
           <Link href={`/human-rooms/${room.id}`}>Join Room</Link>
         </Button>
       </CardFooter>

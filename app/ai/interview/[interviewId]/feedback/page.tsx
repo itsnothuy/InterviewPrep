@@ -1,7 +1,7 @@
 "use client";
 
 import { db } from "@/utils/db";
-import { UserAnswer } from "@/utils/schema";
+import { UserAnswer, type UserAnswerType } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import {
@@ -16,8 +16,14 @@ import loading from "../../../../lotties/loading.json";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-const Feedback = ({ params }) => {
-  const [feedbackList, setFeedbackList] = useState([]);
+interface FeedbackProps {
+  params: {
+    interviewId: string;
+  };
+}
+
+const Feedback = ({ params }: FeedbackProps) => {
+  const [feedbackList, setFeedbackList] = useState<UserAnswerType[]>([]);
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -40,7 +46,7 @@ const Feedback = ({ params }) => {
     <div className="p-5 items-center justify-center">
       {isLoading ? (
         <div className="text-center items-center justify-center flex flex-col p-5">
-          <h1 className="text-5xl font-bold text-orange-500">
+          <h1 className="text-5xl font-bold text-white">
             We are processing your interview...
           </h1>
           <Lottie animationData={loading} width={500} height={500}></Lottie>
@@ -48,7 +54,7 @@ const Feedback = ({ params }) => {
       ) : (
         <>
           <div className="text-center p-3">
-            <h1 className="lg:text-5xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-yellow-300 via-orange-500 to-red-500 bg-clip-text text-transparent leading-tight lg:leading-snug">
+            <h1 className="lg:text-5xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-white via-white to-white bg-clip-text text-transparent leading-tight lg:leading-snug">
               Congrats on Finishing Your Interview!
             </h1>
             <h2 className="text-xl font-medium text-gray-600">
@@ -87,7 +93,7 @@ const Feedback = ({ params }) => {
           </div>
 
           <div className="justify-center flex items-center text-center">
-            <Button onClick={() => router.replace("/dashboard")}>
+            <Button variant="dashboardAiOrHuman" onClick={() => router.replace("/dashboard")}>
               Back to Dashboard
             </Button>
           </div>

@@ -30,18 +30,10 @@ const Questions = ({ mockQuestions, activeQuestionIndex }: Props) => {
   // Ensure we have an array to map over  
   return (
     <div className="p-5 my-10">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {questions.map((question: any, index: number) => (
-          <div key={index}>
-            <h2
-              className={`p-2 rounded-full text-md md:text-sm sm:text-sm text-center cursor-pointer ${
-                activeQuestionIndex == index && "bg-orange-400 text-white"
-              } ${activeQuestionIndex != index && "bg-secondary"}`}
-            >
-              Question #{index + 1}
-            </h2>
-          </div>
-        ))}
+      <div className="flex items-center justify-center mb-5">
+        <span className="p-2 text-md md:text-lg text-center bg-transparent">
+          Question: {activeQuestionIndex + 1}/{questions.length}
+        </span>
       </div>
 
       <h2 className="mt-10 my-5 text-md md:text-lg">

@@ -124,6 +124,7 @@ export const room = pgTable("room", {
   language: text("language"),
   githubRepo: text("githubRepo"),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  resumeFile: text("resumeFile"),
 });
 
 export const chats = pgTable("chats", {
@@ -149,3 +150,5 @@ export const messages = pgTable("message", {
 });
 
 export type Room = typeof room.$inferSelect;
+export type UserAnswerType = typeof UserAnswer.$inferSelect;
+
