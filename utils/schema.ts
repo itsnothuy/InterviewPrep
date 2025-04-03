@@ -96,6 +96,7 @@ export const MockInterview = pgTable("mock_interview", {
   createdBy: varchar("createdBy").notNull(),
   createdAt: varchar("createdAt"),
   mockId: varchar("mockId").notNull(),
+  resumeFile: text("resumeFile"),
 });
 
 export const UserAnswer = pgTable("userAnswer", {

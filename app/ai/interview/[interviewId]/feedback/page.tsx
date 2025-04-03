@@ -87,7 +87,7 @@ const Feedback = ({ params }) => {
           </div>
 
           <div className="justify-center flex items-center text-center">
-            <Button onClick={() => router.replace("/dahsboard")}>
+            <Button onClick={() => router.replace("/dashboard")}>
               Back to Dashboard
             </Button>
           </div>

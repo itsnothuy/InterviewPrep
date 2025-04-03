@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import {
   Form,
@@ -23,6 +23,8 @@ import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import axios from "axios";
+import { uploadToS3 } from "@/app/s3";
 
 const formSchema = z.object({
   role: z.string().min(2, {
@@ -34,11 +36,17 @@ const formSchema = z.object({
   experience: z.string().min(1, {
     message: "Experience must be at least 1 character.",
   }),
+  // Optional field for resume file if uploading new one
+  resume: z.any().optional(),
+  // Optional field to select an existing resume (file_key)
+  existingResume: z.string().optional(),
 });
 
 const CreateRoomForm = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [JsonResponse, setJsonResponse] = useState<string>("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumes, setResumes] = useState<any[]>([]);
   const router = useRouter();
   const { data: session } = useSession(); // Use useSession hook
 
@@ -48,8 +56,23 @@ const CreateRoomForm = () => {
       role: "",
       description: "",
       experience: "",
+      resume: undefined,
+      existingResume: "",
     },
   });
+
+  // Fetch existing resumes on mount
+  useEffect(() => {
+    async function fetchResumes() {
+      try {
+        const res = await axios.get("/api/get-resumes");
+        setResumes(res.data.resumes);
+      } catch (error) {
+        console.error("Failed to fetch resumes:", error);
+      }
+    }
+    fetchResumes();
+  }, []);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!session) {
@@ -59,42 +82,50 @@ const CreateRoomForm = () => {
 
     setLoading(true);
 
-    // Set the prompt
-    const InputPrompt = `
-      Job position: ${values.role}, 
-      Job Description: ${values.description}, 
-      Years of Experience: ${values.experience}. 
-      Based on this, give us ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions and answers in JSON format.
-    `;
+    // Determine which resume to use:
+    // If user selected an existing resume, use that. Otherwise, upload new resume if provided.
+    let resumeData = null;
+    if (values.existingResume) {
+      // Use the existing resume details (assumed to be the file_key)
+      resumeData = {
+        file_key: values.existingResume,
+        // You might also store file_name or pdfUrl if available in the fetched record.
+      };
+    } else if (resumeFile) {
+      // Otherwise, upload the new resume
+      // Assuming uploadToS3 is imported and handles the file upload as before
+      resumeData = await uploadToS3(resumeFile);
+    }
+
+   
 
     try {
-      const result = await chatSession.sendMessage(InputPrompt);
+      const response = await axios.post("/api/generate-interview", {
+        role: values.role,
+        description: values.description,
+        experience: values.experience,
+        resumeFileKey: resumeData ? resumeData.file_key : "",
+      });
+      const output = response.data.output; // the generated JSON string
 
-      // Reorganize the JSON response
-      const MockJsonResponse = result.response
-        .text()
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .replace(/\n/g, "")
-        .replace(/\\n/g, "")
-        .replace(/\r/g, "")
-        .trim();
+
 
       setLoading(false);
-      setJsonResponse(MockJsonResponse);
+      setJsonResponse(output);
 
       // Insert into db
-      if (MockJsonResponse) {
+      if (output) {
         const resp = await db
           .insert(MockInterview)
           .values({
             mockId: uuidv4(),
-            jsonMockResp: MockJsonResponse,
+            jsonMockResp: output,
             jobPosition: values.role,
             jobDescription: values.description,
             jobExperience: values.experience,
             createdBy: session.user.id as string,
             createdAt: moment().format("DD-MM-yyyy"),
+            resumeFile: resumeData ? resumeData.file_key : null,
           })
           .returning({ mockId: MockInterview.mockId });
 
@@ -177,6 +208,62 @@ const CreateRoomForm = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="resume"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Resume (Optional)</FormLabel>
+                  <FormControl>
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setResumeFile(file ?? null);
+                      field.onChange(file);
+                    }}
+                    className="text-[#64748B] p-2 border rounded-md"
+                  />
+                  </FormControl>
+                  <FormDescription>
+                    Your resume or CV. You can upload a new resume or select from your previously uploaded PDFs down below. (If you have some uploaded already)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+            {/* Dropdown to Select an Existing Resume */}
+            {resumes.length > 0 && (
+              <FormField
+                control={form.control}
+                name="existingResume"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select Existing Resume</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="ml-2 p-2 bg-transparent border rounded-md text-sm text-[#64748B]"
+                      >
+                        <option value="">-- Choose a resume --</option>
+                        {resumes.map((r) => (
+                          <option key={r.id} value={r.fileKey}>
+                            {r.pdfName}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormDescription>
+                      Choose a previously uploaded resume from your conversations.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <Button variant="dashboardAiOrHuman" type="submit">
               {isLoading ? (
                 <div className="text-center items-center flex flex-row space-x-2">

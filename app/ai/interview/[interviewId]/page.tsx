@@ -8,6 +8,8 @@ import Webcam from "react-webcam";
 import { BellRing, WebcamIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDisplayedFileName } from "@/components/utils/fileNameHelpers"; // Import the helper
+
 
 interface Params {
   interviewId: string;
@@ -22,6 +24,7 @@ interface InterviewData {
   jobExperience: string;
   createdBy: string;
   createdAt: string;
+  resumeFile?: string;
 }
 
 const AIInterview = ({ params }: { params: Params }) => {
@@ -42,6 +45,8 @@ const AIInterview = ({ params }: { params: Params }) => {
       .where(eq(MockInterview.mockId, params.interviewId));
     setInterviewData(result[0] as InterviewData);
   };
+
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="p-5">
@@ -85,6 +90,12 @@ const AIInterview = ({ params }: { params: Params }) => {
                 <strong className="text-gray-600">Years of Experience: </strong>
                 {interviewData?.jobExperience}
               </h2>
+              {interviewData?.resumeFile && (
+                <h2 className="text-lg text-[#8290a4]">
+                  <strong className="text-gray-600">Resume: </strong>
+                  {getDisplayedFileName(interviewData.resumeFile)}
+                </h2>
+              )}
             </div>
             <div className="p-5 border rounded-lg border-white bg-white space-y-3">
               <h2 className="gap-2 items-center text-gray-500 text-lg font-medium flex flex-row">

@@ -82,11 +82,11 @@
 
 input:-webkit-autofill {
   background-color: #1f2937 !important; /* A dark background to match your theme */
-  -webkit-text-fill-color: #8590a7 !important; /* White text */
+  -webkit-text-fill-color: #64748B !important; /* White text */
   transition: background-color 5000s ease-in-out 0s; /* Trick to remove the yellow background */
 }
 
 input:-webkit-autofill:focus {
   background-color: #1f2937 !important;
-  -webkit-text-fill-color: #8590a7 !important;
+  -webkit-text-fill-color: #64748B !important;
 }
