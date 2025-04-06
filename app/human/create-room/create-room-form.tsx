@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { createRoomActions } from "./actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { uploadToS3 } from "@/app/s3";
+import { uploadToS3, getS3Url } from "@/app/s3";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -71,11 +71,14 @@ export function CreateRoomForm() {
       resumeData = await uploadToS3(resumeFile);
     }
 
-
+    // Construct the full URL for the PDF (adjust the base URL accordingly)
+    const fullPdfUrl = resumeData ? getS3Url(resumeData.file_key) : null;
+    console.log("Resume URL:", fullPdfUrl);
+    console.log("Resume Data:", resumeData);
     //invoke server action to store data to our database
     await createRoomActions({ 
       ...values, 
-      resumeFile: resumeData ? resumeData.file_key : null,
+      pdfUrl: fullPdfUrl,
       createdAt: new Date(),
     });
     router.push("/human");
@@ -166,7 +169,7 @@ export function CreateRoomForm() {
           )}
         />
 
-<FormField
+        <FormField
           control={form.control}
           name="resume"
           render={({ field }) => (

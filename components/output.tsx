@@ -37,9 +37,9 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
       <div className="flex flex-row gap-3">
         <h1 className="text-lg font-semibold">Output</h1>
         <Button
-          variant={"outline"}
+          variant={"dashboard"}
           color="green"
-          className="mb-4 border border-slate-800 text-green-700 hover:bg-green-500 hover:text-white"
+          className="mb-4 border border-slate-800 hover:bg-green-500 hover:text-white"
           onClick={runCode}
         >
           {isLoading ? <CircularProgress size={24} /> : "Run Code"}

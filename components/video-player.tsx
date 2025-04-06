@@ -15,7 +15,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import { generateTokenAction } from "./actions";
+import { generateTokenAction } from "../app/human-rooms/[roomId]/actions";
 import { useRouter } from "next/navigation";
 
 const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY || "";

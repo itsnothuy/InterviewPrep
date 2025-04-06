@@ -124,7 +124,7 @@ export const room = pgTable("room", {
   language: text("language"),
   githubRepo: text("githubRepo"),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
-  resumeFile: text("resumeFile"),
+  pdfUrl: text("pdfUrl"),
 });
 
 export const chats = pgTable("chats", {

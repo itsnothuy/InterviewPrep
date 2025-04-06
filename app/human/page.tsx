@@ -15,36 +15,7 @@ import { getHumanRooms } from "@/data-access/human-rooms";
 import { LanguagesList } from "@/components/languages-list";
 import { splitLanguages } from "@/lib/utils";
 import { SearchBar } from "./search-bar";
-
-function RoomCard({ room }: { room: Room }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{room.name}</CardTitle>
-        <CardDescription>{room.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <LanguagesList languages={splitLanguages(room?.language || "")} />
-        {room.githubRepo && (
-          <Link
-            href={room.githubRepo}
-            className="flex items-center gap-2 "
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <GithubIcon></GithubIcon>
-            GitHub Project
-          </Link>
-        )}
-      </CardContent>
-      <CardFooter>
-        <Button variant={"dashboardAiOrHuman"} asChild>
-          <Link href={`/human-rooms/${room.id}`}>Join Room</Link>
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}
+import RoomCard from "@/components/RoomCards";
 
 export default async function HumanInterviewRoom({
   searchParams,
