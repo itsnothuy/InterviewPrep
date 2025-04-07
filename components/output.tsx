@@ -35,11 +35,11 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
   return (
     <div className=" h-full mb-10 pb-10">
       <div className="flex flex-row gap-3">
-        <h1 className="text-lg font-semibold">Output</h1>
+        {/* <h1 className="text-lg font-semibold">Output</h1> */}
         <Button
           variant={"dashboard"}
           color="green"
-          className="mb-4 border border-slate-800 hover:bg-green-500 hover:text-white"
+          className="mb-4 border border-slate-800 text-black hover:bg-green-500 hover:text-white"
           onClick={runCode}
         >
           {isLoading ? <CircularProgress size={24} /> : "Run Code"}

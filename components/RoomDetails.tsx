@@ -9,19 +9,18 @@ import PDFViewer from "@/components/PDFViewer";
 import { Button } from "@/components/ui/button";
 
 interface Room {
-    name: string;
-    githubRepo?: string | null;
-    description?: string | null;
-    language?: string | null;
-    pdfUrl?: string | null;
+  name: string;
+  githubRepo?: string | null;
+  description?: string | null;
+  language?: string | null;
+  pdfUrl?: string | null;
 }
 
 interface RoomDetailsProps {
   room: Room;
-  onShowEditor?: () => void; // a callback function to show the editor
 }
 
-export default function RoomDetails({ room, onShowEditor }: RoomDetailsProps) {
+export default function RoomDetails({ room }: RoomDetailsProps) {
   const [showResume, setShowResume] = useState(false);
 
   // Helper function to truncate text to a maximum length with ellipsis.
@@ -68,12 +67,6 @@ export default function RoomDetails({ room, onShowEditor }: RoomDetailsProps) {
               <span className="ml-2">Resume</span>
             </button>
           )}
-          <Button
-            variant="dashboardAiOrHuman"
-            onClick={onShowEditor}
-          >
-            Code Editor
-          </Button>
         </div>
       </div>
 

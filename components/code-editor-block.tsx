@@ -27,7 +27,7 @@ const CodeEditorBlock = () => {
 
   return (
     <div className="flex">
-      <div className="w-1/2 pr-4">
+      <div className="w-1/2 pr-3">
         <LanguageSelector language={language} onSelect={onSelect} />
         <Editor
           height="75vh"
@@ -37,6 +37,9 @@ const CodeEditorBlock = () => {
           value={value}
           onMount={onMount}
           onChange={(value) => setValue(value || "")}
+          options={{
+            padding: { top: 5 } // Adjust the top padding value as needed
+          }}
         />
       </div>
       <div className="w-1/2">
