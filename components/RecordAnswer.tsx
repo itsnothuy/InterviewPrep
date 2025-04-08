@@ -156,7 +156,7 @@ import { Mic, WebcamIcon } from "lucide-react";
 import Webcam from "react-webcam";
 import { Button } from "./ui/button";
 import useSpeechToText from "react-hook-speech-to-text";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { chatSession } from "@/utils/GeminiAIModal";
 import moment from "moment";
 import toast from "react-hot-toast";
@@ -185,33 +185,37 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
   activeQuestionIndex,
   interviewData,
 }) => {
+  // State for display purposes (optional)
   const [userAnswer, setUserAnswer] = useState("");
   const [isLoading, setLoading] = useState(false);
-  // Local flag to track our intended recording state
+  // Local flag to track intended recording
   const [localRecording, setLocalRecording] = useState(false);
+  // Ref to capture transcript immediately
+  const transcriptRef = useRef("");
 
   const { isRecording, results, startSpeechToText, stopSpeechToText, setResults } =
     useSpeechToText({
-      continuous: false,
+      continuous: true,
       useLegacyResults: false,
     });
 
-  // Log new speech result chunks and append them to userAnswer.
+  // Update transcriptRef with new speech results.
   useEffect(() => {
     console.log("DEBUG: Speech results updated:", results);
     results.forEach((result) => {
       const transcript = getTranscript(result);
       console.log("DEBUG: New transcript chunk:", transcript);
-      setUserAnswer((prevAns) => prevAns + transcript);
+      transcriptRef.current += transcript;
+      // (Optional) update state for UI display
+      setUserAnswer(transcriptRef.current);
     });
   }, [results]);
 
-  // Log the full transcript in real time.
+  // Log the ref's current value when it updates.
   useEffect(() => {
-    console.log("DEBUG: Full transcript so far:", userAnswer);
+    console.log("DEBUG: Full transcript (from ref):", transcriptRef.current);
   }, [userAnswer]);
 
-  // Log when the hook's isRecording state changes.
   useEffect(() => {
     console.log("DEBUG: isRecording (from hook) changed:", isRecording);
   }, [isRecording]);
@@ -234,9 +238,10 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       }
     }
     console.log("DEBUG: Starting recorder...");
-    setUserAnswer(""); // Clear any previous transcript.
+    transcriptRef.current = ""; // Clear the ref.
+    setUserAnswer(""); // Clear state.
     startSpeechToText();
-    setLocalRecording(true); // Mark that we intended to start recording.
+    setLocalRecording(true);
   };
 
   const stopAndSaveRecording = async () => {
@@ -245,7 +250,6 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       console.log("DEBUG: No recording is active to stop.");
       return;
     }
-    // Only attempt to stop the hook if it reports that recording is active.
     if (isRecording) {
       try {
         console.log("DEBUG: Stopping recorder...");
@@ -257,13 +261,14 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       console.log("DEBUG: Hook is not reporting active recording. Skipping stop call.");
     }
     setLocalRecording(false);
+    // Use the transcript from the ref immediately.
+    console.log("DEBUG: updateUserAnswer called with transcript from ref:", transcriptRef.current);
     await updateUserAnswer();
   };
 
   const updateUserAnswer = async () => {
-    console.log("DEBUG: updateUserAnswer called with userAnswer:", userAnswer);
     if (!interviewData || !interviewData.mockId) {
-      console.error("Interview data is missing");
+      console.error("DEBUG: Interview data is missing");
       toast.error("Interview data is missing");
       return;
     }
@@ -273,11 +278,10 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       "Question: " +
       mockQuestions[activeQuestionIndex]?.question +
       ", User answer: " +
-      userAnswer +
+      transcriptRef.current +
       ", Based on the question and the user answer, please rate the answer and give feedback for improvement in 3-5 lines, in JSON format with fields 'rating' and 'feedback'.";
-
     console.log("DEBUG: Sending Gemini API message with prompt:", feedbackPrompt);
-    // Call Gemini API (assuming chatSession.sendMessage is correct)
+
     const result = await chatSession.sendMessage(feedbackPrompt);
     const responseText = result.response.text();
     const mockJsonResp = responseText
@@ -299,12 +303,11 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       return;
     }
 
-    // Prepare payload for API route.
     const payload = {
       mockIdRef: interviewData.mockId,
       question: mockQuestions[activeQuestionIndex]?.question,
       correctAns: mockQuestions[activeQuestionIndex]?.answer,
-      userAns: userAnswer, // This should contain what was captured.
+      userAns: transcriptRef.current,
       feedback: JsonFeedbackResp.feedback,
       rating: JsonFeedbackResp.rating,
       createdBy: "6b67e75e-ee67-4528-a653-3d696cedc40b",
@@ -329,7 +332,6 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       console.error("DEBUG: Error in updateUserAnswer:", error);
       toast.error("Error recording answer");
     }
-
     setUserAnswer("");
     setLoading(false);
     setResults([]);
