@@ -29,7 +29,7 @@ export default async function ResumeAIPage() {
     <div className="w-screen min-h-screen">
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center">
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
             Resume AI
           </h1>
           <p className="mt-1 text-lg text-slate-500">
@@ -42,7 +42,7 @@ export default async function ResumeAIPage() {
             ) : (
               // If user is logged in, show a "Go to Chats" button (using the first chat record)
               <Link href={`/chat/${firstChat?.id}`}>
-                <Button className="flex gap-1">Go to Chats &rarr;</Button>
+                <Button variant="dashboardAiOrHuman" className="flex gap-1">Go to Chats &rarr;</Button>
               </Link>
             )}
           </div>

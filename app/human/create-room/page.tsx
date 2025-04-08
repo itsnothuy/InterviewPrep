@@ -1,7 +1,7 @@
 "use client";
 import Lottie from "lottie-react";
 import { CreateRoomForm } from "./create-room-form";
-import animationData from "../../lotties/Video.json";
+import animationData from "../../lotties/teamwork.json";
 
 export default function CreateRoom() {
   return (

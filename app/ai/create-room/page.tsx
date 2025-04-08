@@ -1,7 +1,7 @@
 "use client";
 import Lottie from "lottie-react";
 import CreateRoomForm from "./create-room-form";
-import animationData from "../../lotties/ai-create-room.json";
+import aiCreateRoom from "../../lotties/ai-create-room.json";
 
 export default function CreateRoom() {
   return (
@@ -10,7 +10,7 @@ export default function CreateRoom() {
         <CreateRoomForm></CreateRoomForm>
       </div>
       <div className="w-1/2">
-        <Lottie animationData={animationData}></Lottie>
+        <Lottie animationData={aiCreateRoom} ></Lottie>
       </div>
     </div>
   );

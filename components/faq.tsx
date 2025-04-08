@@ -36,7 +36,7 @@ const FAQ: React.FC = () => {
         </div>
         <div className="space-y-4">
           <Collapsible>
-            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-orange-200 rounded-md dark:bg-gray-800">
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
               <h3 className="text-lg font-medium">
                 How does the AI interview simulation work?
               </h3>
@@ -54,7 +54,7 @@ const FAQ: React.FC = () => {
             </CollapsibleContent>
           </Collapsible>
           <Collapsible>
-            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-orange-200 rounded-md dark:bg-gray-800">
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
               <h3 className="text-lg font-medium">
                 Can I review my interview performance later?
               </h3>
@@ -71,7 +71,7 @@ const FAQ: React.FC = () => {
             </CollapsibleContent>
           </Collapsible>
           <Collapsible>
-            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-orange-200  rounded-md dark:bg-gray-800">
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200  rounded-md dark:bg-gray-800">
               <h3 className="text-lg font-medium">
                 How do peer-to-peer interviews work?
               </h3>
@@ -89,7 +89,7 @@ const FAQ: React.FC = () => {
             </CollapsibleContent>
           </Collapsible>
           <Collapsible>
-            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-orange-200 rounded-md dark:bg-gray-800">
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
               <h3 className="text-lg font-medium">
                 What makes Interview Expert different from other interview
                 preparation platforms?

@@ -10,9 +10,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Lottie from "lottie-react";
-import humanInterview from "../lotties/human-interview.json";
-import createRoom from "../lotties/create-room.json";
-import aiInterview from "../lotties/ai-interview.json";
+import list from "../lotties/list.json";
+import ai from "../lotties/ai.json";
+import human from "../lotties/human.json";
 import Link from "next/link";
 import { custom } from "zod";
 
@@ -23,7 +23,7 @@ const Dashboard = () => {
     <div className="flex flex-col items-center p-5 space-y-7">
       <div className="flex flex-col items-center p-6 h-fit w-1/2 text-center">
         <h2 className="text-5xl font-extrabold opacity-85 text-white">Prepare for</h2>
-        <h1 className="text-6xl font-extrabold p-5 bg-gradient-to-r from-gray-100 to-orange-300 bg-clip-text text-transparent">
+        <h1 className="text-6xl font-extrabold p-5 bg-gradient-to-r from-white to-orange-300 bg-clip-text text-transparent">
           Mock Interview
         </h1>
         <p className="text-gray-200 dark:text-gray-400 mt-2">
@@ -37,9 +37,9 @@ const Dashboard = () => {
           </div>
           <Card className="shadow-md hover:shadow-lg transition-all cursor-pointer hover:translate-y-1 flex-grow flex flex-col justify-between">
             <CardContent>
-              <div className="flex justify-center items-center mb-4 mt-10">
+              <div className="flex justify-center items-center ml-10">
                 <Lottie
-                  animationData={createRoom}
+                  animationData={list}
                   className="max-w-xs"
                   loop={true}
                 />
@@ -87,7 +87,7 @@ const Dashboard = () => {
               <CardContent className="flex flex-row mb-4">
                 <div className="w-1/3 flex justify-center items-center">
                   <Lottie
-                    animationData={aiInterview}
+                    animationData={ai}
                     className="max-w-full"
                     loop={true}
                   />
@@ -114,7 +114,7 @@ const Dashboard = () => {
               <CardContent className="flex flex-row mb-4">
                 <div className="w-1/3 flex justify-center items-center">
                   <Lottie
-                    animationData={humanInterview}
+                    animationData={human}
                     className="max-w-full"
                     loop={true}
                   />

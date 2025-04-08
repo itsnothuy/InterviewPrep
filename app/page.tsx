@@ -26,15 +26,15 @@ export default function Home() {
               ></div>
               <div className="relative z-10 flex flex-col justify-center items-center text-center p-6 h-full">
                 <div className="flex flex-col justify-center text-center gap-3 mb-4">
-                  <h1 className="lg:text-7xl text-4xl font-extrabold mb-2 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                    Interview Expert
+                  <h1 className="lg:text-7xl text-4xl font-extrabold mb-2 bg-gradient-to-r from-white to-slate-100 bg-clip-text text-transparent">
+                    Interview Prep
                   </h1>
                   <p className="text-2xl font-normal text-neutral-600">
                     Show Your True Potential With AI-Powered Mock Interview
                   </p>
                 </div>
                 <div className="justify-center text-center p-5 space-x-4">
-                  <Button className="bg-orange-400 text-white px-6 py-2 rounded-md w-fit text-lg hover:bg-orange-500">
+                  <Button variant="dashboardAiOrHuman" className=" px-6 py-2 rounded-md w-fit text-lg">
                     Sign In
                   </Button>
                   <Button className="text-black bg-transparent border border-gray-700 px-6 py-2 rounded-md w-fit text-lg hover:bg-slate-100">

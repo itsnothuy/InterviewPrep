@@ -9,19 +9,19 @@ const CardValues = [
   {
     title: "Sign Up",
     content:
-      "Begin your journey by signing up on our platform. It’s quick and easy. All you need is your email address to get started. Once you’re signed up, you can immediately access our range of interview preparation tools.",
+      "Simply provide your email address to get started, and you'll immediately unlock our full suite of interview preparation tools.",
     imageUrl: "/assets/image1.png",
   },
   {
     title: "Choose Your Interview Type",
     content:
-      "Tailor your practice session by selecting either a peer-to-peer interview or an AI-powered interview. If you prefer human interaction, our peer-to-peer interviews let you practice with real people. If you want immediate and consistent feedback, opt for our AI interview, which simulates a realistic interview environment with instant analysis.",
+      "Customize the practice session by selecting either a peer-to-peer interview or an AI-driven session. If you enjoy human interaction, our peer-to-peer option lets you practice with real people. Alternatively, if you need quick and consistent feedback, our AI interview simulates a realistic interview environment with instant analysis.",
     imageUrl: "/assets/image2.png",
   },
   {
     title: "Get Feedback and Improve",
     content:
-      "After completing your interview simulation, receive detailed feedback on your performance. Our AI-driven analysis provides insights into your strengths and areas for improvement, focusing on both content and delivery. Use the feedback to refine your skills and prepare for the real interview with confidence.",
+      "After completing your interview simulation,  you'll receive comprehensive feedback on your performance. Our AI-powered analysis identifies your strengths and pinpoints areas for improvement in both content and delivery, helping you refine your skills and approach your real interview with confidence.",
     imageUrl: "/assets/image3.png",
   },
 ];
@@ -40,7 +40,7 @@ const HowItWorks = () => {
       <div className="text-center p-5">
         <h1 className="text-3xl sm:text-5xl font-bold mb-5">How It Works</h1>
         <p className="text-gray-500 dark:text-gray-400">
-          Practice mock interview in just 3 simple steps
+          Practice mock interview in just these simple steps
         </p>
       </div>
       <div

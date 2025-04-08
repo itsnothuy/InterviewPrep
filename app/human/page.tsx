@@ -25,7 +25,7 @@ export default async function HumanInterviewRoom({
   const rooms = await getHumanRooms(searchParams.search || "");
   return (
     <main className="min-h-screen p-16">
-      <div className="flex justify-between w-full items-center mb-12">
+      <div className="flex justify-between w-full items-center mb-10">
         <h1 className="text-4xl text-white">Find Interview Room</h1>
         <Button variant={"dashboardAiOrHuman"} asChild>
           <Link href="/human/create-room">Create Room</Link>

@@ -74,12 +74,12 @@ export const FileUpload = () => {
           <input {...getInputProps()}></input>
           {uploading ? (
             <>
-              <Loader2Icon className="w-10 h-10 text-orange-600"></Loader2Icon>
+              <Loader2Icon className="w-10 h-10 text-gray-400"></Loader2Icon>
               <p className="mt-2 text-sm text-slate-400">PDF is loading</p>
             </>
           ) : (
             <>
-              <Inbox className="w-10 h-10 text-orange-600"></Inbox>
+              <Inbox className="w-10 h-10 text-gray-400"></Inbox>
               <p className="mt-2 text-sm text-slate-400">Drop PDF Here</p>
             </>
           )}

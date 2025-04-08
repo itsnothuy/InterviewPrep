@@ -11,12 +11,12 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-transparent p-4 flex justify-between items-center border-b border-slate-500 w-full">
+    <nav className="bg-transparent p-2 flex justify-between items-center border-b border-slate-500 w-full">
       <div className="flex left-0">
         <a href="/" className="flex mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-          <img src="/logo.png" className="w-auto h-12" alt="Logo" />
+          <img src="/worker.png" className="w-auto h-7" alt="Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
-            Interview Expert
+            Interview Prep
           </span>
         </a>
       </div>
@@ -34,16 +34,10 @@ const NavBar: React.FC = () => {
           Dashboard
         </Link>
         <Link
-          href="/code-editor"
+          href="/resume-ai"
           className="text-lg font-medium text-white hover:text-gray-300"
         >
-          Code Editor
-        </Link>
-        <Link
-          href="/chat-pdf"
-          className="text-lg font-medium text-white hover:text-gray-300"
-        >
-          Chat PDF
+          ResumeAI
         </Link>
       </div>
       <div className="block lg:hidden">

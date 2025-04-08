@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Lottie from "lottie-react";
-import info from "../app/lotties/info.json";
+import growth from "../app/lotties/growth.json";
 
 export function Info() {
   const ref = useRef(null);
@@ -25,32 +25,28 @@ export function Info() {
       <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-orange-400 px-3 py-1 text-sm text-white">
+            <div className="inline-block rounded-lg bg-gray-500/50 px-3 py-1 text-sm text-white">
               New Features
             </div>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
-              Faster Preparation. Better Results.
+              Work Smarter!
+            </h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
+              Get Better!
             </h2>
             <p className=" text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              The ultimate platform to accelerate your interview readiness.
-              Focus on honing your skills instead of worrying about the
-              logistics, with automated interview setups, real-time feedback,
-              and collaborative preparation tools.
+            Concentrate on refining your skills while we handle the details, offering automated interview setups, real-time feedback, and collaborative tools.
             </p>
           </div>
           <ul className="grid gap-2 py-4">
+            <li>Benefits:</li>
             <li>
               <CheckIcon className="mr-2 inline-block h-4 w-4" />
-              Connect with peers for live practice sessions or use our
-              AI-powered tools to get instant feedback, ensuring you're always
-              improving.
+              Practice with peers in live sessions or use our AI-driven features for instant insights, ensuring you’re always moving forward.
             </li>
             <li>
               <CheckIcon className="mr-2 inline-block h-4 w-4" />
-              Use ChatPDF to quickly extract key information from documents,
-              such as job descriptions or study materials, helping you tailor
-              your preparation and focus on what matters most for your
-              interviews.
+              Leverage ResumeAi to quickly tailor key points from documents—like job descriptions or study materials—to your resume so you can prepare and stay focused on what truly matters.
             </li>
             <li>
               <CheckIcon className="mr-2 inline-block h-4 w-4" />
@@ -60,7 +56,7 @@ export function Info() {
             </li>
           </ul>
         </div>
-        <Lottie animationData={info} className="max-w-full" loop={true} />
+        <Lottie animationData={growth} className="max-w-full" loop={true} />
       </div>
     </motion.div>
   );
