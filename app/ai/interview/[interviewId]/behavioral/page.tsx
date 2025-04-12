@@ -180,9 +180,9 @@ const AIStartInterview = ({ params }: { params: Params }) => {
                 Next Question
               </Button>
             )}
-            <Link href={`/ai/interview/${interviewData?.mockId}/feedback`}>
+            <Link href={`/ai/interview/${interviewData?.mockId}/technical`}>
               {activeQuestionIndex === mockQuestions.length - 1 && (
-                <Button variant={"dashboardAiOrHuman"}>End Interview</Button>
+                <Button variant={"dashboardAiOrHuman"}>Start Technical Interview</Button>
               )}
             </Link>
           </div>

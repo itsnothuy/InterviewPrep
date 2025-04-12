@@ -6,6 +6,7 @@ import { MockInterview } from '@/utils/schema';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
+    console.log("DEBUG: Fetching interview details for ID:", params.id);
     const result = await db
       .select()
       .from(MockInterview)
@@ -14,6 +15,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!result || result.length === 0) {
       return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
     }
+    console.log("DEBUG: Fetched interview details:", result[0]);
     
     let jsonString = result[0].jsonMockResp;
     // Clean up the JSON string if needed:
