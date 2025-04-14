@@ -117,6 +117,7 @@ import animationData from "../../../../lotties/feedback.json";
 import loadingAnimation from "../../../../lotties/loading.json";
 import { Button } from "@/components/ui/button";
 import { cleanJSONString } from "@/utils/cleanJSON";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 
 
 interface FeedbackProps {
@@ -134,7 +135,7 @@ interface BehavioralFeedbackItem {
 }
 
 interface TechnicalFeedbackItem {
-  question: string;
+  questionText: string;
   userCode: string;
   rating: string;
   feedback: string;
@@ -183,9 +184,9 @@ const Feedback = ({ params }: FeedbackProps) => {
         </div>
       ) : (
         <>
-          <div className="text-center p-3">
+          <div className="text-center p-3 mb-10">
             <h1 className="lg:text-5xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-white via-white to-white bg-clip-text text-transparent leading-tight lg:leading-snug">
-              Congrats on Finishing Your Interview!
+              You have finished the Interview!
             </h1>
             <h2 className="text-xl font-medium text-gray-600">Below is your feedback!</h2>
           </div>
@@ -197,18 +198,19 @@ const Feedback = ({ params }: FeedbackProps) => {
               <p>No behavioral feedback available.</p>
             ) : (
               behavioralFeedback.map((item, index) => (
-                <Collapsible key={index} className="w-full rounded-lg overflow-hidden mb-5">
-                  <CollapsibleTrigger className="p-4 px-6 bg-orange-400 text-white rounded-md flex justify-between items-center text-left mb-5 shadow-md">
-                    <span>{item.question}</span>
+                <Collapsible key={index} className="w-full rounded bg-gray-100 p-1 mb-5">
+                  <CollapsibleTrigger className=" w-full p-4 px-6 pt-5 text-black rounded-md flex justify-between items-center text-left">
+                    <span><strong>Question {index + 1}:</strong> {item.question}</span>
                     <ChevronDown className="w-6 h-6" />
                   </CollapsibleTrigger>
+                  <DropdownMenuSeparator/>
                   <CollapsibleContent className="p-4 space-y-3 bg-gray-100 rounded-md">
                     <h2 className="text-lg font-semibold text-black">Rating: {item.rating}</h2>
-                    <p className="p-3 border border-slate-300 rounded-md shadow-sm bg-white">
+                    <p className="p-3 border border-slate-300 rounded-md">
                       <strong>Your Answer:</strong> {item.userAns}
                     </p>
-                    <p className="p-3 border border-slate-300 rounded-md bg-orange-200 text-orange-900 shadow-sm">
-                      <strong>Feedback:</strong> {item.feedback}
+                    <p className="p-3 border border-slate-300 rounded-md text-orange-900">
+                      <strong className="text-black">Feedback:</strong> {item.feedback}
                     </p>
                   </CollapsibleContent>
                 </Collapsible>
@@ -223,18 +225,18 @@ const Feedback = ({ params }: FeedbackProps) => {
               <p>No technical feedback available.</p>
             ) : (
               technicalFeedback.map((item, index) => (
-                <Collapsible key={index} className="w-full rounded-lg overflow-hidden mb-5">
-                  <CollapsibleTrigger className="p-4 px-6 bg-blue-500 text-white rounded-md flex justify-between items-center text-left mb-5 shadow-md">
-                    <span>{item.question}</span>
+                <Collapsible key={index} className="rounded border bg-gray-100 p-1 mb-5">
+                  <CollapsibleTrigger className="p-4 px-6 pt-5 flex justify-between items-center text-left">
+                    <span><strong>Problem {index + 1}:</strong>  {item.questionText}</span>
                     <ChevronDown className="w-6 h-6" />
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="p-4 space-y-3 bg-gray-100 rounded-md">
+                  <CollapsibleContent className="p-4 space-y-3 rounded-md">
                     <h2 className="text-lg font-semibold text-black">Rating: {item.rating}</h2>
-                    <p className="p-3 border border-slate-300 rounded-md shadow-sm bg-white">
+                    <p className="p-3 border border-slate-300 rounded-md">
                       <strong>Your Answer:</strong> {item.userCode}
                     </p>
-                    <p className="p-3 border border-slate-300 rounded-md bg-blue-200 text-blue-900 shadow-sm">
-                      <strong>Feedback:</strong> {item.feedback}
+                    <p className="p-3 border border-slate-300 rounded-md text-blue-900">
+                      <strong className="text-black">Feedback:</strong> {item.feedback}
                     </p>
                   </CollapsibleContent>
                 </Collapsible>
@@ -249,9 +251,9 @@ const Feedback = ({ params }: FeedbackProps) => {
           </div>
 
           {/* Optionally display an animated graphic on the side */}
-          <div className="w-full flex justify-center mt-10">
+          {/* <div className="w-full flex justify-center mt-10">
             <Lottie animationData={animationData} width={500} height={500} />
-          </div>
+          </div> */}
         </>
       )}
     </div>

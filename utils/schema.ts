@@ -165,6 +165,7 @@ export const UserCodingAnswer = pgTable("user_coding_answer", {
   id: serial("id").primaryKey(),
   mockIdRef: varchar("mockIdRef").notNull(),
   questionId: integer("questionId").notNull(), // references technical_question.id
+  questionText: text("questionText").notNull(),  // <-- New field to store the question text
   userCode: text("userCode").notNull(),
   feedback: text("feedback"),
   rating: varchar("rating"),

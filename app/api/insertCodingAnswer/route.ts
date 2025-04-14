@@ -12,6 +12,7 @@ export async function POST(request: Request) {
     const {
       mockIdRef,
       questionId,
+      questionText, 
       userCode,
       feedback,
       rating,
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Validate input
-    if (!mockIdRef || !questionId || !userCode || !createdBy) {
+    if (!mockIdRef || !questionId || !questionText || !userCode || !createdBy) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
     const result = await db.insert(UserCodingAnswer).values({
       mockIdRef,
       questionId,
+      questionText,
       userCode,
       feedback: feedback || null,
       rating: rating || null,

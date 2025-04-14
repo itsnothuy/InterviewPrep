@@ -1,5 +1,6 @@
 import { Lightbulb, Volume2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type Props = { 
   mockQuestions: any; // adjust this type as needed
@@ -31,9 +32,9 @@ const Questions = ({ mockQuestions, activeQuestionIndex }: Props) => {
   return (
     <div className="p-5 my-10">
       <div className="flex items-center justify-center mb-5">
-        <span className="p-2 text-md md:text-lg text-center bg-transparent">
+        <Button variant="dashboardAiOrHuman" >
           Question: {activeQuestionIndex + 1}/{questions.length}
-        </span>
+        </Button>
       </div>
 
       <h2 className="mt-10 my-5 text-md md:text-lg">

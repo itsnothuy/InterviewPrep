@@ -65,7 +65,7 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
 
   return (
     <div className="flex">
-      <div className="w-1/2 pr-3">
+      <div className="w-1/2 pr-3 ">
         <LanguageSelector language={language} onSelect={onSelect} />
         <Editor
           height="75vh"

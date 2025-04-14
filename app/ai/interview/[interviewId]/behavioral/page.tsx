@@ -167,17 +167,17 @@ const AIStartInterview = ({ params }: { params: Params }) => {
   return (
     <div className="p-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
+        <div className="">
           <Questions mockQuestions={mockQuestions} activeQuestionIndex={activeQuestionIndex} />
           <div className="flex flex-row gap-3 justify-end">
             {activeQuestionIndex > 0 && (
               <Button variant={"dashboardAiOrHuman"} onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}>
-                Previous Question
+                Previous
               </Button>
             )}
             {activeQuestionIndex !== mockQuestions.length - 1 && (
               <Button variant={"dashboardAiOrHuman"} onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}>
-                Next Question
+                Next
               </Button>
             )}
             <Link href={`/ai/interview/${interviewData?.mockId}/technical`}>

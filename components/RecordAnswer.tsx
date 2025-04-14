@@ -253,7 +253,7 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
     if (isRecording) {
       try {
         console.log("DEBUG: Stopping recorder...");
-        await stopSpeechToText();
+        stopSpeechToText();
       } catch (error) {
         console.error("DEBUG: Error stopping the recorder:", error);
       }
@@ -339,7 +339,7 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
 
   return (
     <div className="flex justify-end items-center flex-col">
-      <div className="flex flex-col mt-20 justify-center items-center rounded-lg p-5 bg-black">
+      <div className="flex flex-col mt-10 justify-center items-center rounded-lg bg-black">
         <WebcamIcon width={200} height={200} className="absolute text-white" />
         <Webcam
           mirrored={true}
@@ -350,7 +350,7 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
           }}
         />
       </div>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row gap-4 mt-5">
         <Button disabled={isLoading} variant={"outline"} onClick={startRecording}>
           Start Recording
         </Button>

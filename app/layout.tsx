@@ -26,12 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <CrispProvider></CrispProvider>
-      <body className={inter.className}>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
         <Tanstack_Providers>
           <Providers>
             <NextTopLoader />
             <NavBar />
-            {children}
+            <main className="flex-grow">
+              {children}
+            </main>
             <Footer />
           </Providers>
         </Tanstack_Providers>

@@ -447,6 +447,7 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
         const payload = {
           mockIdRef: mockId,
           questionId: question.id,
+          questionText: question.questionText,
           userCode,
           feedback,
           rating,
@@ -525,22 +526,22 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
       {/* Navigation and Save/Submit */}
       <div className="flex flex-wrap gap-3 mt-4 items-center">
         {activeIndex > 0 && (
-          <Button onClick={handlePrevious} disabled={submitting}>
+          <Button variant="dashboardAiOrHuman" onClick={handlePrevious} disabled={submitting}>
             Previous
           </Button>
         )}
-        <Button onClick={handleSave} disabled={submitting}>
+        <Button variant="dashboardAiOrHuman" onClick={handleSave} disabled={submitting}>
           Save
         </Button>
         {activeIndex < technicalQuestions.length - 1 && (
-          <Button onClick={handleNext} disabled={submitting}>
+          <Button variant="dashboardAiOrHuman" onClick={handleNext} disabled={submitting}>
             Next
           </Button>
         )}
 
         {/* Only show "Submit All" when on the last question, or you can show it always */}
         {activeIndex === technicalQuestions.length - 1 && (
-          <Button onClick={handleSubmitAll} disabled={submitting}>
+          <Button variant="dashboardAiOrHuman" onClick={handleSubmitAll} disabled={submitting}>
             {submitting ? "Submitting..." : "Submit All"}
           </Button>
         )}
