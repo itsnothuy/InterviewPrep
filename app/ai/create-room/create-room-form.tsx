@@ -100,18 +100,13 @@ const CreateRoomForm = () => {
    
 
     try {
-      const response = await axios.post("/api/generate-interview", {
+      const behavioralRes = await axios.post("/api/generate-interview", {
         role: values.role,
         description: values.description,
         experience: values.experience,
         resumeFileKey: resumeData ? resumeData.file_key : "",
       });
-      const output = response.data.output; // the generated JSON string
-
-
-
-      setLoading(false);
-      setJsonResponse(output);
+      const output = behavioralRes.data.output; // the generated JSON string
 
       // Insert into db
       if (output) {
@@ -128,10 +123,38 @@ const CreateRoomForm = () => {
             resumeFile: resumeData ? resumeData.file_key : null,
           })
           .returning({ mockId: MockInterview.mockId });
+      
+        const mockId = resp[0]?.mockId;
+        if (!mockId) {
+          throw new Error("Error inserting MockInterview or retrieving mockId.");
+        }
+
+        setJsonResponse(output);
+        
+        // Generate technical questions
+        const techRes = await axios.post("/api/generate-technical-question", {
+          role: values.role,
+          description: values.description,
+          experience: values.experience,
+          mockId: mockId, // pass the same ID for reference
+        });
+        // The route returns { success: true, generatedTechQuestions: [...] }
+        const { generatedTechQuestions } = techRes.data;
+        if (!generatedTechQuestions || generatedTechQuestions.length === 0) {
+          throw new Error("No technical questions were generated.");
+        }
+
+        // Insert the generated technical questions into your DB
+        await axios.post("/api/createTechnicalQuestion", {
+          mockIdRef: mockId,
+          questions: generatedTechQuestions,
+        });
+        
+      
 
         // If successful, go to the interview room with the id
         if (resp) {
-          router.push("/ai/interview/" + resp[0]?.mockId);
+          router.push("/ai/interview/" + mockId);
         }
       } else {
         console.log("Error in generating mock interview response");

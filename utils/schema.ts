@@ -149,6 +149,30 @@ export const messages = pgTable("message", {
   role: userSystemEnum("role").notNull().default("user"),
 });
 
+export const TechnicalQuestions = pgTable("technical_questions", {
+  id: serial("id").primaryKey(),
+  // We use mockIdRef to match the interview's identifier.
+  mockIdRef: varchar("mockIdRef").notNull(),
+  // This column will hold an aggregated JSON array of technical questions as a string.
+  jsonTechQuestions: text("jsonTechQuestions").notNull(),
+  // Automatically record when these technical questions were inserted.
+  createdAt: timestamp("createdAt", { mode: "date" })
+    .notNull()
+    .defaultNow(),
+});
+
+export const UserCodingAnswer = pgTable("user_coding_answer", {
+  id: serial("id").primaryKey(),
+  mockIdRef: varchar("mockIdRef").notNull(),
+  questionId: integer("questionId").notNull(), // references technical_question.id
+  questionText: text("questionText").notNull(),  // <-- New field to store the question text
+  userCode: text("userCode").notNull(),
+  feedback: text("feedback"),
+  rating: varchar("rating"),
+  createdBy: varchar("createdBy").notNull(),
+  createdAt: varchar("createdAt"),
+});
+
 export type Room = typeof room.$inferSelect;
 export type UserAnswerType = typeof UserAnswer.$inferSelect;
 

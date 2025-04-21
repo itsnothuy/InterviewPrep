@@ -1,20 +1,20 @@
 "use client";
 
-import FAQ from "@/components/faq";
-import HowItWorks from "@/components/howitworks";
-import { Info } from "./../components/info";
+import FAQ from "@/components/home/faq";
+import HowItWorks from "@/components/home/howitworks";
+import { Info } from "../components/home/info";
 import { Button } from "@/components/ui/button";
 import { db } from "@/utils/db";
 import { motion } from "framer-motion";
 
 export default function Home() {
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen">
+        <div className="flex flex-col justify-center items-center min-h-screen overflow-x-hidden">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className="relative w-screen h-screen"
+            className="relative w-full h-screen"
           >
             <div className="absolute inset-0">
               <div
@@ -44,7 +44,7 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
-          <div className="mt-7 flex-1 w-full h-screen">
+          <div className="mt-7 flex-1 h-screen w-full">
             <HowItWorks />
           </div>
           <div className="w-full h-auto py-12 md:py-24 lg:py-32 mt-10">

@@ -12,10 +12,10 @@ import {
 import { Room } from "@/utils/schema";
 import { GithubIcon } from "lucide-react";
 import { getHumanRooms } from "@/data-access/human-rooms";
-import { LanguagesList } from "@/components/languages-list";
+import { LanguagesList } from "@/components/code-editor/languages-list";
 import { splitLanguages } from "@/lib/utils";
 import { SearchBar } from "./search-bar";
-import RoomCard from "@/components/RoomCards";
+import RoomCard from "@/components/human/RoomCards";
 
 export default async function HumanInterviewRoom({
   searchParams,

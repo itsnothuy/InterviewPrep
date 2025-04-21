@@ -1,6 +1,6 @@
-import ChatComponent from "@/components/ChatComponent";
-import ChatSideBar from "@/components/ChatSideBar";
-import PDFViewer from "@/components/PDFViewer";
+import ChatComponent from "@/components/chat/ChatComponent";
+import ChatSideBar from "@/components/chat/ChatSideBar";
+import PDFViewer from "@/components/chat/PDFViewer";
 import { authConfig } from "@/lib/auth";
 import { db } from "@/utils/db";
 import { chats } from "@/utils/schema";
@@ -23,22 +23,22 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
   }
   const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
   if (!_chats) {
-    return redirect("/chat-pdf");
+    return redirect("/resume-ai");
   }
   if (!_chats.find((chat) => chat.id === parseInt(chatId))) {
-    return redirect("/chat-pdf");
+    return redirect("/resume-ai");
   }
 
   const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
   return (
-    <div className="flex w-screen min-h-screen overflow-scroll hide-scrollbar">
-      <div className="flex w-full min-h-screen overflow-scroll hide-scrollbar">
+    <div className="flex w-full overflow-scroll hide-scrollbar bg-black" style={{ height: "calc(100vh - 80px)" }}>
+      <div className="flex w-full h-full overflow-scroll hide-scrollbar">
         {/* chat sidebar */}
-        <div className="flex-[1] max-w-xs min-h-screen">
+        <div className="flex-[1] max-w-xs h-full">
           <ChatSideBar chats={_chats} chatId={parseInt(chatId)} />
         </div>
         {/* pdf viewer */}
-        <div className="min-h-screen oveflow-scroll flex-[5]">
+        <div className="h-full oveflow-scroll flex-[5]">
           <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
         </div>
         {/* chat component */}

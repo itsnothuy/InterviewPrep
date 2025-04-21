@@ -1,5 +1,5 @@
 import { getHumanRoomById } from "@/data-access/human-rooms";
-import HumanRoomContent from "@/components/HumanRoomContent";
+import HumanRoomContent from "@/components/human/HumanRoomContent";
 
 export default async function HumanRoomPage(props: {
   params: { roomId: string };

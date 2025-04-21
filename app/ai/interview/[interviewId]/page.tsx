@@ -114,7 +114,7 @@ const AIInterview = ({ params }: { params: Params }) => {
             </div>
             <div>
               <div className="rounded-md w-fit text-md p-1">
-                <Link href={"/ai/interview/" + params.interviewId + "/start"}>
+                <Link href={"/ai/interview/" + params.interviewId + "/behavioral"}>
                   <Button variant="dashboardAiOrHuman">
                     <p className="text-white">Start Interview</p>
                   </Button>
