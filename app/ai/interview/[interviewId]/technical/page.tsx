@@ -1,7 +1,7 @@
 // app/ai/interview/[interviewId]/technical/page.tsx
 "use client";
 import { useSession } from "next-auth/react";
-import TechnicalInterview from "@/components/TechnicalInterview";
+import TechnicalInterview from "@/components/interview/technical/TechnicalInterview";
 import { useRouter } from "next/navigation";
 
 export default function TechnicalPage({ params }: { params: { interviewId: string } }) {
