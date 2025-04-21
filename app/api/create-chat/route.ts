@@ -1,4 +1,4 @@
-import { loadS3IntoPinecone } from "@/app/pinecone";
+import { loadS3IntoPinecone } from "@/utils/pinecone";
 import { getS3Url } from "@/app/s3";
 import { authConfig } from "@/lib/auth";
 import { db } from "@/utils/db";

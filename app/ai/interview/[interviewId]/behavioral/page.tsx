@@ -122,8 +122,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Questions from "@/components/Questions";
-import RecordAnswer from "@/components/RecordAnswer";
+import Questions from "@/components/interview/behavioral/Questions";
+import RecordAnswer from "@/components/interview/behavioral/RecordAnswer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

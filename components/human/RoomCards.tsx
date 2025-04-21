@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Room } from "@/utils/schema";
 import { GithubIcon, File } from "lucide-react";
-import { LanguagesList } from "@/components/languages-list";
+import { LanguagesList } from "@/components/code-editor/languages-list";
 import { splitLanguages } from "@/lib/utils";
 import { useState } from "react";
-import PDFViewer from "@/components/PDFViewer";
+import PDFViewer from "@/components/chat/PDFViewer";
 
 interface RoomCardProps {
   room: Room;

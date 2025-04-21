@@ -3,7 +3,7 @@ import {
     PineconeRecord,
     RecordValues,
   } from "@pinecone-database/pinecone";
-  import { downloadFromS3 } from "./s3-server";
+  import { downloadFromS3 } from "../app/s3-server";
   import { PDFLoader } from "langchain/document_loaders/fs/pdf";
   import {
     Document,

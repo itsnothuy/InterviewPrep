@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { GithubIcon, File } from "lucide-react";
-import { LanguagesList } from "@/components/languages-list";
+import { LanguagesList } from "@/components/code-editor/languages-list";
 import { splitLanguages } from "@/lib/utils";
-import PDFViewer from "@/components/PDFViewer";
+import PDFViewer from "@/components/chat/PDFViewer";
 import { Button } from "@/components/ui/button";
 
 interface Room {

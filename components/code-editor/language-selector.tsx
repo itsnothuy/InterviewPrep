@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { LANGUAGE_VERSIONS, Language } from "@/app/code-constants";
+import { LANGUAGE_VERSIONS, Language } from "@/components/chat/code-constants";
 
 const languages = Object.entries(LANGUAGE_VERSIONS) as [Language, string][];
 

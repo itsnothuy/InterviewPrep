@@ -1,5 +1,5 @@
 import { Pinecone } from "@pinecone-database/pinecone";
-import { getEmbeddings } from "./embeddings";
+import { getEmbeddings } from "../utils/embeddings";
 import { convertToAscii } from "@/lib/utils";
 
 export async function getMatchesFromEmbeddings(

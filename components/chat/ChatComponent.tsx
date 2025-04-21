@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { useChat } from "ai/react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Send } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -44,12 +44,25 @@ const ChatComponent = ({ chatId }: Props) => {
       id="message-container"
     >
       {/* header */}
-      <div className="sticky top-0 inset-x-0 p-2 bg-[#2D2F36] h-fit">
+      <div className="sticky top-0 inset-x-0 p-2 bg-[#2D2F36] h-fit mb-2">
         <h3 className="text-xl font-bold text-gray-300">Chat</h3>
       </div>
 
       {/* message list */}
-      <div className="flex-grow overflow-y-auto hide-scrollbar">
+      <div className="flex-grow relative overflow-y-auto hide-scrollbar">
+        {/* Placeholder message shown when there are no messages */}
+        {!isLoading && messages.length === 0 && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <h1 className="text-white text-3xl font-bold items-center justify-center">
+            What can I help you with?
+            </h1>
+            <p>
+              <span className="text-gray-400 items-center justify-center">
+                Type your question in the input below.
+              </span>
+            </p>
+          </div>
+        )}
         <MessageList messages={messages} isLoading={isLoading} />
       </div>
 

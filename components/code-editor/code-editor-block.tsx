@@ -4,7 +4,7 @@ import Editor from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
 import LanguageSelector from "./language-selector";
 import Output from "./output";
-import { CODE_SNIPPETS, Language } from "@/app/code-constants";
+import { CODE_SNIPPETS, Language } from "@/components/chat/code-constants";
 
 interface CodeEditorBlockProps {
   initialCode?: string;              // or just string if it's mandatory

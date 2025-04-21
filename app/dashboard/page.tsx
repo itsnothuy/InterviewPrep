@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AIHumanForm from "@/components/ai-or-human-form";
+import AIHumanForm from "@/components/utils/ai-or-human-form";
 import {
   Card,
   CardContent,

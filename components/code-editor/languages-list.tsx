@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { badgeVariants } from "./ui/badge";
+import { badgeVariants } from "../ui/badge";
 import { cn } from "@/lib/utils";
 
 export function LanguagesList({ languages }: { languages: string[] }) {

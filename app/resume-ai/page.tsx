@@ -1,7 +1,7 @@
 // app/resume-ai/page.tsx
 
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/app/FileUpload";
+import { FileUpload } from "@/components/chat/FileUpload";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/lib/auth";
 import { db } from "@/utils/db";

@@ -1,8 +1,8 @@
 import { executeCode } from "@/app/api/get-code/api";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useState, RefObject } from "react";
 import { CircularProgress } from "@mui/material";
-import { Language } from "@/app/code-constants";
+import { Language } from "@/components/chat/code-constants";
 
 interface OutputProps {
   editorRef: RefObject<any>;

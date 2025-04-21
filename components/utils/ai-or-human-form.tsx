@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 
 interface AIHumanFormProps {
@@ -31,11 +31,11 @@ const AIHumanForm: React.FC<AIHumanFormProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-6 text-center">
-          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(false)} className="w-full">
+          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(true)} className="w-full">
             <Link href="/ai/create-room">AI Interview</Link>
           </Button>
           <p className="text-xl font-semibold text-slate-500">OR</p>
-          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(false)} className="w-full">
+          <Button variant="dashboardAiOrHuman" onClick={() => setOpenDialog(true)} className="w-full">
             <Link href="/human/create-room">Human Interview</Link>
           </Button>
         </div>

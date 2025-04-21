@@ -2,7 +2,7 @@
 
 import { Inbox, Loader2, Loader2Icon } from "lucide-react";
 import { useDropzone } from "react-dropzone";
-import { uploadToS3 } from "./s3";
+import { uploadToS3 } from "../../app/s3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";

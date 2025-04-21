@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Homecard from "./homecard";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { motion, useInView } from "framer-motion";
 
 const CardValues = [
@@ -45,7 +45,7 @@ const HowItWorks = () => {
       </div>
       <div
         ref={ref}
-        className="flex flex-col sm:flex-row md:flex-row justify-center items-center space-y-5 md:space-y-0 md:space-x-7 gap-5 p-4 mx-5 mb-7 w-full"
+        className="flex flex-row justify-center items-center gap-5 p-4 mx-5 mb-7 w-full"
       >
         {CardValues.map((card, index) => (
           <motion.div
@@ -68,7 +68,7 @@ const HowItWorks = () => {
           <img
             src={CardValues[selectedCard].imageUrl}
             alt={`Image for ${CardValues[selectedCard].title}`}
-            className="w-full max-w-3xl mx-auto shadow-lg"
+            className="w-full max-w-3xl mx-auto shadow-lg rounded-lg"
           />
         </div>
       )}

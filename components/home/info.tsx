@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Lottie from "lottie-react";
-import growth from "../app/lotties/growth.json";
+import growth from "../../app/lotties/growth.json";
 
 export function Info() {
   const ref = useRef(null);

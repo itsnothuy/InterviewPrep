@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Header } from "@/app/header";
+import { Header } from "@/components/home/header";
 
 const NavBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

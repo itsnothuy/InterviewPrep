@@ -154,7 +154,7 @@
 
 import { Mic, WebcamIcon } from "lucide-react";
 import Webcam from "react-webcam";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useEffect, useRef, useState } from "react";
 import { chatSession } from "@/utils/GeminiAIModal";

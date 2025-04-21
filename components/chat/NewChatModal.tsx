@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/app/FileUpload";
+import { FileUpload } from "@/components/chat/FileUpload";
 import { MessageCircle, PlusCircle } from "lucide-react";
 import {
   Dialog,

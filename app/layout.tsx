@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./provider";
-import NavBar from "@/components/navbar";
-import Footer from "@/components/footer";
+import NavBar from "@/components/home/navbar";
+import Footer from "@/components/home/footer";
 import NextTopLoader from "nextjs-toploader";
 import { CrispProvider } from "./crisp-provider";
 import { useEffect } from "react";
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <CrispProvider></CrispProvider>
+      {/* <CrispProvider></CrispProvider> */}
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <Tanstack_Providers>
           <Providers>

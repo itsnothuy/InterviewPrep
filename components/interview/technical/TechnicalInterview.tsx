@@ -299,7 +299,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import CodeEditorBlock from "@/components/code-editor-block";
+import CodeEditorBlock from "@/components/code-editor/code-editor-block";
 import { chatSession } from "@/utils/GeminiAIModal";
 import toast from "react-hot-toast";
 
