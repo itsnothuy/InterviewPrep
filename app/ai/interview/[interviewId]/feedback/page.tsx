@@ -109,15 +109,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
-import Lottie from "lottie-react";
 import animationData from "../../../../lotties/feedback.json";
 import loadingAnimation from "../../../../lotties/loading.json";
 import { Button } from "@/components/ui/button";
 import { cleanJSONString } from "@/utils/cleanJSON";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 
 interface FeedbackProps {

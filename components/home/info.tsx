@@ -1,8 +1,9 @@
 "use client";
+import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import Lottie from "lottie-react";
 import growth from "../../app/lotties/growth.json";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export function Info() {
   const ref = useRef(null);

@@ -1,7 +1,9 @@
 "use client";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import CreateRoomForm from "./create-room-form";
 import aiCreateRoom from "../../lotties/ai-create-room.json";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+
 
 export default function CreateRoom() {
   return (

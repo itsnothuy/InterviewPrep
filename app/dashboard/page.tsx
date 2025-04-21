@@ -9,12 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import list from "../lotties/list.json";
 import ai from "../lotties/ai.json";
 import human from "../lotties/human.json";
 import Link from "next/link";
 import { custom } from "zod";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const Dashboard = () => {
   const [openDialog, setOpenDialog] = useState(false);
