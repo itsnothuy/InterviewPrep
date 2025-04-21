@@ -10,6 +10,7 @@ export default function LoginButton() {
     <Button
       onClick={() => signIn(undefined, { callbackUrl: "/resume-ai" })}
       className="flex gap-1"
+      variant="dashboardAiOrHuman"
     >
       Login &rarr;
     </Button>

@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { HumanVideo } from "@/components/human/video-player";
 import RoomDetails from "./RoomDetails";
 import CodeEditorBlock from "@/components/code-editor/code-editor-block";
 import { Room as RoomType } from "@/utils/schema";
+const HumanVideo = dynamic<{ room: RoomType }>(
+  () => import("@/components/human/video-player").then(mod => mod.HumanVideo),
+  { ssr: false, loading: () => <div>Loading video...</div> }
+);
 
 interface HumanRoomContentProps {
   room: RoomType;
