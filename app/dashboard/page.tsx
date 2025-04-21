@@ -27,7 +27,7 @@ const Dashboard = () => {
           Mock Interview
         </h1>
         <p className="text-gray-200 dark:text-gray-400 mt-2">
-          It's so easy. Just one click and you are on the way to practice!
+        It&apos;s so easy. Just one click and you are on the way to practice!
         </p>
       </div>
       <div className="flex flex-row justify-between w-full max-w-6xl gap-10">

@@ -55,7 +55,7 @@ const Questions = ({ mockQuestions, activeQuestionIndex }: Props) => {
           Remember to speak clearly and stay focused on the question. This is
           your opportunity to showcase your skills and experience. Take a moment
           to organize your thoughts before responding. If you need to pause and
-          think, that's okay—just as it would be in a real interview. Keep your
+          think, that&apos;s okay—just as it would be in a real interview. Keep your
           answers concise but informative, highlighting key achievements and
           relevant experiences.
         </h2>
