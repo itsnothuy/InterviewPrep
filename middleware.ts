@@ -10,7 +10,7 @@ const redis = Redis.fromEnv();
 // create a 10‑requests-per-60‑seconds sliding-window limiter
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(10, "60 s"),
+  limiter: Ratelimit.slidingWindow(50, "60 s"),
 });
 
 export async function middleware(request: NextRequest) {
