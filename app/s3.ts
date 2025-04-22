@@ -25,6 +25,12 @@ export async function uploadToS3(
     const body = new Uint8Array(arrayBuffer);
     console.log("Converted file to Uint8Array");
 
+    console.log("Bucket name:", process.env.S3_BUCKET_NAME);
+    console.log("File name:", file.name);
+    console.log("File size:", file.size);
+    console.log("File type:", file.type);
+    
+    // Upload the file to S3
     const params = { 
       Bucket: process.env.S3_BUCKET_NAME!,
       Key: file_key,
