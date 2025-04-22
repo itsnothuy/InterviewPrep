@@ -6,6 +6,8 @@ import { Info } from "../components/home/info";
 import { Button } from "@/components/ui/button";
 import { db } from "@/utils/db";
 import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -34,11 +36,11 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="justify-center text-center p-5 space-x-4">
-                  <Button variant="dashboardAiOrHuman" className=" px-6 py-2 rounded-md w-fit text-lg">
+                  <Button variant="dashboardAiOrHuman" className=" px-6 py-2 rounded-md w-fit text-lg" onClick={() => signIn()}>
                     Sign In
                   </Button>
                   <Button className="text-black bg-transparent border border-gray-700 px-6 py-2 rounded-md w-fit text-lg hover:bg-slate-100">
-                    Try Demo
+                    <Link href="/dashboard">Try Demo</Link>
                   </Button>
                 </div>
               </div>
