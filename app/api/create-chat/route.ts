@@ -6,7 +6,7 @@ import { chats } from "@/utils/schema";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const session = await getServerSession(authConfig);
     console.log("Create-chat session:", session);
