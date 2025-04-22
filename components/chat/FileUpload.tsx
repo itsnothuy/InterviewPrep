@@ -40,13 +40,21 @@ export const FileUpload = () => {
         }
         try {
           setUploading(true);
-          const data = await uploadToS3(file);
+          const formData = new FormData();
+          formData.append("file", file);
+          const data: {
+            file_key?: string;
+            file_name?: string;
+            error?: string;
+          } = await axios.post("/api/upload", formData).then((res) => res.data);
+  
           if (!data?.file_key || !data?.file_name) {
             toast.error("Failed to upload file");
+            toast.error(data.error || "Failed to upload file");
             alert("Failed to upload file");
             return;
           }
-          mutate(data, {
+          mutate({ file_key: data.file_key, file_name: data.file_name }, {
             onSuccess: ({ chat_id }) => {
               toast.success("Chat created successfully");
               router.push(`/chat/${chat_id}`);
