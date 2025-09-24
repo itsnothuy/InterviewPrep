@@ -21,6 +21,8 @@ const buttonVariants = cva(
 
         dashboard: "bg-customGray text-white hover:bg-gray-500/90",
         dashboardAiOrHuman: "bg-gray-500/50 text-white hover:bg-customGray",
+        interviewCoder:
+          "bg-hero-gradient text-white rounded-full px-5 py-3 font-semibold shadow-ring shadow-glow transition-all duration-150 ease-in-out hover:-translate-y-px hover:brightness-105",
       },
       size: {
         default: "h-10 px-4 py-2",

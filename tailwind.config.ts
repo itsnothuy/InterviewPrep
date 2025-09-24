@@ -53,6 +53,13 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        text: "var(--text)",
+        violet: "var(--violet)",
+        violet2: "var(--violet-2)",
+        magenta: "var(--magenta)",
+        cyan: "var(--cyan)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -72,6 +79,16 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "hero-gradient": "var(--grad-hero)",
+      },
+      boxShadow: {
+        ring: "var(--ring)",
+        glow: "var(--glow)",
       },
     },
   },

@@ -28,7 +28,7 @@ function AccountDropdown() {
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-surface text-text">
                 <DropdownMenuLabel> My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/"})}>
@@ -43,11 +43,11 @@ function AccountDropdown() {
 export function Header() {
     const session = useSession();
     return (
-      <header>
+      <header className="bg-bg">
         <div>
           {session.data && <AccountDropdown></AccountDropdown>}
           {!session.data && (
-            <Button onClick={() => signIn()} variant="link">
+            <Button onClick={() => signIn()} variant="link" className="text-text hover:text-violet">
               <LogInIcon className="mr-2" /> Sign In
             </Button>
           )}

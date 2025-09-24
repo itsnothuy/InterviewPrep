@@ -11,31 +11,31 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-transparent p-2 flex justify-between items-center border-b border-slate-500 w-full">
-      <div className="flex left-0">
-        <a href="/" className="flex mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+    <nav className="bg-transparent p-2 flex justify-between items-center border-b border-surface w-full">
+      <div className="flex items-center">
+        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/worker.png" className="w-auto h-7" alt="Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-text">
             Interview Prep
           </span>
         </a>
       </div>
-      <div className="hidden lg:flex items-center justify-center space-x-9 flex-1">
+      <div className="hidden lg:flex items-center justify-center space-x-10 flex-1">
         <Link
           href="/"
-          className="text-lg font-medium text-white hover:text-gray-300"
+          className="text-lg font-medium text-text hover:text-violet"
         >
           Home
         </Link>
         <Link
           href="/dashboard"
-          className="text-lg font-medium text-white hover:text-gray-300"
+          className="text-lg font-medium text-text hover:text-violet"
         >
           Dashboard
         </Link>
         <Link
           href="/resume-ai"
-          className="text-lg font-medium text-white hover:text-gray-300"
+          className="text-lg font-medium text-text hover:text-violet"
         >
           ResumeAI
         </Link>
@@ -44,7 +44,7 @@ const NavBar: React.FC = () => {
         {!isOpen && (
           <button
             onClick={toggleMenu}
-            className="text-gray-300 focus:outline-none"
+            className="text-text focus:outline-none"
           >
             <svg
               className="h-6 w-6"
@@ -66,12 +66,12 @@ const NavBar: React.FC = () => {
         <Header />
       </div>
 
-      <div className={`lg:hidden ${isOpen ? "block" : "hidden"} w-full`}>
+      <div className={`lg:hidden ${isOpen ? "block" : "hidden"} w-full bg-bg`}>
         <div className="flex flex-col items-center space-y-4 mt-4 relative">
           {isOpen && (
             <button
               onClick={toggleMenu}
-              className="absolute top-2 left-2 text-gray-300 focus:outline-none"
+              className="absolute top-2 left-2 text-text focus:outline-none"
             >
               <svg
                 className="h-6 w-6"
@@ -90,27 +90,21 @@ const NavBar: React.FC = () => {
           )}
           <Link
             href="/"
-            className="text-lg font-medium text-gray-300 hover:text-white"
+            className="text-lg font-medium text-text hover:text-violet"
           >
             Home
           </Link>
           <Link
             href="/dashboard"
-            className="text-lg font-medium text-gray-300 hover:text-white"
+            className="text-lg font-medium text-text hover:text-violet"
           >
             Dashboard
           </Link>
           <Link
-            href="/code-editor"
-            className="text-lg font-medium text-gray-300 hover:text-white"
+            href="/resume-ai"
+            className="text-lg font-medium text-text hover:text-violet"
           >
-            Code Editor
-          </Link>
-          <Link
-            href="/chat-pdf"
-            className="text-lg font-medium text-gray-300 hover:text-white"
-          >
-            Chat PDF
+            ResumeAI
           </Link>
           <div>
             <Header />
