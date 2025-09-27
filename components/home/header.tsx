@@ -43,7 +43,7 @@ function AccountDropdown() {
 export function Header() {
     const session = useSession();
     return (
-      <header className="bg-bg">
+      <header>
         <div>
           {session.data && <AccountDropdown></AccountDropdown>}
           {!session.data && (

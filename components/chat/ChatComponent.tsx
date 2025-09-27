@@ -78,7 +78,7 @@ const ChatComponent = ({ chatId }: Props) => {
             className="w-full bg-[#40414F] text-white placeholder-gray-400 border-none"
           />
           <Button className="bg-[#40414F] ml-2 hover:bg-gray-500/90">
-            <Send className="h-4 w-4" />
+            <Send className="h-4 w-4 text-white" />
           </Button>
         </div>
       </form>

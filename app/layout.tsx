@@ -31,14 +31,14 @@ export default function RootLayout({
           <Providers>
             <NextTopLoader />
             <NavBar />
-            <main className="flex-grow">
+            <main className="flex-grow pt-20">
               {children}
             </main>
             <Footer />
           </Providers>
         </Tanstack_Providers>
+        <Toaster></Toaster>
       </body>
-      <Toaster></Toaster>
     </html>
   );
 }
