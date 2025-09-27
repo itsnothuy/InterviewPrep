@@ -45,7 +45,7 @@ const NavBar: React.FC = () => {
         <div className="flex items-center">
           <a href="/" className="z-100 text-text hover:text-text/80 transition-colors flex items-center gap-2 shrink-0">
             <img src="/worker.png" className="w-auto h-7" alt="Logo" />
-            <span className="text-sm font-semibold transition-opacity duration-200 md:block hidden text-[1.2rem] tracking-tighter" style={{ opacity: "100%", cursor: "pointer" }}>
+            <span className="text-md font-semibold transition-opacity duration-200 md:block hidden text-[1.2rem] tracking-tighter" style={{ opacity: "100%", cursor: "pointer" }}>
               Interview Prep
             </span>
           </a>

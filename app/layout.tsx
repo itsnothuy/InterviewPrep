@@ -31,7 +31,7 @@ export default function RootLayout({
           <Providers>
             <NextTopLoader />
             <NavBar />
-            <main className="flex-grow pt-20">
+            <main className="flex-grow">
               {children}
             </main>
             <Footer />

@@ -31,7 +31,7 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
 
   const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
   return (
-    <div className="flex w-full overflow-scroll hide-scrollbar bg-bg" style={{ height: "calc(100vh - 90px)" }}>
+    <div className="flex w-full overflow-scroll hide-scrollbar bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
       <div className="flex w-full h-full overflow-scroll hide-scrollbar">
         {/* chat sidebar */}
         <div className="flex-[1] max-w-xs h-full">
