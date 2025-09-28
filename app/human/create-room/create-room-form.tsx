@@ -85,148 +85,157 @@ export function CreateRoomForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Room Name</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-[85%]"
-                  placeholder="Google Behavior Interview"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>This is your public room name.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-[85%]"
-                  placeholder="I'm preparing an interview for a job at Google."
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Please describe what you are be coding on.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="githubRepo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Github Repo</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-[85%]"
-                  placeholder="https://github.com/iloveInterviewPrep123"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Please put a link to a project you are working on.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="language"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Primary Programming Languages</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-[85%]"
-                  placeholder="typscript, go, next.js, react"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Please list the primary programming languages you are working
-                with.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="resume"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel> New Resume (Optional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    setResumeFile(file ?? null);
-                    field.onChange(file);
-                  }}
-                  className="text-[#64748B] p-2 border rounded-md"
-                />
-              </FormControl>
-              <FormDescription>
-                Upload your resume if you want to add a new one.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Dropdown to Select an Existing Resume */}
-        {resumes.length > 0 && (
+      <>
+      <div className="p-3 space-y-3">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-white bg-clip-text text-transparent">Create Room</h1>
+        <h2 className="text-lg font-md text-slate-500">
+          Add details about your job position, description and years of
+          experience
+        </h2>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
-            name="existingResume"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Select Existing Resume</FormLabel>
+                <FormLabel>Room Name</FormLabel>
                 <FormControl>
-                  <select
+                  <Input
+                    
+                    placeholder="Google Behavior Interview"
                     {...field}
-                    className="ml-2 p-2 bg-transparent border rounded-md text-sm text-[#64748B]"
-                  >
-                    <option value="">-- Choose a resume --</option>
-                    {resumes.map((r) => (
-                      <option key={r.id} value={r.fileKey}>
-                        {r.pdfName}
-                      </option>
-                    ))}
-                  </select>
+                  />
+                </FormControl>
+                <FormDescription>This is your public room name.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Input
+                    
+                    placeholder="I'm preparing an interview for a job at Google."
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
-                  Choose a previously uploaded resume from your records.
+                  Please describe what you are be coding on.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
 
-        <Button variant="dashboardAiOrHuman" type="submit">Submit</Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="githubRepo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Github Repo</FormLabel>
+                <FormControl>
+                  <Input
+                    
+                    placeholder="https://github.com/iloveInterviewPrep123"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Please put a link to a project you are working on.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Primary Programming Languages</FormLabel>
+                <FormControl>
+                  <Input
+                    
+                    placeholder="typscript, go, next.js, react"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Please list the primary programming languages you are working
+                  with.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="resume"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel> New Resume (Optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setResumeFile(file ?? null);
+                      field.onChange(file);
+                    }}
+                    className="text-[#64748B] p-2 border rounded-md"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Upload your resume if you want to add a new one.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Dropdown to Select an Existing Resume */}
+          {resumes.length > 0 && (
+            <FormField
+              control={form.control}
+              name="existingResume"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select Existing Resume</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      className="ml-2 p-2 bg-transparent border rounded-md text-sm text-[#64748B]"
+                    >
+                      <option value="">-- Choose a resume --</option>
+                      {resumes.map((r) => (
+                        <option key={r.id} value={r.fileKey}>
+                          {r.pdfName}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormDescription>
+                    Choose a previously uploaded resume from your records.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <Button variant="dashboardAiOrHuman" type="submit">Submit</Button>
+        </form>
+      </Form>
+      </>
   );
 }
