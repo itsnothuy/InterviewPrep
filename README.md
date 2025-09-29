@@ -3,8 +3,8 @@
 **An AI‑powered mock interview platform** built with Next.js 14, Drizzle ORM, and Vercel that helps you sharpen both your behavioural and technical interviewing skills—with optional peer‑to‑peer practice.
 
 <p align="center">
-  <img src="./assets/home.gif" alt="Home Gift"/> &nbsp;&nbsp;&nbsp;
-  <img src="./assets/resumeai.gif" alt="ResumeAi Page"> &nbsp;&nbsp;&nbsp;
+  <img src="./assets/home.gif" alt="Home Gift"  width="400"/> &nbsp;&nbsp;&nbsp;
+  <img src="./assets/resumeai.gif" alt="ResumeAi Page"  width="400"/> &nbsp;&nbsp;&nbsp;
 </p>
 ---
 
