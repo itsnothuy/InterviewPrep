@@ -92,6 +92,75 @@
 │   AWS S3   │  ← résumés, recordings
 └────────────┘
 ```
+```mermaid
+flowchart LR
+  %% Layers & main components
+  subgraph Client["Client — Next.js 14 App Router / React"]
+    direction TB
+    App[App Router (RSC)]
+    UI[shadcn/ui · Tailwind CSS]
+    State[React Hook Form · TanStack Query]
+    Editor[Monaco Editor]
+    Media[react-webcam · MediaRecorder · react-hook-speech-to-text]
+    VideoUI[Stream Chat UI · WebRTC]
+
+    App --- UI
+    App --- State
+    App --- Editor
+    App --- Media
+    App --- VideoUI
+  end
+
+  subgraph Server["Server — Next.js API Routes (Vercel Edge)"]
+    direction TB
+    API[API Route Handlers]
+  end
+
+  subgraph Data["Data & Storage"]
+    direction TB
+    DB[(Neon Serverless Postgres)]
+    Pine[(Pinecone Vector DB)]
+    S3[(AWS S3)]
+  end
+
+  subgraph AI["AI & Search"]
+    direction TB
+    Gemini[Google Gemini (Chat + Embeddings)]
+  end
+
+  subgraph Realtime["Realtime Services"]
+    direction TB
+    StreamChat[(Stream Chat Cloud)]
+  end
+
+  Clerk[(Clerk Auth)]
+  Vercel[Vercel (Edge Runtime)]
+
+  %% Core request/response paths
+  App -->|HTTPS| API
+  API -. deployed on .-> Vercel
+
+  %% Auth
+  App -->|User session| Clerk
+  API -->|Token verify / webhooks| Clerk
+
+  %% Database via Drizzle
+  API -->|SQL (Drizzle ORM)| DB
+
+  %% Files: presigned URLs
+  API -->|Create presigned URL| S3
+  App -->|Upload/Download via presigned URL| S3
+
+  %% AI & Vectors
+  API -->|Chat / Gen & Embed| Gemini
+  API -->|Upsert / Query vectors| Pine
+  Gemini -->|Embeddings| Pine
+
+  %% Video & chat
+  App <-->|Messages / Calls| StreamChat
+  API -->|Server-side ops / auth| StreamChat
+
+```
 
 All services run within Vercel’s edge network for minimal latency and seamless scaling.
 
