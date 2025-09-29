@@ -1,10 +1,16 @@
 import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 
 // Access your API key as an environment variable
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY as string);
 
 export async function getEmbeddings(text: string) {
   try {
+    // Ensure text is valid and not empty
+    if (!text || typeof text !== 'string') {
+      console.warn("getEmbeddings received invalid text:", text);
+      text = "";
+    }
+    
     // For embeddings, use the Text Embeddings model
     const model: GenerativeModel = genAI.getGenerativeModel({
       model: "text-embedding-004",

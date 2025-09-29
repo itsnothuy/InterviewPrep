@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import { Message } from "ai/react";
+import { type UIMessage } from "@ai-sdk/react";
 import { Loader2, User2, Bot } from "lucide-react";
 import React from "react";
 import Markdown from "./Markdown";
 
 type Props = {
   isLoading: boolean;
-  messages: Message[];
+  messages: UIMessage[];
 };
 
 const MessageList = ({ messages, isLoading }: Props) => {
@@ -38,7 +38,9 @@ const MessageList = ({ messages, isLoading }: Props) => {
                 }
               )}
             >
-              <Markdown text={message.content} />
+              <Markdown text={
+                message.parts?.find(part => part.type === "text")?.text || ""
+              } />
             </div>
           </div>
         );

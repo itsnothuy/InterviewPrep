@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-import { useChat } from "ai/react";
+import { type UIMessage } from "@ai-sdk/react";
 import { Button } from "../ui/button";
 import { Send } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Message } from "ai";
 import MessageList from "./Message";
 
 type Props = { chatId: number };
@@ -15,20 +14,102 @@ const ChatComponent = ({ chatId }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ["chat", chatId],
     queryFn: async () => {
-      const response = await axios.post<Message[]>("/api/get-messages", {
+      const response = await axios.post<UIMessage[]>("/api/get-messages", {
         chatId,
       });
       return response.data;
     },
   });
 
-  const { input, handleInputChange, handleSubmit, messages } = useChat({
-    api: "/api/chat",
-    body: {
-      chatId,
-    },
-    initialMessages: data || [],
-  });
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<UIMessage[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Set initial messages when data loads
+  useEffect(() => {
+    if (data) {
+      setMessages(data);
+    }
+  }, [data]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim() || isGenerating) return;
+    
+    const userMessage: UIMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      parts: [{ type: "text", text: input }],
+    };
+    
+    // Add user message to UI immediately
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput("");
+    setIsGenerating(true);
+    
+    try {
+      // Send request to chat API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: newMessages,
+          chatId,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to get response");
+      }
+      
+      // Read the streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      
+      // Create assistant message
+      const assistantMessage: UIMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        parts: [{ type: "text", text: "" }],
+      };
+      
+      setMessages([...newMessages, assistantMessage]);
+      
+      if (reader) {
+        let assistantContent = "";
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          assistantContent += chunk;
+          
+          // Update the assistant message with accumulated content
+          setMessages(prevMessages => {
+            const updatedMessages = [...prevMessages];
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+            if (lastMessage.role === "assistant") {
+              lastMessage.parts = [{ type: "text", text: assistantContent }];
+            }
+            return updatedMessages;
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   React.useEffect(() => {
     const messageContainer = document.getElementById("message-container");
     if (messageContainer) {
@@ -63,7 +144,7 @@ const ChatComponent = ({ chatId }: Props) => {
             </p>
           </div>
         )}
-        <MessageList messages={messages} isLoading={isLoading} />
+        <MessageList messages={messages} isLoading={isGenerating} />
       </div>
 
       <form
