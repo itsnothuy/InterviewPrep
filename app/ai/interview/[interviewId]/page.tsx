@@ -48,7 +48,7 @@ const AIInterview = ({ params }: { params: Params }) => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-20">
       <div className="p-5">
         <div className="text-center">
           <h1 className="lg:text-4xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-white to-white bg-clip-text text-transparent">

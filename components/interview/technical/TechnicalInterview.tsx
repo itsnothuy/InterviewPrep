@@ -485,12 +485,12 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
 
   // If questions are not yet loaded or were empty
   if (!technicalQuestions || technicalQuestions.length === 0) {
-    return <div className="p-5">Loading technical questions...</div>;
+    return <div className="p-5 mt-10 pt-5 items-center justify-center">Loading technical questions...</div>;
   }
 
   return (
-    <div className="p-5">
-      <h2 className="text-xl font-bold mb-3">Technical Interview</h2>
+    <div className="p-5 mt-10 pt-10">
+      <h1 className="text-xl font-bold mb-3">Technical Interview</h1>
 
       {/* Navigation tabs for each problem */}
       <div className="flex gap-2 mb-4">

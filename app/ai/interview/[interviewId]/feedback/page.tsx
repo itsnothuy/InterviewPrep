@@ -177,7 +177,7 @@ const Feedback = ({ params }: FeedbackProps) => {
   }, [params.interviewId]);
 
   return (
-    <div className="p-5 flex flex-col items-center justify-center">
+    <div className="p-5 flex flex-col items-center justify-center mt-10 pt-5">
       {isLoading ? (
         <div className="flex flex-col items-center justify-center p-5 text-center">
           <h1 className="text-5xl font-bold text-white">We are processing your interview...</h1>

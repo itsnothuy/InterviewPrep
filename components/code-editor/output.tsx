@@ -42,7 +42,7 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
           className="mb-5 border border-slate-800 text-black hover:bg-green-500 hover:text-white"
           onClick={runCode}
         >
-          {isLoading ? <CircularProgress size={24} /> : "Run Code"}
+          {isLoading ? <CircularProgress className="text-black" size={24} /> : "Run Code"}
         </Button>
       </div>
       <div className="h-full p-2 border border-gray-500 rounded-sm">
