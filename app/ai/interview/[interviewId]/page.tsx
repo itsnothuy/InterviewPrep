@@ -1,14 +1,12 @@
 "use client";
 
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
 import { useEffect, useState } from "react";
-import { eq } from "drizzle-orm";
 import Webcam from "react-webcam";
 import { BellRing, WebcamIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getDisplayedFileName } from "@/components/utils/fileNameHelpers"; // Import the helper
+import { getDisplayedFileName } from "@/components/utils/fileNameHelpers";
+import axios from "axios";
 
 
 interface Params {
@@ -37,13 +35,14 @@ const AIInterview = ({ params }: { params: Params }) => {
     getInterviewDetails();
   }, []);
 
-  //used to get interview details by mockid/interviewid
+  // Fetch interview details via API (secure - no direct db access from client)
   const getInterviewDetails = async () => {
-    const result = await db
-      .select()
-      .from(MockInterview)
-      .where(eq(MockInterview.mockId, params.interviewId));
-    setInterviewData(result[0] as InterviewData);
+    try {
+      const res = await axios.get(`/api/interview/${params.interviewId}`);
+      setInterviewData(res.data.interviewData as InterviewData);
+    } catch (error) {
+      console.error("Failed to fetch interview details:", error);
+    }
   };
 
 

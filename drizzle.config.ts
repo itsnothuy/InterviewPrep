@@ -3,7 +3,8 @@ export default defineConfig({
   schema: "./utils/schema.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.NEXT_PUBLIC_DRIZZLE_DB_URL!,
+    // Use non-public env var - drizzle-kit runs server-side only
+    url: process.env.DRIZZLE_DB_URL!,
   },
   verbose: true,
   strict: true,

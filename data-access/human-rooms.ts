@@ -1,4 +1,4 @@
-import { db } from "@/utils/db";
+import { db } from "@/lib/server/db";
 import { room } from "@/utils/schema";
 import { eq, like } from "drizzle-orm";
 import { unstable_noStore } from "next/cache";

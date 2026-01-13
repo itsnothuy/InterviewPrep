@@ -1,21 +1,31 @@
 // app/api/interview/[id]/route.ts
 import { NextResponse } from 'next/server';
-import { db } from '@/utils/db';
-import { eq } from 'drizzle-orm';
+import { db } from '@/lib/server/db';
+import { eq, and } from 'drizzle-orm';
 import { MockInterview } from '@/utils/schema';
+import { 
+  requireAuth, 
+  unauthorizedResponse, 
+  serverErrorResponse,
+  forbiddenResponse 
+} from "@/lib/server/auth";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    console.log("DEBUG: Fetching interview details for ID:", params.id);
+    const session = await requireAuth();
+    
+    // Query with ownership check (createdBy must match session user)
     const result = await db
       .select()
       .from(MockInterview)
-      .where(eq(MockInterview.mockId, params.id));
+      .where(and(
+        eq(MockInterview.mockId, params.id),
+        eq(MockInterview.createdBy, session.user.id)
+      ));
     
     if (!result || result.length === 0) {
-      return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
+      return forbiddenResponse('Interview not found or access denied');
     }
-    console.log("DEBUG: Fetched interview details:", result[0]);
     
     let jsonString = result[0].jsonMockResp;
     // Clean up the JSON string if needed:
@@ -33,7 +43,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const jsonMockResponse = JSON.parse(jsonString);
     return NextResponse.json({ interviewData: result[0], mockQuestions: jsonMockResponse });
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return unauthorizedResponse();
+    }
     console.error("Error fetching interview details:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return serverErrorResponse();
   }
 }

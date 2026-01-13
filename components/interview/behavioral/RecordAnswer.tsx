@@ -157,8 +157,6 @@ import Webcam from "react-webcam";
 import { Button } from "../../ui/button";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useEffect, useRef, useState } from "react";
-import { chatSession } from "@/utils/GeminiAIModal";
-import moment from "moment";
 import toast from "react-hot-toast";
 
 interface SpeechResult {
@@ -274,47 +272,34 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
     }
     setLoading(true);
 
-    const feedbackPrompt =
-      "Question: " +
-      mockQuestions[activeQuestionIndex]?.question +
-      ", User answer: " +
-      transcriptRef.current +
-      ", Based on the question and the user answer, please rate the answer and give feedback for improvement in 3-5 lines, in JSON format with fields 'rating' and 'feedback'.";
-    console.log("DEBUG: Sending Gemini API message with prompt:", feedbackPrompt);
-
-    const result = await chatSession.sendMessage(feedbackPrompt);
-    const responseText = result.response.text();
-    const mockJsonResp = responseText
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .replace(/\\n/g, "")
-      .replace(/\r/g, "")
-      .trim();
-    console.log("DEBUG: Feedback response:", mockJsonResp);
-
-    let JsonFeedbackResp: FeedbackResponse;
     try {
-      JsonFeedbackResp = JSON.parse(mockJsonResp) as FeedbackResponse;
-      console.log("DEBUG: Parsed feedback response:", JsonFeedbackResp);
-    } catch (error) {
-      console.error("DEBUG: Failed to parse feedback JSON:", error);
-      toast.error("Error parsing feedback");
-      setLoading(false);
-      return;
-    }
+      // Call the server-side API for feedback generation
+      const feedbackRes = await fetch("/api/feedback/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: mockQuestions[activeQuestionIndex]?.question,
+          userAnswer: transcriptRef.current,
+        }),
+      });
 
-    const payload = {
-      mockIdRef: interviewData.mockId,
-      question: mockQuestions[activeQuestionIndex]?.question,
-      correctAns: mockQuestions[activeQuestionIndex]?.answer,
-      userAns: transcriptRef.current,
-      feedback: JsonFeedbackResp.feedback,
-      rating: JsonFeedbackResp.rating,
-      createdBy: "6b67e75e-ee67-4528-a653-3d696cedc40b",
-    };
+      if (!feedbackRes.ok) {
+        throw new Error("Failed to generate feedback");
+      }
 
-    console.log("DEBUG: Sending payload to /api/insertAnswer:", payload);
-    try {
+      const feedbackData = await feedbackRes.json();
+      console.log("DEBUG: Feedback response:", feedbackData);
+
+      const payload = {
+        mockIdRef: interviewData.mockId,
+        question: mockQuestions[activeQuestionIndex]?.question,
+        correctAns: mockQuestions[activeQuestionIndex]?.answer,
+        userAns: transcriptRef.current,
+        feedback: feedbackData.feedback,
+        rating: feedbackData.rating,
+      };
+
+      console.log("DEBUG: Sending payload to /api/insertAnswer:", payload);
       const res = await fetch("/api/insertAnswer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,7 +1,7 @@
 import { loadS3IntoPinecone } from "@/utils/pinecone";
-import { getS3Url } from "@/app/s3";
+import { getS3Url } from "@/lib/server/s3";
 import { authConfig } from "@/lib/auth";
-import { db } from "@/utils/db";
+import { db } from "@/lib/server/db";
 import { chats } from "@/utils/schema";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";

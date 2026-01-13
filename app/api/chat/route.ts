@@ -1,31 +1,53 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
-import { db } from "@/utils/db";
+import { eq, and } from "drizzle-orm";
+import { db } from "@/lib/server/db";
 import { chats } from "@/utils/schema";
 import { getContext } from "@/app/context";
-
+import { z } from "zod";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { 
+  requireAuth, 
+  unauthorizedResponse, 
+  badRequestResponse, 
+  serverErrorResponse,
+  forbiddenResponse 
+} from "@/lib/server/auth";
 
 // export const runtime = "edge";
 
+const requestSchema = z.object({
+  messages: z.array(z.any()),
+  chatId: z.number().int().positive(),
+});
+
 export async function POST(req: Request) {
   try {
-    const { messages, chatId } = await req.json();
+    const session = await requireAuth();
     
-    // Debug logging
-    console.log("Received request - chatId:", chatId, "messages:", messages);
+    const body = await req.json();
+    const parsed = requestSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return badRequestResponse("Invalid request format");
+    }
+    
+    const { messages, chatId } = parsed.data;
 
     // Validate that messages is an array
     if (!messages || !Array.isArray(messages)) {
-      console.error("Invalid messages format:", messages);
-      return NextResponse.json({ error: "Invalid messages format" }, { status: 400 });
+      return badRequestResponse("Invalid messages format");
     }
 
-    // fetch chat & file key
-    const _chats = await db.select().from(chats).where(eq(chats.id, chatId));
+    // Verify the chat belongs to this user (BOLA protection)
+    const _chats = await db
+      .select()
+      .from(chats)
+      .where(and(eq(chats.id, chatId), eq(chats.userId, session.user.id)));
+      
     if (_chats.length !== 1) {
-      return NextResponse.json({ error: "chat not found" }, { status: 404 });
+      return forbiddenResponse("Chat not found or access denied");
     }
+    
     const fileKey = _chats[0].fileKey;
 
     // retrieve semantic context for the last user turn
@@ -44,13 +66,12 @@ END OF CONTEXT BLOCK
 The assistant will consider any CONTEXT BLOCK provided. It will not apologize for previous responses but will indicate when new information was gained.
     `.trim();
 
-    // Initialize Google AI
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
+    // Initialize Google AI (server-only)
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" }, { apiVersion: 'v1beta' });
 
     // Convert messages to Google AI format
     const validMessages = messages.filter((msg: any) => msg && msg.role);
-    console.log("Processing messages:", validMessages);
 
     // Build conversation history for Google AI
     // Add system instruction as first user message, followed by a model response acknowledging it
@@ -109,16 +130,10 @@ The assistant will consider any CONTEXT BLOCK provided. It will not apologize fo
       },
     });
   } catch (error) {
-    console.error("Chat API Error:", error);
-    
-    // If it's a model not found error, provide helpful info
-    if (error instanceof Error && error.message.includes("not found")) {
-      console.log("Model not found. You can check available models at: https://generativelanguage.googleapis.com/v1beta/models?key=YOUR_API_KEY");
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return unauthorizedResponse();
     }
-    
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.error("Chat API Error:", error);
+    return serverErrorResponse();
   }
 }

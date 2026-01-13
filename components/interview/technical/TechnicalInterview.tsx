@@ -300,7 +300,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import CodeEditorBlock from "@/components/code-editor/code-editor-block";
-import { chatSession } from "@/utils/GeminiAIModal";
 import toast from "react-hot-toast";
 
 interface TechnicalInterviewProps {
@@ -417,27 +416,26 @@ const TechnicalInterview: React.FC<TechnicalInterviewProps> = ({
         let rating = "";
         let feedback = "";
 
-        // Prompt for AI feedback
-        const codeFeedbackPrompt = `
-Question: "${question.questionText}"
-Difficulty: ${question.difficulty}
-User's code:
-\`\`\`
-${userCode}
-\`\`\`
-Please evaluate the code for correctness, efficiency, and clarity.
-Return a JSON response with "rating" (1-10) and "feedback" (a short review) only.
-        `;
-
         try {
-          const aiResult = await chatSession.sendMessage(codeFeedbackPrompt);
-          const responseText = await aiResult.response.text();
-          // Remove any code block markers and parse
-          const parsed = JSON.parse(
-            responseText.replace(/```json/g, "").replace(/```/g, "").trim()
-          );
-          rating = parsed.rating || "";
-          feedback = parsed.feedback || "";
+          // Call server-side API for AI feedback
+          const feedbackRes = await fetch("/api/code-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              questionText: question.questionText,
+              difficulty: question.difficulty,
+              userCode,
+            }),
+          });
+
+          if (feedbackRes.ok) {
+            const feedbackData = await feedbackRes.json();
+            rating = feedbackData.rating || "";
+            feedback = feedbackData.feedback || "";
+          } else {
+            console.error(`Error getting AI feedback for question ${i + 1}`);
+            toast.error(`Error generating AI feedback for question ${i + 1}`);
+          }
         } catch (err) {
           console.error(`Error evaluating answer for question ${i + 1}:`, err);
           toast.error(`Error generating AI feedback for question ${i + 1}`);

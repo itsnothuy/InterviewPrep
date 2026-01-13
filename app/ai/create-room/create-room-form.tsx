@@ -16,15 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { chatSession } from "@/utils/GeminiAIModal";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
-import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { uploadToS3 } from "@/app/s3";
 
 const formSchema = z.object({
   role: z.string().min(2, {
@@ -84,17 +78,38 @@ const CreateRoomForm = () => {
 
     // Determine which resume to use:
     // If user selected an existing resume, use that. Otherwise, upload new resume if provided.
-    let resumeData = null;
+    let resumeData: { file_key: string } | null = null;
     if (values.existingResume) {
       // Use the existing resume details (assumed to be the file_key)
       resumeData = {
         file_key: values.existingResume,
-        // You might also store file_name or pdfUrl if available in the fetched record.
       };
     } else if (resumeFile) {
-      // Otherwise, upload the new resume
-      // Assuming uploadToS3 is imported and handles the file upload as before
-      resumeData = await uploadToS3(resumeFile);
+      // Upload via presigned URL (secure - no AWS keys in client)
+      try {
+        // Get presigned URL from server
+        const presignRes = await axios.post("/api/upload/presign", {
+          fileName: resumeFile.name,
+          contentType: resumeFile.type,
+        });
+        
+        const { presignedUrl, fileKey } = presignRes.data;
+        
+        // Upload directly to S3 using presigned URL
+        await fetch(presignedUrl, {
+          method: "PUT",
+          body: resumeFile,
+          headers: {
+            "Content-Type": resumeFile.type,
+          },
+        });
+        
+        resumeData = { file_key: fileKey };
+      } catch (uploadError) {
+        console.error("Failed to upload resume:", uploadError);
+        setLoading(false);
+        return;
+      }
     }
 
    
@@ -108,25 +123,19 @@ const CreateRoomForm = () => {
       });
       const output = behavioralRes.data.output; // the generated JSON string
 
-      // Insert into db
+      // Insert via API (secure - db access is server-side only)
       if (output) {
-        const resp = await db
-          .insert(MockInterview)
-          .values({
-            mockId: uuidv4(),
-            jsonMockResp: output,
-            jobPosition: values.role,
-            jobDescription: values.description,
-            jobExperience: values.experience,
-            createdBy: session.user.id as string,
-            createdAt: moment().format("DD-MM-yyyy"),
-            resumeFile: resumeData ? resumeData.file_key : null,
-          })
-          .returning({ mockId: MockInterview.mockId });
+        const interviewRes = await axios.post("/api/interviews", {
+          jsonMockResp: output,
+          jobPosition: values.role,
+          jobDescription: values.description,
+          jobExperience: values.experience,
+          resumeFile: resumeData ? resumeData.file_key : null,
+        });
       
-        const mockId = resp[0]?.mockId;
+        const mockId = interviewRes.data.mockId;
         if (!mockId) {
-          throw new Error("Error inserting MockInterview or retrieving mockId.");
+          throw new Error("Error creating interview.");
         }
 
         setJsonResponse(output);
@@ -153,9 +162,7 @@ const CreateRoomForm = () => {
       
 
         // If successful, go to the interview room with the id
-        if (resp) {
-          router.push("/ai/interview/" + mockId);
-        }
+        router.push("/ai/interview/" + mockId);
       } else {
         console.log("Error in generating mock interview response");
       }

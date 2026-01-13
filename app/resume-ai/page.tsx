@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/chat/FileUpload";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/lib/auth";
-import { db } from "@/utils/db";
+import { db } from "@/lib/server/db";
 import { chats } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";

@@ -1,44 +1,13 @@
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+/**
+ * @deprecated This module is deprecated. Use `@/lib/server/gemini` instead.
+ * 
+ * This file now re-exports from the server-only module.
+ * If you see a build error, it means you're importing from a client component,
+ * which is not allowed for security reasons (API keys must stay server-side).
+ */
+import "server-only";
 
-const apiKey: string = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
-const genAI = new GoogleGenerativeAI(apiKey);
+import { startGeminiChat } from "@/lib/server/gemini";
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash-lite",
-});
-
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
-
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-];
-
-export const chatSession = model.startChat({
-  generationConfig,
-  safetySettings,
-});
+// Re-export for backwards compatibility with existing server-side code
+export const chatSession = startGeminiChat();

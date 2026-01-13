@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/utils/db";
+import { db } from "@/lib/server/db";
 import { room, Room } from "@/utils/schema";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";

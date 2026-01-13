@@ -1,6 +1,11 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import * as schema from "./schema";
+/**
+ * @deprecated This module is deprecated. Use `@/lib/server/db` instead.
+ * 
+ * This file now re-exports from the server-only module.
+ * If you see a build error, it means you're importing from a client component,
+ * which is not allowed for security reasons (database access must stay server-side).
+ */
+import "server-only";
 
-const sql = neon(process.env.NEXT_PUBLIC_DRIZZLE_DB_URL!);
-export const db = drizzle(sql, { schema });
+// Re-export everything from the server module for backwards compatibility
+export { db } from "@/lib/server/db";

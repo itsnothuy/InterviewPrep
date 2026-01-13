@@ -2,7 +2,6 @@
 
 import { Inbox, Loader2, Loader2Icon } from "lucide-react";
 import { useDropzone } from "react-dropzone";
-import { uploadToS3 } from "../../app/s3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -40,6 +39,7 @@ export const FileUpload = () => {
         }
         try {
           setUploading(true);
+          // Upload via server-side /api/upload route (secure - no AWS keys in client)
           const formData = new FormData();
           formData.append("file", file);
           const data: {

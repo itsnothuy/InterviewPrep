@@ -1,4 +1,3 @@
-"use client";
 import { getHumanRoomById } from "@/data-access/human-rooms";
 import HumanRoomContent from "@/components/human/HumanRoomContent";
 

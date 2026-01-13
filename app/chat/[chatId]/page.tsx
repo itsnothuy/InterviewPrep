@@ -2,7 +2,7 @@ import ChatComponent from "@/components/chat/ChatComponent";
 import ChatSideBar from "@/components/chat/ChatSideBar";
 import PDFViewer from "@/components/chat/PDFViewer";
 import { authConfig } from "@/lib/auth";
-import { db } from "@/utils/db";
+import { db } from "@/lib/server/db";
 import { chats } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";

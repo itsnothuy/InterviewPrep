@@ -37,9 +37,15 @@
 // File: app/api/technicalQuestion/[mockId]/route.ts
 
 import { NextResponse } from "next/server";
-import { db } from "@/utils/db";
-import { TechnicalQuestions } from "@/utils/schema";
-import { eq } from "drizzle-orm";
+import { db } from "@/lib/server/db";
+import { TechnicalQuestions, MockInterview } from "@/utils/schema";
+import { eq, and } from "drizzle-orm";
+import { 
+  requireAuth, 
+  unauthorizedResponse, 
+  serverErrorResponse,
+  forbiddenResponse 
+} from "@/lib/server/auth";
 
 
 export async function GET(
@@ -47,9 +53,25 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await requireAuth();
+    
     // Normalize the route parameter by trimming and converting to lower-case.
     const normalizedParam = params.id.trim().toLowerCase();
-    console.log("DEBUG: Normalized route parameter:", normalizedParam);
+    
+    // First verify the interview belongs to this user
+    const interview = await db
+      .select()
+      .from(MockInterview)
+      .where(and(
+        eq(MockInterview.mockId, normalizedParam),
+        eq(MockInterview.createdBy, session.user.id)
+      ))
+      .limit(1);
+    
+    if (interview.length === 0) {
+      return forbiddenResponse("Interview not found or access denied");
+    }
+    
     // Fetch the row using the normalized parameter.
     const result = await db
       .select()
@@ -57,7 +79,6 @@ export async function GET(
       .where(eq(TechnicalQuestions.mockIdRef, normalizedParam));
 
     if (!result || result.length === 0) {
-      console.log("DEBUG: No matching rows found");
       return NextResponse.json(
         { error: "Technical questions not found" },
         { status: 404 }
@@ -86,12 +107,13 @@ export async function GET(
           ...question,
         };
       });
-  
-    console.log("DEBUG: Fetched technical questions:", technicalQuestions);
 
     return NextResponse.json({ technicalQuestions });
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return unauthorizedResponse();
+    }
     console.error("Error fetching technical questions:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return serverErrorResponse();
   }
 }

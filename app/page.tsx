@@ -4,7 +4,6 @@ import FAQ from "@/components/home/faq";
 import HowItWorks from "@/components/home/howitworks";
 import { Info } from "../components/home/info";
 import { Button } from "@/components/ui/button";
-import { db } from "@/utils/db";
 import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import Link from "next/link";

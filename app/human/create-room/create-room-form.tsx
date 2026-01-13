@@ -1,6 +1,5 @@
 "use client";
 import { z } from "zod";
-import { db } from "@/utils/db";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,7 +16,6 @@ import { useForm } from "react-hook-form";
 import { createRoomActions } from "./actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { uploadToS3, getS3Url } from "@/app/s3";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -63,18 +61,42 @@ export function CreateRoomForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Determine which resume to use:
     // If the user selected an existing resume, use that file key.
-    // Otherwise, if a new file was uploaded, upload it to S3.
-    let resumeData = null;
+    // Otherwise, if a new file was uploaded, upload it to S3 via presigned URL.
+    let resumeData: { file_key: string } | null = null;
     if (values.existingResume) {
       resumeData = { file_key: values.existingResume };
     } else if (resumeFile) {
-      resumeData = await uploadToS3(resumeFile);
+      // Upload via presigned URL (secure - no AWS keys in client)
+      try {
+        // Get presigned URL from server
+        const presignRes = await axios.post("/api/upload/presign", {
+          fileName: resumeFile.name,
+          contentType: resumeFile.type,
+        });
+        
+        const { presignedUrl, fileKey, fileUrl } = presignRes.data;
+        
+        // Upload directly to S3 using presigned URL
+        await fetch(presignedUrl, {
+          method: "PUT",
+          body: resumeFile,
+          headers: {
+            "Content-Type": resumeFile.type,
+          },
+        });
+        
+        resumeData = { file_key: fileKey };
+      } catch (uploadError) {
+        console.error("Failed to upload resume:", uploadError);
+        return;
+      }
     }
 
-    // Construct the full URL for the PDF (adjust the base URL accordingly)
-    const fullPdfUrl = resumeData ? getS3Url(resumeData.file_key) : null;
-    console.log("Resume URL:", fullPdfUrl);
-    console.log("Resume Data:", resumeData);
+    // Construct the full URL for the PDF
+    const fullPdfUrl = resumeData 
+      ? `https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME || "interviewprep-bucket"}.s3.us-east-2.amazonaws.com/${resumeData.file_key}` 
+      : null;
+    
     //invoke server action to store data to our database
     await createRoomActions({ 
       ...values, 
