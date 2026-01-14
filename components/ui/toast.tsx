@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
+import { X, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -16,7 +16,8 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
+      // Changed to bottom-right positioning per CodePair Blueprint
+      "fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col p-6 gap-3 sm:max-w-[420px]",
       className
     )}
     {...props}
@@ -24,14 +25,25 @@ const ToastViewport = React.forwardRef<
 ))
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
+/**
+ * Toast variants following IBM Carbon Design patterns
+ * Each variant has a colored left border for quick visual identification
+ */
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-start gap-4 overflow-hidden rounded-sm border border-carbon-border-subtle bg-carbon-bg-primary p-4 shadow-lg transition-all animate-slide-in hover:shadow-xl data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=closed]:animate-slide-out",
   {
     variants: {
       variant: {
-        default: "border bg-background text-foreground",
-        destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
+        // Default - subtle styling
+        default: "border-l-4 border-l-carbon-border-medium",
+        // Success - green left border (IBM Carbon #42be65)
+        success: "border-l-4 border-l-carbon-green-success",
+        // Error/Destructive - red left border (IBM Carbon #fa4d56)
+        destructive: "border-l-4 border-l-carbon-red-error",
+        // Warning - yellow left border (IBM Carbon #f1c21b)
+        warning: "border-l-4 border-l-carbon-yellow-warning",
+        // Info - blue left border (IBM Carbon #0f62fe)
+        info: "border-l-4 border-l-carbon-blue-primary",
       },
     },
     defaultVariants: {
@@ -39,6 +51,26 @@ const toastVariants = cva(
     },
   }
 )
+
+/**
+ * Get the appropriate icon for each toast variant
+ */
+const ToastIcon = ({ variant }: { variant?: "default" | "success" | "destructive" | "warning" | "info" | null }) => {
+  const iconProps = { size: 20, className: "flex-shrink-0" };
+  
+  switch (variant) {
+    case "success":
+      return <CheckCircle {...iconProps} className={cn(iconProps.className, "text-carbon-green-success")} />;
+    case "destructive":
+      return <XCircle {...iconProps} className={cn(iconProps.className, "text-carbon-red-error")} />;
+    case "warning":
+      return <AlertTriangle {...iconProps} className={cn(iconProps.className, "text-carbon-yellow-warning")} />;
+    case "info":
+      return <Info {...iconProps} className={cn(iconProps.className, "text-carbon-blue-primary")} />;
+    default:
+      return null;
+  }
+}
 
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
@@ -62,7 +94,7 @@ const ToastAction = React.forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={cn(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive",
+      "inline-flex h-8 shrink-0 items-center justify-center rounded-sm border border-carbon-border-medium bg-transparent px-3 text-sm font-medium text-carbon-text-primary transition-colors hover:bg-carbon-bg-tertiary focus:outline-none focus:ring-2 focus:ring-violet focus:ring-offset-2 focus:ring-offset-carbon-bg-primary disabled:pointer-events-none disabled:opacity-50",
       className
     )}
     {...props}
@@ -77,7 +109,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+      "flex-shrink-0 rounded-sm p-1 text-carbon-text-tertiary transition-colors hover:text-carbon-text-primary focus:outline-none focus:ring-2 focus:ring-violet cursor-pointer",
       className
     )}
     toast-close=""
@@ -94,7 +126,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn("text-sm font-semibold", className)}
+    className={cn("text-sm font-semibold text-carbon-text-primary", className)}
     {...props}
   />
 ))
@@ -106,7 +138,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("text-sm opacity-90", className)}
+    className={cn("text-sm text-carbon-text-secondary", className)}
     {...props}
   />
 ))
@@ -126,4 +158,6 @@ export {
   ToastDescription,
   ToastClose,
   ToastAction,
+  ToastIcon,
+  toastVariants,
 }
