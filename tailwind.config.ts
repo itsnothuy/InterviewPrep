@@ -58,8 +58,8 @@ const config = {
         },
         
         primary: {
-          DEFAULT: "rgb(251 146 60)",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -88,10 +88,9 @@ const config = {
         bg: "var(--bg)",
         surface: "var(--surface)",
         text: "var(--text)",
-        violet: "var(--violet)",
-        violet2: "var(--violet-2)",
-        magenta: "var(--magenta)",
-        cyan: "var(--cyan)",
+        gold: "var(--gold)",
+        "gold-light": "var(--gold-light)",
+        "gold-dark": "var(--gold-dark)",
       },
       borderRadius: {
         lg: "var(--radius)",

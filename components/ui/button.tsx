@@ -5,51 +5,51 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button variants following IBM Carbon Design patterns
- * with consistent focus rings and hover states
+ * Button variants with InterviewCoder gold theme
+ * Updated to use gold primary accent instead of violet
  */
 const buttonVariants = cva(
-  // Base styles with consistent focus ring pattern
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed",
+  // Base styles with gold focus ring
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        // Primary action - IBM Carbon blue pattern
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
+        // Primary action - Gold CTA button
+        default: "bg-primary text-primary-foreground hover:bg-gold-dark active:bg-gold-dark/90 font-semibold",
         
-        // Destructive - IBM Carbon red pattern
+        // Destructive - Red pattern
         destructive:
-          "bg-carbon-red-error text-white hover:bg-carbon-red-hover active:bg-carbon-red-active focus-visible:ring-carbon-red-error",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80",
         
-        // Outline/Ghost style - Carbon transparent pattern
+        // Outline style
         outline:
-          "border border-carbon-border-medium bg-transparent text-foreground hover:bg-carbon-bg-tertiary hover:border-carbon-border-strong active:bg-carbon-bg-quaternary",
+          "border border-border bg-transparent text-foreground hover:bg-muted hover:text-foreground active:bg-muted/80",
         
-        // Secondary - Lighter emphasis
+        // Secondary - Muted emphasis
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
         
-        // Ghost - No background until hover
-        ghost: "hover:bg-carbon-bg-tertiary hover:text-foreground active:bg-carbon-bg-quaternary",
+        // Ghost - Minimal style
+        ghost: "hover:bg-muted hover:text-foreground active:bg-muted/80",
         
-        // Link style
-        link: "underline-offset-4 hover:underline text-primary",
+        // Link style with gold
+        link: "underline-offset-4 hover:underline text-primary hover:text-gold-light",
 
         // Dashboard styles (preserved for compatibility)
         dashboard: "bg-customGray text-white hover:bg-gray-500/90 active:bg-gray-600/90",
         dashboardAiOrHuman: "bg-gray-500/50 text-white hover:bg-customGray active:bg-gray-400/50",
         
-        // Interview coder gradient style
+        // Interview coder gold gradient CTA
         interviewCoder:
-          "bg-hero-gradient text-white rounded-full px-5 py-3 font-semibold shadow-ring shadow-glow transition-all duration-150 ease-in-out hover:-translate-y-px hover:brightness-105 active:translate-y-0 active:brightness-95",
+          "bg-hero-gradient text-primary-foreground rounded-full px-6 py-3 font-bold shadow-ring shadow-glow transition-all duration-150 ease-in-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:brightness-95",
         
-        // Carbon-style danger button (for delete actions)
+        // Danger button
         danger:
-          "bg-carbon-red-error/10 text-carbon-red-error border border-carbon-red-error/20 hover:bg-carbon-red-error hover:text-white active:bg-carbon-red-active focus-visible:ring-carbon-red-error",
+          "bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive hover:text-destructive-foreground active:bg-destructive/90",
         
-        // Carbon-style success button
+        // Success button  
         success:
-          "bg-carbon-green-success text-white hover:bg-carbon-green-dark active:brightness-90 focus-visible:ring-carbon-green-success",
+          "bg-green-600 text-white hover:bg-green-700 active:bg-green-800",
       },
       size: {
         default: "h-10 px-4 py-2",

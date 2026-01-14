@@ -92,7 +92,7 @@ const ToggleSwitch = React.forwardRef<HTMLInputElement, ToggleSwitchProps>(
             className={cn(
               "relative inline-flex items-center cursor-pointer",
               "transition-colors duration-200 ease-in-out",
-              "focus-within:ring-2 focus-within:ring-violet focus-within:ring-offset-2 focus-within:ring-offset-carbon-bg-secondary",
+              "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background",
               disabled && "cursor-not-allowed opacity-50"
             )}
           >
@@ -101,8 +101,8 @@ const ToggleSwitch = React.forwardRef<HTMLInputElement, ToggleSwitchProps>(
               className={cn(
                 config.track,
                 "rounded-full transition-colors duration-200 ease-in-out",
-                checked ? "bg-violet" : "bg-carbon-border-subtle",
-                !disabled && !checked && "hover:bg-carbon-border-medium"
+                checked ? "bg-primary" : "bg-muted",
+                !disabled && !checked && "hover:bg-muted/80"
               )}
             />
             
@@ -187,11 +187,11 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           <div
             className={cn(
               "h-4 w-4 border transition-all duration-150 ease-in-out flex items-center justify-center",
-              "group-hover:border-carbon-border-strong",
+              "group-hover:border-border/80",
               checked 
-                ? "border-violet bg-violet" 
-                : "border-carbon-border-medium bg-carbon-bg-primary",
-              "peer-focus:ring-2 peer-focus:ring-violet peer-focus:ring-offset-1 peer-focus:ring-offset-carbon-bg-secondary"
+                ? "border-primary bg-primary" 
+                : "border-border bg-card",
+              "peer-focus:ring-2 peer-focus:ring-primary peer-focus:ring-offset-1 peer-focus:ring-offset-background"
             )}
           >
             {/* Check icon */}
