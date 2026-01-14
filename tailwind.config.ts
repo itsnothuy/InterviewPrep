@@ -25,6 +25,38 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         customGray: '#cccccc',
+        
+        // IBM Carbon Design System Colors (from CodePair Blueprint)
+        carbon: {
+          // Backgrounds
+          'bg-primary': '#161616',
+          'bg-secondary': '#262626',
+          'bg-tertiary': '#353535',
+          'bg-quaternary': '#4c4c4c',
+          // Borders
+          'border-subtle': '#393939',
+          'border-medium': '#525252',
+          'border-strong': '#4c4c4c',
+          // Text
+          'text-primary': '#f4f4f4',
+          'text-secondary': '#c6c6c6',
+          'text-tertiary': '#8d8d8d',
+          'text-quaternary': '#6f6f6f',
+          // Interactive
+          'blue-primary': '#0f62fe',
+          'blue-hover': '#0353e9',
+          'blue-active': '#002d9c',
+          // Status
+          'green-success': '#42be65',
+          'green-dark': '#198038',
+          'red-error': '#fa4d56',
+          'red-hover': '#da1e28',
+          'red-active': '#bc1a23',
+          'yellow-warning': '#f1c21b',
+          // Disabled
+          'gray-disabled': '#8d8d8d',
+        },
+        
         primary: {
           DEFAULT: "rgb(251 146 60)",
           foreground: "hsl(var(--primary-foreground))",
@@ -75,10 +107,36 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // Toast animations from CodePair Blueprint
+        "slide-in": {
+          from: { transform: "translateX(100%)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
+        },
+        "slide-out": {
+          from: { transform: "translateX(0)", opacity: "1" },
+          to: { transform: "translateX(100%)", opacity: "0" },
+        },
+        "shrink": {
+          from: { transform: "scaleX(1)" },
+          to: { transform: "scaleX(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "fade-out": {
+          from: { opacity: "1" },
+          to: { opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-in": "slide-in 0.2s ease-out",
+        "slide-out": "slide-out 0.2s ease-out",
+        "shrink": "shrink linear",
+        "fade-in": "fade-in 0.15s ease-in-out",
+        "fade-out": "fade-out 0.15s ease-in-out",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

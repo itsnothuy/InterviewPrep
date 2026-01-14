@@ -1,21 +1,6 @@
 // middleware.ts  (Edge Runtime)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Redis } from "@upstash/redis";
-import { Ratelimit } from "@upstash/ratelimit";
-
-// reads UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN from env
-const redis = Redis.fromEnv();
-
-// create a 10‑requests-per-60‑seconds sliding-window limiter
-const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(50, "60 s"),
-});
-
-// middleware.ts  (Edge Runtime)
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   // Skip rate limiting for development to avoid Redis connection issues

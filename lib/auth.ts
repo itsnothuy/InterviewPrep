@@ -26,8 +26,6 @@ export const authConfig: AuthOptions = {
         session.user = { ...session.user, id: token.id as string };
       }
       return session;
-      }
-      return session;
     },
   },
 };
