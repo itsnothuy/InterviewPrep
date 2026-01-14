@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { chatSession } from "@/utils/GeminiAIModal";
+// import { chatSession } from "@/utils/GeminiAIModal"; // REMOVED: Now server-only
 import toast from "react-hot-toast";
 
 interface TechnicalAnswerProps {
@@ -29,34 +29,38 @@ export default function TechnicalAnswer({
     }
     setIsSubmitting(true);
     try {
-      // Evaluate all answers concurrently.
-      const evaluationPromises = questions.map((question, index) => {
+      // Evaluate all answers concurrently using API.
+      const evaluationPromises = questions.map(async (question, index) => {
         const userCode = savedCodes[index] as string;
-        const prompt = `
-Question: "${question.questionText}"
-Difficulty: ${question.difficulty}
-User's code:
-\`\`\`
-${userCode}
-\`\`\`
-Please evaluate this code for correctness, efficiency, and clarity.
-Return a JSON response with "rating" (1-10) and "feedback" (a short textual review) only.
-        `;
-        return chatSession
-          .sendMessage(prompt)
-          .then(async (aiResult) => {
-            const responseText = await aiResult.response.text();
-            // Clean and parse the response.
-            const parsed = JSON.parse(
-              responseText.replace(/```json/g, "").replace(/```/g, "").trim()
-            );
-            return { rating: parsed.rating || "", feedback: parsed.feedback || "" };
-          })
-          .catch((err) => {
-            console.error(`Error evaluating question ${question.id}:`, err);
+        
+        try {
+          // Call server-side API for code feedback
+          const feedbackRes = await fetch("/api/code-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              questionText: question.questionText,
+              difficulty: question.difficulty,
+              userCode,
+            }),
+          });
+
+          if (feedbackRes.ok) {
+            const feedbackData = await feedbackRes.json();
+            return { 
+              rating: feedbackData.rating || "", 
+              feedback: feedbackData.feedback || "" 
+            };
+          } else {
+            console.error(`Error evaluating question ${question.id}`);
             toast.error(`Error evaluating question ${question.id}`);
             return { rating: "", feedback: "" };
-          });
+          }
+        } catch (err) {
+          console.error(`Error evaluating question ${question.id}:`, err);
+          toast.error(`Error evaluating question ${question.id}`);
+          return { rating: "", feedback: "" };
+        }
       });
 
       const evaluations = await Promise.all(evaluationPromises);
