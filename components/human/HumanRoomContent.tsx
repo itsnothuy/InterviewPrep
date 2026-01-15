@@ -40,7 +40,7 @@ function HumanRoomContentInner({ room }: HumanRoomContentProps) {
     : "rounded-lg bg-card text-card-foreground shadow-sm p-4 min-h-screen";
 
   return (
-    <div className="min-h-screen relative">
+  <div className="min-h-screen relative mt-20">
   {/* Toggle Mode Button */}
   <div className="pt-4 pl-4">
     <Button onClick={toggleMode} variant="outline">

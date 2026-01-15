@@ -96,7 +96,7 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
         <Button
           variant={"dashboard"}
           color="green"
-          className="mb-5 border border-slate-800 text-black hover:bg-green-500 hover:text-white"
+          className="mb-5 border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
           onClick={runCode}
           disabled={isLoading}
           aria-label={isLoading ? "Executing code, please wait" : "Run code"}
@@ -106,18 +106,18 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
       </div>
       {/* P0.3: Add aria-live region for screen reader announcements */}
       <div 
-        className="h-full p-2 border border-gray-500 rounded-sm"
+        className="h-full p-2 border border-carbon-border-medium rounded-sm"
         role="region"
         aria-label="Code execution output"
       >
         <div 
-          className={isError ? "text-red-500" : "text-slate-600"}
+          className={isError ? "text-carbon-error" : "text-carbon-text-secondary"}
           aria-live="polite"
           aria-atomic="true"
         >
           {isLoading ? (
             <div className="flex items-center gap-2">
-              <CircularProgress size={20} className="text-gray-600" />
+              <CircularProgress size={20} className="text-carbon-text-tertiary" />
               <p>Executing code, please wait...</p>
             </div>
           ) : output.length > 0 ? (
