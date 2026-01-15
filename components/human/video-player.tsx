@@ -116,7 +116,14 @@ export function HumanVideo({ room }: { room: Room }) {
         name: session.data.user.name ?? undefined,
         image: session.data.user.image ?? undefined,
       },
-      tokenProvider: () => generateTokenAction(),
+      // P1.6: Handle structured error response
+      tokenProvider: async () => {
+        const result = await generateTokenAction();
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+        return result.data;
+      },
     });
     setClient(streamClient);
 

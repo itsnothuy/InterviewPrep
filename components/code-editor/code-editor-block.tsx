@@ -76,7 +76,20 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
           onMount={onMount}
           onChange={(value) => handleEditorChange(value)}
           options={{
-            padding: { top: 5 } // Adjust the top padding value as needed
+            padding: { top: 5 },
+            // P1.5: Monaco accessibility configuration
+            accessibilitySupport: "on",
+            ariaLabel: `Code editor for ${language[0]}`,
+            accessibilityHelpUrl: "https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide",
+            screenReaderAnnounceInlineSuggestion: true,
+            cursorBlinking: "smooth",
+            smoothScrolling: true,
+            // Better keyboard navigation
+            quickSuggestions: true,
+            tabCompletion: "on",
+            // Screen reader optimizations
+            renderWhitespace: "selection",
+            renderControlCharacters: true,
           }}
         />
       </div>

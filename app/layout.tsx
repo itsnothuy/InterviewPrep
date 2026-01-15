@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { Crisp } from "crisp-sdk-web";
 import { Tanstack_Providers } from "./Tanstack-Providers";
 import { Toaster } from "react-hot-toast";
+import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,6 +42,8 @@ export default function RootLayout({
           </Providers>
         </Tanstack_Providers>
         <Toaster></Toaster>
+        {/* P1.2: Shadcn Toast for room feature */}
+        <ShadcnToaster />
       </body>
     </html>
   );

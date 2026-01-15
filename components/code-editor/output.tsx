@@ -1,8 +1,9 @@
 import { executeCode } from "@/app/api/get-code/api";
 import { Button } from "../ui/button";
-import { useState, RefObject } from "react";
+import { useState, RefObject, useRef, useCallback } from "react";
 import { CircularProgress } from "@mui/material";
 import { Language } from "@/components/chat/code-constants";
+import { useToast } from "@/components/ui/use-toast";
 
 interface OutputProps {
   editorRef: RefObject<any>;
@@ -14,22 +15,71 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [executionMessage, setExecutionMessage] = useState<string>("");
+  const { toast } = useToast();
+  
+  // P1.7: Rate limiting - track last execution time
+  const lastExecutionRef = useRef<number>(0);
+  const RATE_LIMIT_MS = 2000; // 2 seconds between executions
 
-  const runCode = async () => {
+  const runCode = useCallback(async () => {
+    // P1.7: Check rate limit
+    const now = Date.now();
+    const timeSinceLastExecution = now - lastExecutionRef.current;
+    
+    if (timeSinceLastExecution < RATE_LIMIT_MS && lastExecutionRef.current !== 0) {
+      const waitTime = Math.ceil((RATE_LIMIT_MS - timeSinceLastExecution) / 1000);
+      toast({
+        variant: "warning",
+        title: "Please Wait",
+        description: `Rate limit: Wait ${waitTime} second(s) before running again.`,
+      });
+      return;
+    }
+
     const sourceCode = editorRef.current?.getValue();
-    if (!sourceCode) return;
+    if (!sourceCode) {
+      toast({
+        variant: "warning",
+        title: "No Code to Execute",
+        description: "Please write some code before running.",
+      });
+      return;
+    }
+    
     try {
+      lastExecutionRef.current = now; // P1.7: Update last execution time
       setIsLoading(true);
       setExecutionMessage("Executing code...");
       const result = await executeCode(language[0], sourceCode);
       setOutput(result.run.output.split("\n"));
-      result.run.stderr ? setError(true) : setError(false);
-      setExecutionMessage(result.run.stderr ? "Execution completed with errors" : "Execution completed successfully");
+      
+      if (result.run.stderr) {
+        setError(true);
+        setExecutionMessage("Execution completed with errors");
+        toast({
+          variant: "destructive",
+          title: "Execution Error",
+          description: "Your code executed but produced errors. Check the output panel.",
+        });
+      } else {
+        setError(false);
+        setExecutionMessage("Execution completed successfully");
+        toast({
+          variant: "success",
+          title: "Success",
+          description: `Code executed successfully in ${language[0]}`,
+        });
+      }
     } catch (error: any) {
       const errorMsg = error.message || error.response?.data || "An error occurred";
       setOutput([errorMsg]);
       setError(true);
       setExecutionMessage(`Execution failed: ${errorMsg}`);
+      toast({
+        variant: "destructive",
+        title: "Execution Failed",
+        description: errorMsg,
+      });
       console.error(
         "Error executing code:",
         error.response?.data || error.message
@@ -37,7 +87,7 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [editorRef, language, toast]);
 
   return (
     <div className=" h-full mb-11 pb-14">
