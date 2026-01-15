@@ -21,6 +21,75 @@
     --ring: 0 0 0 1px rgba(241,203,89,.5), 0 0 30px rgba(241,203,89,.25);
     --glow: 0 0 40px rgba(241,203,89,.15), 0 0 60px rgba(241,203,89,.1);
 
+    /* ========================================
+       IBM Carbon Design Tokens - P1.1a
+       For human-rooms/[roomId] feature area
+       ======================================== */
+    
+    /* Background Colors */
+    --carbon-bg-primary: #161616;      /* Main background */
+    --carbon-bg-secondary: #262626;    /* Card/panel backgrounds */
+    --carbon-bg-tertiary: #353535;     /* Hover states */
+    --carbon-bg-quaternary: #4c4c4c;   /* Active states */
+    
+    /* Text Colors */
+    --carbon-text-primary: #f4f4f4;    /* Primary text */
+    --carbon-text-secondary: #c6c6c6;  /* Secondary text */
+    --carbon-text-tertiary: #8d8d8d;   /* Tertiary text */
+    --carbon-text-quaternary: #6f6f6f; /* Disabled text */
+    --carbon-text-placeholder: #6f6f6f;/* Placeholder text */
+    --carbon-text-on-color: #ffffff;   /* Text on colored backgrounds */
+    
+    /* Border Colors */
+    --carbon-border-subtle: #393939;   /* Subtle borders */
+    --carbon-border-medium: #525252;   /* Medium emphasis borders */
+    --carbon-border-strong: #8d8d8d;   /* Strong borders */
+    
+    /* Interactive Colors - Blue (Primary) */
+    --carbon-interactive-primary: #0f62fe;    /* Primary action color */
+    --carbon-interactive-primary-hover: #0353e9; /* Hover state */
+    --carbon-interactive-primary-active: #002d9c; /* Active/pressed state */
+    
+    /* Status Colors */
+    --carbon-success: #42be65;         /* Success state */
+    --carbon-success-hover: #24a148;   /* Success hover */
+    --carbon-error: #fa4d56;           /* Error state */
+    --carbon-error-hover: #da1e28;     /* Error hover */
+    --carbon-warning: #f1c21b;         /* Warning state */
+    --carbon-warning-hover: #d2a106;   /* Warning hover */
+    --carbon-info: #4589ff;            /* Info state */
+    
+    /* Focus & Selection */
+    --carbon-focus: #0f62fe;           /* Focus outline color */
+    --carbon-focus-inset: #ffffff;     /* Focus inset color */
+    
+    /* Layer Tokens (for elevation/depth) */
+    --carbon-layer-01: #262626;        /* Base layer */
+    --carbon-layer-02: #353535;        /* Layer on top of base */
+    --carbon-layer-03: #525252;        /* Layer on top of layer-02 */
+    
+    /* Spacing Unit (4px grid system) */
+    --carbon-spacing-01: 0.125rem;     /* 2px */
+    --carbon-spacing-02: 0.25rem;      /* 4px */
+    --carbon-spacing-03: 0.5rem;       /* 8px */
+    --carbon-spacing-04: 0.75rem;      /* 12px */
+    --carbon-spacing-05: 1rem;         /* 16px */
+    --carbon-spacing-06: 1.5rem;       /* 24px */
+    --carbon-spacing-07: 2rem;         /* 32px */
+    --carbon-spacing-08: 2.5rem;       /* 40px */
+    --carbon-spacing-09: 3rem;         /* 48px */
+    --carbon-spacing-10: 4rem;         /* 64px */
+    
+    /* Border Radius */
+    --carbon-radius-sm: 2px;           /* Small radius */
+    --carbon-radius-md: 4px;           /* Medium radius */
+    --carbon-radius-lg: 8px;           /* Large radius */
+    
+    /* Transitions */
+    --carbon-transition-fast: 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+    --carbon-transition-moderate: 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
+    --carbon-transition-slow: 400ms cubic-bezier(0.2, 0, 0.38, 0.9);
+
     /* Tailwind theme variables in HSL format */
     --background: 0 0% 6%;           /* #101010 */
     --foreground: 0 0% 96%;          /* #F5F5F5 */

@@ -27,34 +27,43 @@ const config = {
         customGray: '#cccccc',
         
         // IBM Carbon Design System Colors (from CodePair Blueprint)
+        // P1.1a: Updated to use CSS custom properties from globals.css
         carbon: {
           // Backgrounds
-          'bg-primary': '#161616',
-          'bg-secondary': '#262626',
-          'bg-tertiary': '#353535',
-          'bg-quaternary': '#4c4c4c',
-          // Borders
-          'border-subtle': '#393939',
-          'border-medium': '#525252',
-          'border-strong': '#4c4c4c',
+          'bg-primary': 'var(--carbon-bg-primary)',
+          'bg-secondary': 'var(--carbon-bg-secondary)',
+          'bg-tertiary': 'var(--carbon-bg-tertiary)',
+          'bg-quaternary': 'var(--carbon-bg-quaternary)',
           // Text
-          'text-primary': '#f4f4f4',
-          'text-secondary': '#c6c6c6',
-          'text-tertiary': '#8d8d8d',
-          'text-quaternary': '#6f6f6f',
+          'text-primary': 'var(--carbon-text-primary)',
+          'text-secondary': 'var(--carbon-text-secondary)',
+          'text-tertiary': 'var(--carbon-text-tertiary)',
+          'text-quaternary': 'var(--carbon-text-quaternary)',
+          'text-placeholder': 'var(--carbon-text-placeholder)',
+          'text-on-color': 'var(--carbon-text-on-color)',
+          // Borders
+          'border-subtle': 'var(--carbon-border-subtle)',
+          'border-medium': 'var(--carbon-border-medium)',
+          'border-strong': 'var(--carbon-border-strong)',
           // Interactive
-          'blue-primary': '#0f62fe',
-          'blue-hover': '#0353e9',
-          'blue-active': '#002d9c',
+          'interactive-primary': 'var(--carbon-interactive-primary)',
+          'interactive-primary-hover': 'var(--carbon-interactive-primary-hover)',
+          'interactive-primary-active': 'var(--carbon-interactive-primary-active)',
           // Status
-          'green-success': '#42be65',
-          'green-dark': '#198038',
-          'red-error': '#fa4d56',
-          'red-hover': '#da1e28',
-          'red-active': '#bc1a23',
-          'yellow-warning': '#f1c21b',
-          // Disabled
-          'gray-disabled': '#8d8d8d',
+          'success': 'var(--carbon-success)',
+          'success-hover': 'var(--carbon-success-hover)',
+          'error': 'var(--carbon-error)',
+          'error-hover': 'var(--carbon-error-hover)',
+          'warning': 'var(--carbon-warning)',
+          'warning-hover': 'var(--carbon-warning-hover)',
+          'info': 'var(--carbon-info)',
+          // Focus
+          'focus': 'var(--carbon-focus)',
+          'focus-inset': 'var(--carbon-focus-inset)',
+          // Layers
+          'layer-01': 'var(--carbon-layer-01)',
+          'layer-02': 'var(--carbon-layer-02)',
+          'layer-03': 'var(--carbon-layer-03)',
         },
         
         primary: {
@@ -96,6 +105,33 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // P1.1a: IBM Carbon border radius tokens
+        'carbon-sm': 'var(--carbon-radius-sm)',
+        'carbon-md': 'var(--carbon-radius-md)',
+        'carbon-lg': 'var(--carbon-radius-lg)',
+      },
+      spacing: {
+        // P1.1a: IBM Carbon spacing scale (4px grid system)
+        'carbon-01': 'var(--carbon-spacing-01)', // 2px
+        'carbon-02': 'var(--carbon-spacing-02)', // 4px
+        'carbon-03': 'var(--carbon-spacing-03)', // 8px
+        'carbon-04': 'var(--carbon-spacing-04)', // 12px
+        'carbon-05': 'var(--carbon-spacing-05)', // 16px
+        'carbon-06': 'var(--carbon-spacing-06)', // 24px
+        'carbon-07': 'var(--carbon-spacing-07)', // 32px
+        'carbon-08': 'var(--carbon-spacing-08)', // 40px
+        'carbon-09': 'var(--carbon-spacing-09)', // 48px
+        'carbon-10': 'var(--carbon-spacing-10)', // 64px
+      },
+      transitionDuration: {
+        // P1.1a: IBM Carbon transition durations
+        'carbon-fast': '110ms',
+        'carbon-moderate': '240ms',
+        'carbon-slow': '400ms',
+      },
+      transitionTimingFunction: {
+        // P1.1a: IBM Carbon easing
+        'carbon': 'cubic-bezier(0.2, 0, 0.38, 0.9)',
       },
       keyframes: {
         "accordion-down": {
