@@ -34,10 +34,30 @@ export default async function HumanInterviewRoom({
       <div className="mb-12">
         <SearchBar />
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {rooms.map((room) => {
-          return <RoomCard key={room.id} room={room} />;
-        })}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {rooms.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-16 px-4 text-center">
+            <p className="text-lg text-muted-foreground mb-2">
+              {searchParams.search 
+                ? `No rooms found for "${searchParams.search}"`
+                : "No interview rooms available yet"}
+            </p>
+            <p className="text-sm text-muted-foreground mb-4">
+              {searchParams.search 
+                ? "Try a different search term"
+                : "Create the first room to get started"}
+            </p>
+            {!searchParams.search && (
+              <Button variant="dashboardAiOrHuman" asChild>
+                <Link href="/human/create-room">Create Room</Link>
+              </Button>
+            )}
+          </div>
+        ) : (
+          rooms.map((room) => {
+            return <RoomCard key={room.id} room={room} />;
+          })
+        )}
       </div>
     </main>
   );

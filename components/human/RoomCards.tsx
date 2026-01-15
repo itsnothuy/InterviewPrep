@@ -13,7 +13,7 @@ import {
 import { Room } from "@/utils/schema";
 import { GithubIcon, File } from "lucide-react";
 import { LanguagesList } from "@/components/code-editor/languages-list";
-import { splitLanguages } from "@/lib/utils";
+import { splitLanguages, isValidGitHubUrl } from "@/lib/utils";
 import { useState } from "react";
 import PDFViewer from "@/components/chat/PDFViewer";
 
@@ -52,9 +52,9 @@ export default function RoomCard({ room }: RoomCardProps) {
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 <LanguagesList languages={splitLanguages(room?.language || "")} />
-                {room.githubRepo && (
+                {room.githubRepo && isValidGitHubUrl(room.githubRepo) && (
                 <Link
-                    href={`${room.githubRepo}`}
+                    href={room.githubRepo}
                     className="flex items-center gap-2"
                     target="_blank"
                     rel="noopener noreferrer"

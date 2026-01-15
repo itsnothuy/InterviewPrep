@@ -53,8 +53,9 @@ export function SearchBar() {
             <FormItem>
               <FormControl>
                 <Input
-                  className="w-[440px]"
+                  className="w-full max-w-md"
                   placeholder="Filter rooms by keyword..."
+                  aria-label="Search interview rooms by name or language"
                   {...field}
                 />
               </FormControl>
