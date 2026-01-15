@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import RoomDetails from "./RoomDetails";
 import CodeEditorBlock from "@/components/code-editor/code-editor-block";
+import RoomErrorBoundary from "./RoomErrorBoundary";
 import { Room as RoomType } from "@/utils/schema";
 const HumanVideo = dynamic<{ room: RoomType }>(
   () => import("@/components/human/video-player").then(mod => mod.HumanVideo),
@@ -16,6 +17,14 @@ interface HumanRoomContentProps {
 }
 
 export default function HumanRoomContent({ room }: HumanRoomContentProps) {
+  return (
+    <RoomErrorBoundary>
+      <HumanRoomContentInner room={room} />
+    </RoomErrorBoundary>
+  );
+}
+
+function HumanRoomContentInner({ room }: HumanRoomContentProps) {
   const [isFloatingMode, setIsFloatingMode] = useState(false);
 
   const toggleMode = () => {

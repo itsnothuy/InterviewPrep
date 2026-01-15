@@ -3,6 +3,13 @@
 import { authConfig, getSession } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { StreamChat } from "stream-chat";
+import { getHumanRoomById } from "@/data-access/human-rooms";
+
+// P0.5: Validate room ID format
+function isValidUUID(id: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+}
 
 export async function generateTokenAction() {
   const session = await getServerSession(authConfig);
