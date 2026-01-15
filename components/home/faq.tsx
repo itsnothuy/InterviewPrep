@@ -161,11 +161,20 @@ const FAQ: React.FC = () => {
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
       transition={{ duration: 1 }}
-      className="py-12 md:py-16 lg:py-20 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden"
     >
-      <div className="container max-w-4xl px-4 md:px-6">
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{
+            backgroundImage: "url('/code-matrix.gif')",
+            backgroundSize: "cover",
+          }}
+        ></div>
+      </div>
+      <div className="relative z-10 container max-w-4xl px-4 md:px-6">
         <div className="mb-8 md:mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="text-3xl bg-hero-gradient bg-clip-text text-transparent md:text-4xl font-bold">
             Frequently Asked Questions
           </h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400">

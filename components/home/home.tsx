@@ -1,0 +1,46 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+
+export default function Hero() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="relative w-full h-screen bg-bg"
+    >
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30 "
+          //Image by bunny on Freepik
+          style={{
+            backgroundImage: "url('/code-matrix.gif')",
+            backgroundSize: "cover", // fills the whole area (no empty space)
+          }}
+        ></div>
+        <div className="relative z-10 flex flex-col justify-center items-center text-center p-6 h-full">
+          <div className="flex flex-col justify-center text-center gap-3 mb-4">
+            <h1 className="lg:text-7xl text-4xl font-extrabold mb-2 bg-hero-gradient bg-clip-text text-transparent">
+              Interview Prep
+            </h1>
+            <p className="text-2xl font-normal">
+              Show Your True Potential With AI-Powered Mock Interview
+            </p>
+          </div>
+          <div className="justify-center text-center p-5 space-x-4">
+            <Button variant="interviewCoder" className="px-6 py-2 rounded-md w-fit text-lg" onClick={() => signIn()}>
+              Sign In
+            </Button>
+            <Button className="text-white bg-transparent border border-gray-700 px-6 py-2 rounded-md w-fit text-lg hover:bg-slate-100 hover:text-black">
+              <Link href="/dashboard">Try Demo</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

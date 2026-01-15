@@ -16,6 +16,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Interview Prep",
   description: "Interview Prep",
+  icons: {
+    icon: "/worker.png",
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       {/* <CrispProvider></CrispProvider> */}
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <Tanstack_Providers>

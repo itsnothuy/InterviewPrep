@@ -38,7 +38,7 @@ const HowItWorks = () => {
   return (
     <div className="justify-center items-center p-4 flex flex-col">
       <div className="text-center p-5">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-5">How It Works</h1>
+        <h1 className="bg-hero-gradient bg-clip-text text-transparent text-3xl sm:text-5xl font-bold mb-5">How It Works</h1>
         <p className="text-gray-500 dark:text-gray-400">
           Practice mock interview in just these simple steps
         </p>

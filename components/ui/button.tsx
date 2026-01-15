@@ -5,8 +5,37 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button variants with InterviewCoder gold theme
- * Updated to use gold primary accent instead of violet
+ * Button Component - InterviewCoder Gold Theme
+ * 
+ * A comprehensive button component with multiple variants and sizes.
+ * Uses gold accent colors as the primary theme throughout the application.
+ * 
+ * Variants:
+ * - default: Gold gradient primary action button
+ * - destructive: Red error/delete actions
+ * - outline: Bordered button with transparent background
+ * - secondary: Muted emphasis button
+ * - ghost: Minimal button without background
+ * - link: Text link styled as button
+ * - dashboard: Custom gray button for dashboard
+ * - dashboardAiOrHuman: Alternative dashboard button style
+ * - interviewCoder: Hero gradient CTA with shadow effects
+ * - danger: Destructive action with subtle background
+ * - success: Green success actions
+ * 
+ * Sizes:
+ * - default: 40px height (standard)
+ * - sm: 32px height (compact)
+ * - lg: 44px height (prominent)
+ * - icon: 40px × 40px square (icon buttons)
+ * - compact: 32px height with small text (Carbon-inspired)
+ * 
+ * Accessibility:
+ * - Focus visible ring with gold accent
+ * - Disabled state with reduced opacity
+ * - Keyboard navigation support
+ * 
+ * Updated: Removed old commented code as part of P2.3 cleanup
  */
 const buttonVariants = cva(
   // Base styles with gold focus ring

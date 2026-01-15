@@ -6,9 +6,9 @@
   :root {
     /* InterviewCoder Theme - Dark Charcoal + Gold */
     --bg: #101010;          /* dark charcoal background */
-    --surface: #171717;     /* card/section surfaces */
+    --surface: #494848;     /* card/section surfaces */
     --text: #F5F5F5;        /* primary text */
-    --muted: #A3A3A3;       /* secondary/muted text */
+    --muted: #f5f5f5;       /* secondary/muted text */
     --border-color: #2A2A2A; /* subtle borders */
 
     /* Primary Gold Accent */

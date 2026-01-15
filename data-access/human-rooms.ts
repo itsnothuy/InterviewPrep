@@ -13,7 +13,7 @@ import { unstable_noStore } from "next/cache";
 export async function getHumanRooms(
   search: string | undefined,
   page: number = 1,
-  pageSize: number = 12
+  pageSize: number = 9
 ) {
   unstable_noStore();
   
