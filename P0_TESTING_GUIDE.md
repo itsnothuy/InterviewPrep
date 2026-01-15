@@ -1,312 +1,154 @@
-# P0 Testing Guide - Critical Fixes
+# P0 Critical Fixes - Testing Guide
 
-## Overview
-This document outlines how to test all P0 (Critical Priority) fixes implemented in the InterviewPrep codebase.
-
----
-
-## P0.1: Responsive Grid Layout ✅
-
-### What Changed
-- **File:** `app/human/page.tsx`
-- **Change:** `grid-cols-3` → `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
-- **Why:** Fixed layout breaks on mobile devices
-
-### Testing Steps
-
-#### Manual Test 1: Browser Resize
-1. Start the dev server: `npm run dev`
-2. Navigate to `/human` page
-3. Open browser DevTools (F12)
-4. Toggle device toolbar (Ctrl+Shift+M / Cmd+Shift+M)
-5. Test these breakpoints:
-   - **Mobile (< 768px)**: Should show **1 column**
-   - **Tablet (768px - 1024px)**: Should show **2 columns**
-   - **Desktop (> 1024px)**: Should show **3 columns**
-
-#### Manual Test 2: Real Devices
-- Test on actual iPhone/Android (width < 768px) - should see 1 column
-- Test on iPad (width ~768px) - should see 2 columns
-- Test on laptop (width > 1024px) - should see 3 columns
-
-#### Expected Results
-- ✅ No horizontal scrolling on any screen size
-- ✅ Cards stack properly in single column on mobile
-- ✅ Smooth transition between breakpoints
-
-#### Failure Indicators
-- ❌ Cards overflow screen width
-- ❌ Horizontal scrollbar appears
-- ❌ More than 1 column on mobile
+**Last Updated:** January 15, 2026  
+**Commit:** 03739e4  
+**Branch:** feature/new-theme  
+**Status:** ✅ Ready for Testing
 
 ---
 
-## P0.2: Search Input Responsive Width + ARIA ✅
-
-### What Changed
-- **File:** `app/human/search-bar.tsx`
-- **Changes:**
-  1. `w-[440px]` → `w-full max-w-md`
-  2. Added `aria-label="Search interview rooms by name or language"`
-
-### Testing Steps
-
-#### Manual Test 1: Mobile Width
-1. Go to `/human` page
-2. Resize browser to < 440px width
-3. Search input should NOT overflow
-4. Input should resize to fit container
-
-#### Manual Test 2: Screen Reader Accessibility
-1. Install screen reader:
-   - **Mac:** VoiceOver (Cmd+F5)
-   - **Windows:** NVDA (free download)
-   - **Chrome Extension:** ChromeVox
-2. Navigate to search input with Tab key
-3. Screen reader should announce: "Search interview rooms by name or language"
-
-#### Automated Test (axe DevTools)
-1. Install [axe DevTools Chrome Extension](https://chrome.google.com/webstore/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd)
-2. Navigate to `/human` page
-3. Click axe extension → "Scan All of my page"
-4. Check for ARIA-related issues (should have fewer than before)
-
-#### Expected Results
-- ✅ Input never exceeds screen width
-- ✅ Screen reader reads label correctly
-- ✅ Input is keyboard-accessible (Tab key focuses it)
-
-#### Failure Indicators
-- ❌ Input overflows on mobile
-- ❌ Screen reader says "unlabeled input"
-- ❌ Input not reachable via keyboard
-
----
-
-## P0.3: GitHub URL Validation (Security) ✅
-
-### What Changed
-- **Files:** `lib/utils.ts` (new function) + `components/human/RoomCards.tsx` (validation check)
-- **Change:** Added `isValidGitHubUrl()` validation before rendering links
-- **Why:** Prevent XSS attacks from malicious URLs
-
-### Testing Steps
-
-#### Test 1: Valid GitHub URL (Should Render)
-1. Create a test room with valid GitHub URL:
-   ```
-   https://github.com/username/repo
-   ```
-2. Go to `/human` page
-3. GitHub link should be visible and clickable
-
-#### Test 2: Invalid GitHub URL - Wrong Protocol (Should NOT Render)
-1. Manually edit database or create room with:
-   ```
-   javascript:alert('XSS')
-   ```
-2. Go to `/human` page
-3. GitHub link should NOT appear (no XSS execution)
-
-#### Test 3: Invalid GitHub URL - Wrong Domain (Should NOT Render)
-1. Create room with:
-   ```
-   https://evil.com/malicious
-   ```
-2. Go to `/human` page
-3. GitHub link should NOT appear
-
-#### Test 4: HTTP Instead of HTTPS (Should NOT Render)
-1. Create room with:
-   ```
-   http://github.com/username/repo
-   ```
-2. Go to `/human` page
-3. GitHub link should NOT appear (only HTTPS allowed)
-
-#### Expected Results
-- ✅ Only valid `https://github.com/*` URLs render
-- ✅ No JavaScript execution from malicious URLs
-- ✅ Room card still displays other info (name, description, language)
-
-#### Failure Indicators
-- ❌ `javascript:` URLs execute
-- ❌ Non-GitHub URLs render as links
-- ❌ HTTP URLs (insecure) are accepted
-
----
-
-## P0.4: Empty State UI ✅
-
-### What Changed
-- **File:** `app/human/page.tsx`
-- **Change:** Added conditional rendering for empty rooms array
-- **Why:** Users need feedback when no rooms exist
-
-### Testing Steps
-
-#### Test 1: No Rooms in Database
-1. Delete all rooms from database (or use empty test DB)
-2. Navigate to `/human` page
-3. Should see:
-   - Message: "No interview rooms available yet"
-   - Sub-message: "Create the first room to get started"
-   - Button: "Create Room" linking to `/human/create-room`
-
-#### Test 2: No Search Results
-1. Ensure database has rooms
-2. Navigate to `/human?search=xyznonexistent`
-3. Should see:
-   - Message: "No rooms found for 'xyznonexistent'"
-   - Sub-message: "Try a different search term"
-   - NO "Create Room" button (since rooms exist, just no matches)
-
-#### Test 3: Empty State with Rooms Present
-1. Ensure database has rooms
-2. Navigate to `/human` (no search)
-3. Should see room cards (NOT empty state)
-
-#### Expected Results
-- ✅ Empty state shows when `rooms.length === 0`
-- ✅ Different messages for "no rooms" vs "no search results"
-- ✅ "Create Room" button only shows when truly empty (no search)
-- ✅ Empty state is centered and readable
-
-#### Failure Indicators
-- ❌ Blank page with no message
-- ❌ Wrong message shows (e.g., "no search results" when no search term)
-- ❌ "Create Room" button shows during search
-
----
-
-## Comprehensive Testing Script
-
-Run all tests in sequence:
+## Quick Start
 
 ```bash
-# 1. Start dev server
+# Ensure you're on the correct branch
+git checkout feature/new-theme
+git pull origin feature/new-theme
+
+# Start development server
 npm run dev
+```
 
-# 2. Open browser to http://localhost:3000/human
+Server runs at: `http://localhost:3000`
 
-# 3. Test P0.1 - Responsive Grid
-# - Resize browser: 375px (mobile), 768px (tablet), 1440px (desktop)
-# - Verify column counts: 1, 2, 3 respectively
+---
 
-# 4. Test P0.2 - Search Input
-# - Resize to < 440px, verify no overflow
-# - Tab to input, verify it's focusable
-# - Use screen reader (Cmd+F5 on Mac), verify label is announced
+## ✅ Test 1: Room Ownership Verification (P0.1)
 
-# 5. Test P0.3 - URL Validation
-# - Create room with valid URL: https://github.com/test/repo
-#   → Should render link
-# - Create room with invalid URL: javascript:alert('test')
-#   → Should NOT render link
-# - Create room with non-GitHub URL: https://evil.com
-#   → Should NOT render link
+### Test 1A: Unauthenticated Access
+```
+Steps:
+1. Sign out completely
+2. Navigate to: /human-rooms/[any-room-id]
 
-# 6. Test P0.4 - Empty State
-# - Delete all rooms, verify empty state shows
-# - Create 1 room, verify cards show
-# - Search for "zzzzzzz", verify "no results" message
-# - Clear search, verify cards return
+Expected: Redirect to /api/auth/signin
+```
+
+### Test 1B: Unauthorized Access
+```
+Steps:
+1. Sign in as User A → Create room → Copy room URL
+2. Sign out → Sign in as User B
+3. Paste User A's room URL
+
+Expected: "Access Denied" message
+```
+
+### Test 1C: Authorized Access
+```
+Steps:
+1. Sign in and open your own room
+
+Expected: Room loads normally (video + code editor + details)
 ```
 
 ---
 
-## Regression Testing
+## ✅ Test 2: Invalid Room ID (P0.5)
 
-Ensure these existing features still work:
+```
+Steps:
+1. Sign in
+2. Navigate to: /human-rooms/invalid-id-123
 
-1. **Room Creation** (`/human/create-room`):
-   - Can still create rooms
-   - Form validation works
-
-2. **Room Joining** (`/human-rooms/[roomId]`):
-   - Clicking "Join Room" button works
-   - Room details page loads
-
-3. **PDF Preview** (if room has resume):
-   - Clicking PDF icon opens modal
-   - Modal displays PDF correctly
-   - Close button works
-
-4. **Search Functionality**:
-   - Typing in search and submitting works
-   - Results filter correctly by language
-   - Clear button resets search
-
-5. **GitHub Link** (for valid URLs):
-   - Opens in new tab
-   - Has `rel="noopener noreferrer"` for security
+Expected: "Invalid Room ID" error (no DB query in Network tab)
+```
 
 ---
 
-## Automated Tests (Future Implementation)
+## ✅ Test 3: Code Execution Timeout (P0.2)
 
-For CI/CD pipeline, consider adding:
+```
+Steps:
+1. Open any room → Select JavaScript
+2. Enter infinite loop:
+   while(true) { console.log("test"); }
+3. Click "Run Code" → Wait
 
-```typescript
-// Example test for URL validation
-describe('isValidGitHubUrl', () => {
-  it('accepts valid GitHub HTTPS URLs', () => {
-    expect(isValidGitHubUrl('https://github.com/user/repo')).toBe(true);
-  });
+Expected: Timeout after 10 seconds with error message
+```
 
-  it('rejects javascript: protocol', () => {
-    expect(isValidGitHubUrl('javascript:alert("XSS")')).toBe(false);
-  });
+---
 
-  it('rejects non-GitHub domains', () => {
-    expect(isValidGitHubUrl('https://evil.com')).toBe(false);
-  });
+## ✅ Test 4: Loading States (P0.4)
 
-  it('rejects HTTP (non-HTTPS)', () => {
-    expect(isValidGitHubUrl('http://github.com/user/repo')).toBe(false);
-  });
-});
+```
+Steps:
+1. Enter code: print("Hello")
+2. Click "Run Code"
+3. Observe immediately
+
+Expected:
+- Spinner appears in button
+- Button disabled
+- "Executing code, please wait..." in output
+- All clears when done
+```
+
+---
+
+## ✅ Test 5: ARIA Accessibility (P0.3)
+
+```
+Steps:
+1. Enable VoiceOver (Cmd + F5 on macOS)
+2. Run code
+3. Listen for announcements
+
+Expected: "Executing code..." and completion status announced
+```
+
+---
+
+## ✅ Test 6: Error Boundary (P0.6)
+
+```
+Steps (requires temporary code change):
+1. Edit components/human/HumanRoomContent.tsx
+2. Add in HumanRoomContentInner:
+   throw new Error("Test error");
+3. Reload room page
+
+Expected:
+- Error boundary catches error
+- Shows friendly error UI
+- "Reload Page" and "Back to Rooms" buttons work
 ```
 
 ---
 
 ## Success Criteria
 
-All P0 fixes are considered successful if:
-- ✅ All manual tests pass
-- ✅ No console errors
-- ✅ No TypeScript errors (`npm run build` succeeds)
-- ✅ No regression in existing features
-- ✅ Accessibility score improves (axe DevTools)
-- ✅ Mobile experience is usable
+All tests pass when:
+- ✅ Security: Ownership enforced, IDs validated
+- ✅ UX: Loading states clear, timeouts work
+- ✅ A11y: Screen readers announce changes
+- ✅ Stability: Errors caught gracefully
+- ✅ No regressions in existing features
 
 ---
 
-## Rollback Plan
+## Quick Integration Test
 
-If any P0 fix causes issues:
+Run this complete flow:
+1. Sign out → Try room access → Redirected ✅
+2. Sign in → Invalid room ID → Error ✅
+3. Other user's room → Access denied ✅
+4. Own room → Loads successfully ✅
+5. Run code → Loading + success ✅
+6. Infinite loop → Timeout works ✅
 
-```bash
-# Revert specific commit
-git revert <commit-hash>
-
-# Or revert to previous working state
-git reset --hard <previous-commit-hash>
-git push --force
-```
-
-**Individual File Rollback:**
-- P0.1: Revert `app/human/page.tsx` grid change
-- P0.2: Revert `app/human/search-bar.tsx` width/ARIA change
-- P0.3: Revert `lib/utils.ts` + `components/human/RoomCards.tsx` changes
-- P0.4: Revert `app/human/page.tsx` empty state logic
+All should pass in 5 minutes.
 
 ---
 
-## Next Steps After P0
-
-Once all P0 tests pass:
-1. ✅ Commit changes: `git commit -m "fix: P0 critical fixes - responsive layout, URL validation, empty states"`
-2. ✅ Push to repository: `git push`
-3. ✅ Update project documentation
-4. 🔜 Proceed to **P1 fixes** (Pagination, ARIA labels, PDF modal refactor)
+*For detailed testing procedures, see HUMAN_ROOMS_ROOMID_P0_IMPLEMENTATION.md*
