@@ -63,12 +63,14 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
   };
   console.log(value);
 
+  // P1.3: Use flex-1 for flexible height instead of fixed 75vh
   return (
-    <div className="flex">
-      <div className="w-1/2 pr-3">
+    <div className="flex h-full">
+      <div className="flex flex-col w-1/2 pr-3">
         <LanguageSelector language={language} onSelect={onSelect} />
-        <Editor
-          height="75vh"
+        <div className="flex-1 min-h-0">
+          <Editor
+            height="100%"
           theme="vs-dark"
           language={language[0]}
           defaultValue={CODE_SNIPPETS[language[0]]}
@@ -91,9 +93,10 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
             renderWhitespace: "selection",
             renderControlCharacters: true,
           }}
-        />
+          />
+        </div>
       </div>
-      <div className="w-1/2">
+      <div className="flex flex-col w-1/2">
         <Output editorRef={editorRef} language={language} />
       </div>
     </div>

@@ -43,7 +43,7 @@ export default async function HumanRoomPage(props: {
   // P0.1: Verify room ownership
   if (room.userId !== session.user.id) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center h-screen">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-500 mb-2">Access Denied</h1>
           <p className="text-gray-600">You do not have permission to view this room.</p>
@@ -52,5 +52,10 @@ export default async function HumanRoomPage(props: {
     );
   }
 
-  return <HumanRoomContent room={room} />;
+  // P1.3: Use h-screen for app shell pattern
+  return (
+    <div className="h-screen flex flex-col">
+      <HumanRoomContent room={room} />
+    </div>
+  );
 }
