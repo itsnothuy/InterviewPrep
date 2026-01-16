@@ -38,8 +38,10 @@ export default async function HumanRoomNewPage(props: {
 
   // Use RoomLayout wrapper to handle all states
   return (
-    <RoomLayout room={room || null} isLoading={false} isError={false}>
-      {room && <HumanRoomContentNew room={room} />}
-    </RoomLayout>
+    <div className="pt-16">
+      <RoomLayout room={room || null} isLoading={false} isError={false}>
+        {room && <HumanRoomContentNew room={room} />}
+      </RoomLayout>
+    </div>
   );
 }

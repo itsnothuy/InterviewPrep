@@ -54,7 +54,7 @@ export default async function HumanRoomPage(props: {
 
   // P1.3: Use h-screen for app shell pattern
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col pt-16">
       <HumanRoomContent room={room} />
     </div>
   );

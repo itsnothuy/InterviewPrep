@@ -85,8 +85,8 @@ function HumanRoomContentNewInner({ room }: HumanRoomContentNewProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#161616] text-[#f4f4f4]">
-      <div className="h-screen flex flex-col md:flex-row">
+    <div className="h-full bg-[#161616] text-[#f4f4f4]">
+      <div className="h-full flex flex-col md:flex-row">
         {/* Left Sidebar - Fixed 320px */}
         <div className="w-80 md:h-screen bg-[#262626] border-r border-[#393939] flex flex-col">
           {/* Room Header */}

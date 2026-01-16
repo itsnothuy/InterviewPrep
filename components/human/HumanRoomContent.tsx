@@ -83,6 +83,7 @@ import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import RoomDetails from "./RoomDetails";
 import CodeEditorBlock from "@/components/code-editor/code-editor-block";
+import HumanRoomContentNew from "./HumanRoomContentNew";
 import RoomErrorBoundary from "./RoomErrorBoundary";
 import { Room as RoomType } from "@/utils/schema";
 const HumanVideo = dynamic<{ room: RoomType }>(
@@ -104,9 +105,14 @@ export default function HumanRoomContent({ room }: HumanRoomContentProps) {
 
 function HumanRoomContentInner({ room }: HumanRoomContentProps) {
   const [isFloatingMode, setIsFloatingMode] = useState(false);
+  const [useNewLayout, setUseNewLayout] = useState(false);
 
   const toggleMode = () => {
     setIsFloatingMode((prev) => !prev);
+  };
+
+  const toggleLayout = () => {
+    setUseNewLayout((prev) => !prev);
   };
 
   // In Grid Mode, the video takes up 3/4 width; in floating mode, it’s fixed in the bottom‑right.
@@ -117,13 +123,32 @@ function HumanRoomContentInner({ room }: HumanRoomContentProps) {
     ? "rounded-lg bg-white shadow-lg overflow-hidden h-full"
     : "rounded-lg bg-card text-card-foreground shadow-sm p-4 min-h-screen";
 
+  // If new layout is enabled, render HumanRoomContentNew instead
+  if (useNewLayout) {
+    return (
+      <div className="flex flex-col h-full relative">
+        <div className="flex-shrink-0 pt-20 pl-4 pb-2 flex gap-2">
+          <Button onClick={toggleLayout} variant="outline">
+            Switch to Old Layout
+          </Button>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <HumanRoomContentNew room={room} />
+        </div>
+      </div>
+    );
+  }
+
   // P1.3: App shell pattern with flex layout
   return (
     <div className="flex flex-col h-full relative">
-      {/* Toggle Mode Button - Fixed at top */}
-      <div className="flex-shrink-0 pt-20 pl-4 pb-2">
+      {/* Toggle Buttons - Fixed at top */}
+      <div className="flex-shrink-0 pt-20 pl-4 pb-2 flex gap-2">
         <Button onClick={toggleMode} variant="outline">
           {isFloatingMode ? "Hide Code Editor" : "Show Code Editor"}
+        </Button>
+        <Button onClick={toggleLayout} variant="outline">
+          Switch to New Layout
         </Button>
       </div>
       
