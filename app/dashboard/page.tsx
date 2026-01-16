@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import AIHumanForm from "@/components/utils/ai-or-human-form";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import ai from "../lotties/ai.json";
 import human from "../lotties/human.json";
 import Link from "next/link";
@@ -14,8 +15,25 @@ const Dashboard = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   return (
-    <div className="flex flex-col items-center p-5 space-y-7 bg-bg text-text min-h-screen pt-20">
-      <div className="flex flex-col items-center p-6 h-fit w-1/2 text-center">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="relative flex flex-col items-center p-5 space-y-7 text-text min-h-screen pt-20"
+    >
+      {/* Background layer with animated GIF */}
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{
+            backgroundImage: "url('/code-matrix.gif')",
+            backgroundSize: "cover",
+          }}
+        />
+      </div>
+
+      {/* Content layer with higher z-index */}
+      <div className="relative z-10 flex flex-col items-center p-6 h-fit w-1/2 text-center">
         <h2 className="text-5xl font-extrabold opacity-85 text-text">Prepare for</h2>
         <h1 className="text-6xl font-extrabold p-5 bg-hero-gradient bg-clip-text text-transparent">
           Mock Interview
@@ -26,7 +44,7 @@ const Dashboard = () => {
       </div>
 
       {/* evenly split columns (keep original flex layout, just fix the sizing math) */}
-      <div className="flex flex-row w-full max-w-6xl gap-20">
+      <div className="relative z-10 flex flex-row w-full max-w-6xl gap-20">
         {/* Left column */}
         <div className="flex flex-col items-center justify-center flex-1 min-w-0">
           <div className="text-center p-3 mb-5">
@@ -93,7 +111,7 @@ const Dashboard = () => {
       {openDialog && (
         <AIHumanForm openDialog={openDialog} setOpenDialog={setOpenDialog} />
       )}
-    </div>
+    </motion.div>
   );
 };
 

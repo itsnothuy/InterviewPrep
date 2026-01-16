@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getHumanRooms } from "@/data-access/human-rooms";
-import { SearchBar } from "./search-bar";
-import HumanRoomContent from "./HumanRoomContent";
+import { SearchBar } from "@/components/human/SearchBar";
+import RoomListContent from "@/components/human/RoomListContent";
 
 export default async function HumanInterviewRoom({
   searchParams,
@@ -29,7 +29,7 @@ export default async function HumanInterviewRoom({
       <div className="mb-12">
         <SearchBar />
       </div>
-      <HumanRoomContent 
+      <RoomListContent 
         rooms={rooms} 
         searchTerm={searchParams.search}
         currentPage={currentPage}

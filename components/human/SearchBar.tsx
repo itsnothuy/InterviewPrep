@@ -22,7 +22,10 @@ const formSchema = z.object({
 });
 
 /**
- * SearchBar Component
+ * SearchBar Component for Human Interview Room List Page
+ * 
+ * Originally located at: app/human/search-bar.tsx
+ * Moved to: components/human/SearchBar.tsx (January 16, 2026)
  * 
  * Features:
  * - Search input with validation (max 50 characters)
@@ -31,10 +34,12 @@ const formSchema = z.object({
  * - Clear button to reset search
  * - ARIA label for accessibility
  * 
- * Debouncing Logic (P2.2):
+ * Debouncing Logic:
  * - User types → 300ms delay → automatic search
  * - User clicks Search button → immediate search (bypasses debounce)
  * - Prevents unnecessary server requests during fast typing
+ * 
+ * Used in: app/human/page.tsx
  */
 export function SearchBar() {
   const router = useRouter();

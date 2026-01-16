@@ -9,7 +9,7 @@ import RoomCard from "@/components/human/RoomCards";
 import PDFViewer from "@/components/chat/PDFViewer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface HumanRoomContentProps {
+interface RoomListContentProps {
   rooms: Room[];
   searchTerm?: string;
   currentPage: number;
@@ -18,27 +18,38 @@ interface HumanRoomContentProps {
 }
 
 /**
- * Client component wrapper for the Human Interview Room page.
- * Manages PDF modal state to avoid rendering multiple modals (memory optimization).
- * Handles pagination UI and navigation.
+ * Client component wrapper for the Human Interview Room LIST page (/human).
  * 
- * This component was created as part of P1.3 refactor to:
- * - Lift modal state from individual RoomCard components to parent level
- * - Render a single modal instance instead of N modals for N cards
- * - Reduce memory footprint when displaying many rooms
+ * IMPORTANT: This component displays a LIST of rooms with pagination.
+ * DO NOT confuse with components/human/HumanRoomContent.tsx which displays
+ * a SINGLE room's details with video/editor (used in /human-rooms/[roomId]).
  * 
- * Extended in P1.2 to add:
+ * Originally located at: app/human/HumanRoomContent.tsx
+ * Renamed to: RoomListContent.tsx for clarity (January 16, 2026)
+ * 
+ * Purpose:
+ * - Manages PDF modal state to avoid rendering multiple modals (memory optimization)
+ * - Handles pagination UI and navigation
+ * - Displays grid of room cards
+ * 
+ * Features:
+ * - Single modal instance for all room cards (lifted state)
  * - Pagination controls (Previous/Next buttons, page indicators)
  * - Total results display
  * - URL-based pagination state management
+ * - Empty state handling (no results, no search results)
+ * 
+ * Created as part of P1.3 refactor
+ * Extended in P1.2 for pagination
+ * Moved to components/human in codebase reorganization
  */
-export default function HumanRoomContent({ 
+export default function RoomListContent({ 
   rooms, 
   searchTerm, 
   currentPage, 
   totalPages,
   totalRooms 
-}: HumanRoomContentProps) {
+}: RoomListContentProps) {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const searchParams = useSearchParams();
   
