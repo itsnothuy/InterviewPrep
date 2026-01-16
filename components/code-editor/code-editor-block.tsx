@@ -137,8 +137,9 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
     "15.0.2",
   ]);
   
-  // Resizable columns state
-  const [editorWidth, setEditorWidth] = useState<number>(50);
+  // Resizable rows state (top-bottom layout)
+  const [editorHeight, setEditorHeight] = useState<number>(60); // Editor takes 60% by default
+  const [isOutputVisible, setIsOutputVisible] = useState<boolean>(true); // Output visibility
   const isDragging = useRef<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -159,6 +160,11 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
   const runCode = useCallback(async () => {
     const now = Date.now();
     const timeSinceLastExecution = now - lastExecutionRef.current;
+    
+    // Show output panel when Run Code is clicked
+    if (!isOutputVisible) {
+      setIsOutputVisible(true);
+    }
     
     if (timeSinceLastExecution < RATE_LIMIT_MS && lastExecutionRef.current !== 0) {
       const waitTime = Math.ceil((RATE_LIMIT_MS - timeSinceLastExecution) / 1000);
@@ -218,26 +224,26 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [editorRef, language, toast]);
+  }, [editorRef, language, toast, isOutputVisible]);
 
-  // Resizer handlers
+  // Resizer handlers (for top-bottom layout)
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     isDragging.current = true;
-    document.body.style.cursor = "col-resize";
+    document.body.style.cursor = "row-resize";
   };
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging.current || !containerRef.current) return;
 
     const containerRect = containerRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - containerRect.left;
-    const totalWidth = containerRect.width;
+    const mouseY = e.clientY - containerRect.top;
+    const totalHeight = containerRect.height;
 
-    let percentage = (mouseX / totalWidth) * 100;
-    // Clamp between 30% and 70%
-    const newWidth = Math.min(Math.max(percentage, 30), 70);
-    setEditorWidth(newWidth);
+    let percentage = (mouseY / totalHeight) * 100;
+    // Clamp between 30% and 85% for better usability
+    const newHeight = Math.min(Math.max(percentage, 30), 85);
+    setEditorHeight(newHeight);
   }, []);
 
   const handleMouseUp = useCallback(() => {
@@ -301,77 +307,93 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
           <h2 className="text-sm font-medium text-[#f4f4f4]">
             {headerTitle}
           </h2>
-          <Button
-            variant={"dashboard"}
-            className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
-            onClick={runCode}
-            disabled={isLoading}
-            aria-label={isLoading ? "Executing code, please wait" : "Run code"}
-          >
-            {isLoading ? <CircularProgress className="text-black" size={20} /> : "Run Code"}
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Toggle Output Button */}
+            <Button
+              variant={"dashboard"}
+              className="border border-carbon-border-strong text-black hover:bg-carbon-text-secondary hover:text-white"
+              onClick={() => setIsOutputVisible(!isOutputVisible)}
+              aria-label={isOutputVisible ? "Hide output panel" : "Show output panel"}
+            >
+              {isOutputVisible ? "Hide Output" : "Show Output"}
+            </Button>
+            {/* Run Code Button */}
+            <Button
+              variant={"dashboard"}
+              className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
+              onClick={runCode}
+              disabled={isLoading}
+              aria-label={isLoading ? "Executing code, please wait" : "Run code"}
+            >
+              {isLoading ? <CircularProgress className="text-black" size={20} /> : "Run Code"}
+            </Button>
+          </div>
         </div>
       )}
       
-      {/* Editor and Output Container */}
-      <div ref={containerRef} className="flex h-full flex-1 relative">
-        {/* Editor Panel */}
+      {/* Editor and Output Container - TOP TO BOTTOM LAYOUT */}
+      <div ref={containerRef} className="flex flex-col h-full flex-1 relative">
+        {/* Editor Panel - Top */}
         <div 
-          className="flex flex-col pr-3 relative" 
-          style={{ width: `${editorWidth}%` }}
+          className="flex flex-col relative" 
+          style={{ height: isOutputVisible ? `${editorHeight}%` : '100%' }}
         >
           <LanguageSelector language={language} onSelect={onSelect} />
           
           <Editor
             height="100%"
-          theme="vs-dark"
-          language={language[0]}
-          defaultValue={CODE_SNIPPETS[language[0]]}
-          value={value}
-          onMount={onMount}
-          onChange={(value) => handleEditorChange(value)}
-          options={{
-            padding: { top: 5 },
-            // P1.5: Monaco accessibility configuration
-            accessibilitySupport: "on",
-            ariaLabel: `Code editor for ${language[0]}`,
-            accessibilityHelpUrl: "https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide",
-            screenReaderAnnounceInlineSuggestion: true,
-            cursorBlinking: "smooth",
-            smoothScrolling: true,
-            // Better keyboard navigation
-            quickSuggestions: true,
-            tabCompletion: "on",
-            // Screen reader optimizations
-            renderWhitespace: "selection",
-            renderControlCharacters: true,
-          }}
+            theme="vs-dark"
+            language={language[0]}
+            defaultValue={CODE_SNIPPETS[language[0]]}
+            value={value}
+            onMount={onMount}
+            onChange={(value) => handleEditorChange(value)}
+            options={{
+              padding: { top: 5 },
+              // P1.5: Monaco accessibility configuration
+              accessibilitySupport: "on",
+              ariaLabel: `Code editor for ${language[0]}`,
+              accessibilityHelpUrl: "https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide",
+              screenReaderAnnounceInlineSuggestion: true,
+              cursorBlinking: "smooth",
+              smoothScrolling: true,
+              // Better keyboard navigation
+              quickSuggestions: true,
+              tabCompletion: "on",
+              // Screen reader optimizations
+              renderWhitespace: "selection",
+              renderControlCharacters: true,
+            }}
           />
         </div>
         
-        {/* Resizer Divider */}
-        <div
-          className="w-1 bg-[#393939] hover:bg-[#0f62fe] cursor-col-resize transition-colors flex-shrink-0"
-          onMouseDown={handleMouseDown}
-          style={{ userSelect: "none", touchAction: "none" }}
-        />
-        
-        {/* Output Panel */}
-        <div 
-          className="flex flex-col flex-1"
-          style={{ width: `${100 - editorWidth}%` }}
-        >
-          <Output 
-            editorRef={editorRef} 
-            language={language}
-            output={output}
-            isLoading={isLoading}
-            isError={isError}
-            executionMessage={executionMessage}
-            runCode={runCode}
-            showRunButton={!showHeader}
+        {/* Resizer Divider - Only show when output is visible */}
+        {isOutputVisible && (
+          <div
+            className="h-1 bg-[#393939] hover:bg-[#0f62fe] cursor-row-resize transition-colors flex-shrink-0"
+            onMouseDown={handleMouseDown}
+            style={{ userSelect: "none", touchAction: "none" }}
           />
-        </div>
+        )}
+        
+        {/* Output Panel - Bottom - Only show when isOutputVisible is true */}
+        {isOutputVisible && (
+          <div 
+            className="flex flex-col flex-1"
+            style={{ height: `${100 - editorHeight}%` }}
+          >
+            <Output 
+              editorRef={editorRef} 
+              language={language}
+              output={output}
+              isLoading={isLoading}
+              isError={isError}
+              executionMessage={executionMessage}
+              runCode={runCode}
+              showRunButton={!showHeader}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
