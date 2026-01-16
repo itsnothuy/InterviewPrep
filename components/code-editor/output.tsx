@@ -116,7 +116,7 @@ const Output: React.FC<OutputProps> = ({
   const runCode = propsRunCode || localRunCode;
 
   return (
-    <div className=" h-full mb-11 pb-14">
+    <div className=" h-full">
       {showRunButton && (
         <div className="flex flex-row gap-3">
           <Button
@@ -133,7 +133,7 @@ const Output: React.FC<OutputProps> = ({
       )}
       {/* P0.3: Add aria-live region for screen reader announcements */}
       <div 
-        className="h-full p-2 border border-carbon-border-medium rounded-sm"
+        className="h-full border border-carbon-border-medium rounded-sm"
         role="region"
         aria-label="Code execution output"
       >

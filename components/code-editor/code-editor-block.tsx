@@ -227,12 +227,6 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
   }, [editorRef, language, toast, isOutputVisible]);
 
   // Resizer handlers (for top-bottom layout)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    isDragging.current = true;
-    document.body.style.cursor = "row-resize";
-  };
-
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging.current || !containerRef.current) return;
 
@@ -249,15 +243,22 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
   const handleMouseUp = useCallback(() => {
     isDragging.current = false;
     document.body.style.cursor = "default";
-  }, []);
+    // Remove listeners when mouse is released
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  }, [handleMouseMove]);
 
-  // Add/remove document event listeners
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    document.body.style.cursor = "row-resize";
+    // Add listeners immediately when mouse is pressed
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
-    if (isDragging.current) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -335,10 +336,10 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
       <div ref={containerRef} className="flex flex-col h-full flex-1 relative">
         {/* Editor Panel - Top */}
         <div 
-          className="flex flex-col relative" 
+          className="flex flex-col relative p-2" 
           style={{ height: isOutputVisible ? `${editorHeight}%` : '100%' }}
         >
-          <LanguageSelector language={language} onSelect={onSelect} />
+          <LanguageSelector language={language} onSelect={onSelect}/>
           
           <Editor
             height="100%"
@@ -370,9 +371,10 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
         {/* Resizer Divider - Only show when output is visible */}
         {isOutputVisible && (
           <div
-            className="h-1 bg-[#393939] hover:bg-[#0f62fe] cursor-row-resize transition-colors flex-shrink-0"
+            className="h-2 bg-[#393939] hover:bg-[#0f62fe] cursor-row-resize transition-colors flex-shrink-0"
             onMouseDown={handleMouseDown}
             style={{ userSelect: "none", touchAction: "none" }}
+            title="Drag to resize editor and output panels"
           />
         )}
         
