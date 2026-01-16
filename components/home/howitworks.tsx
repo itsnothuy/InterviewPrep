@@ -45,7 +45,7 @@ const HowItWorks = () => {
       </div>
       <div
         ref={ref}
-        className="flex flex-row justify-center items-center gap-5 p-4 mx-5 mb-7 w-full"
+        className="flex flex-col lg:flex-row justify-center items-stretch gap-5 p-4 mx-auto mb-7 w-full max-w-7xl"
       >
         {CardValues.map((card, index) => (
           <motion.div
@@ -53,7 +53,7 @@ const HowItWorks = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 1, delay: index * 0.3 }}
-            className="list-none w-full md:w-auto"
+            className="w-full lg:flex-1"
           >
             <Homecard
               title={card.title}
@@ -64,11 +64,11 @@ const HowItWorks = () => {
         ))}
       </div>
       {selectedCard !== null && (
-        <div className="mt-7 mb-7">
+        <div className="mt-7 mb-7 px-4 w-full max-w-4xl mx-auto">
           <img
             src={CardValues[selectedCard].imageUrl}
             alt={`Image for ${CardValues[selectedCard].title}`}
-            className="w-full max-w-3xl mx-auto shadow-lg rounded-lg"
+            className="w-full h-auto shadow-lg rounded-lg object-cover"
           />
         </div>
       )}

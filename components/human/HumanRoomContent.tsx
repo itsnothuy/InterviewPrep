@@ -127,7 +127,7 @@ function HumanRoomContentInner({ room }: HumanRoomContentProps) {
   if (useNewLayout) {
     return (
       <div className="flex flex-col h-full relative">
-        <div className="flex-shrink-0 pt-20 pl-4 pb-2 flex gap-2">
+        <div className="flex-shrink-0 p-4 flex gap-2">
           <Button onClick={toggleLayout} variant="outline">
             Switch to Old Layout
           </Button>
@@ -143,7 +143,7 @@ function HumanRoomContentInner({ room }: HumanRoomContentProps) {
   return (
     <div className="flex flex-col h-full relative">
       {/* Toggle Buttons - Fixed at top */}
-      <div className="flex-shrink-0 pt-20 pl-4 pb-2 flex gap-2">
+      <div className="flex-shrink-0 p-4 flex gap-2">
         <Button onClick={toggleMode} variant="outline">
           {isFloatingMode ? "Hide Code Editor" : "Show Code Editor"}
         </Button>

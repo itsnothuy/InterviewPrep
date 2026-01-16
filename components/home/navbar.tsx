@@ -2,11 +2,13 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Header } from "@/components/home/header";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { createPortal } from "react-dom";
 
 const NavBar: React.FC = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -88,6 +90,12 @@ const NavBar: React.FC = () => {
     }),
     [prefersReducedMotion]
   );
+
+  // Hide navbar on human-rooms routes - check AFTER all hooks are called
+  const hideNavbar = pathname?.startsWith("/human-rooms");
+  if (hideNavbar) {
+    return null;
+  }
 
   return (
     <>
