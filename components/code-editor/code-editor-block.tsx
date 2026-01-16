@@ -106,20 +106,27 @@
 "use client";
 
 import Editor from "@monaco-editor/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import LanguageSelector from "./language-selector";
 import Output from "./output";
 import { CODE_SNIPPETS, Language } from "@/components/chat/code-constants";
+import { executeCode } from "@/app/api/get-code/api";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { CircularProgress } from "@mui/material";
 
 interface CodeEditorBlockProps {
-  initialCode?: string;              // or just string if it's mandatory
+  initialCode?: string;
   onCodeChange?: (code: string) => void;
-  // any other props you need...
+  showHeader?: boolean; // Optional header display
+  headerTitle?: string; // Customizable title
 }
 
 const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
   initialCode = "",
   onCodeChange,
+  showHeader = false,
+  headerTitle = "Code Editor",
 }) => {
   const editorRef = useRef<any>(null);
   const [value, setValue] = useState<string>("");
@@ -130,9 +137,126 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
     "15.0.2",
   ]);
   
+  // Resizable columns state
+  const [editorWidth, setEditorWidth] = useState<number>(50);
+  const isDragging = useRef<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Output state (lifted from Output component)
+  const [output, setOutput] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setError] = useState(false);
+  const [executionMessage, setExecutionMessage] = useState<string>("");
+  const { toast } = useToast();
+  const lastExecutionRef = useRef<number>(0);
+  const RATE_LIMIT_MS = 2000;
+  
   useEffect(() => {
     setEditorValue(initialCode);
   }, [initialCode]);
+
+  // Run Code function (lifted from Output component)
+  const runCode = useCallback(async () => {
+    const now = Date.now();
+    const timeSinceLastExecution = now - lastExecutionRef.current;
+    
+    if (timeSinceLastExecution < RATE_LIMIT_MS && lastExecutionRef.current !== 0) {
+      const waitTime = Math.ceil((RATE_LIMIT_MS - timeSinceLastExecution) / 1000);
+      toast({
+        variant: "warning",
+        title: "Please Wait",
+        description: `Rate limit: Wait ${waitTime} second(s) before running again.`,
+      });
+      return;
+    }
+
+    const sourceCode = editorRef.current?.getValue();
+    if (!sourceCode) {
+      toast({
+        variant: "warning",
+        title: "No Code to Execute",
+        description: "Please write some code before running.",
+      });
+      return;
+    }
+    
+    try {
+      lastExecutionRef.current = now;
+      setIsLoading(true);
+      setExecutionMessage("Executing code...");
+      const result = await executeCode(language[0], sourceCode);
+      setOutput(result.run.output.split("\n"));
+      
+      if (result.run.stderr) {
+        setError(true);
+        setExecutionMessage("Execution completed with errors");
+        toast({
+          variant: "destructive",
+          title: "Execution Error",
+          description: "Your code executed but produced errors. Check the output panel.",
+        });
+      } else {
+        setError(false);
+        setExecutionMessage("Execution completed successfully");
+        toast({
+          variant: "success",
+          title: "Success",
+          description: `Code executed successfully in ${language[0]}`,
+        });
+      }
+    } catch (error: any) {
+      const errorMsg = error.message || error.response?.data || "An error occurred";
+      setOutput([errorMsg]);
+      setError(true);
+      setExecutionMessage(`Execution failed: ${errorMsg}`);
+      toast({
+        variant: "destructive",
+        title: "Execution Failed",
+        description: errorMsg,
+      });
+      console.error("Error executing code:", error.response?.data || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [editorRef, language, toast]);
+
+  // Resizer handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    document.body.style.cursor = "col-resize";
+  };
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging.current || !containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - containerRect.left;
+    const totalWidth = containerRect.width;
+
+    let percentage = (mouseX / totalWidth) * 100;
+    // Clamp between 30% and 70%
+    const newWidth = Math.min(Math.max(percentage, 30), 70);
+    setEditorWidth(newWidth);
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    isDragging.current = false;
+    document.body.style.cursor = "default";
+  }, []);
+
+  // Add/remove document event listeners
+  useEffect(() => {
+    if (isDragging.current) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [handleMouseMove, handleMouseUp]);
 
   const onMount = (editor: any) => {
     editorRef.current = editor;
@@ -170,10 +294,34 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
 
   // P1.3: Use flex-1 for flexible height instead of fixed 75vh
   return (
-    <div className="flex h-full">
-      <div className="flex flex-col w-1/2 pr-3">
-        <LanguageSelector language={language} onSelect={onSelect} />
-        
+    <div className="flex flex-col h-full">
+      {/* Optional Header */}
+      {showHeader && (
+        <div className="flex items-center justify-between p-4 border-b border-[#393939] bg-[#161616]">
+          <h2 className="text-sm font-medium text-[#f4f4f4]">
+            {headerTitle}
+          </h2>
+          <Button
+            variant={"dashboard"}
+            className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
+            onClick={runCode}
+            disabled={isLoading}
+            aria-label={isLoading ? "Executing code, please wait" : "Run code"}
+          >
+            {isLoading ? <CircularProgress className="text-black" size={20} /> : "Run Code"}
+          </Button>
+        </div>
+      )}
+      
+      {/* Editor and Output Container */}
+      <div ref={containerRef} className="flex h-full flex-1 relative">
+        {/* Editor Panel */}
+        <div 
+          className="flex flex-col pr-3 relative" 
+          style={{ width: `${editorWidth}%` }}
+        >
+          <LanguageSelector language={language} onSelect={onSelect} />
+          
           <Editor
             height="100%"
           theme="vs-dark"
@@ -199,9 +347,31 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
             renderControlCharacters: true,
           }}
           />
-      </div>
-      <div className="flex flex-col w-1/2">
-        <Output editorRef={editorRef} language={language} />
+        </div>
+        
+        {/* Resizer Divider */}
+        <div
+          className="w-1 bg-[#393939] hover:bg-[#0f62fe] cursor-col-resize transition-colors flex-shrink-0"
+          onMouseDown={handleMouseDown}
+          style={{ userSelect: "none", touchAction: "none" }}
+        />
+        
+        {/* Output Panel */}
+        <div 
+          className="flex flex-col flex-1"
+          style={{ width: `${100 - editorWidth}%` }}
+        >
+          <Output 
+            editorRef={editorRef} 
+            language={language}
+            output={output}
+            isLoading={isLoading}
+            isError={isError}
+            executionMessage={executionMessage}
+            runCode={runCode}
+            showRunButton={!showHeader}
+          />
+        </div>
       </div>
     </div>
   );

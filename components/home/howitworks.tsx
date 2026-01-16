@@ -32,7 +32,8 @@ const HowItWorks = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleCardClick = (index: number) => {
-    setSelectedCard(index);
+    // Toggle: if clicking the same card, hide it; otherwise show the new one
+    setSelectedCard(selectedCard === index ? null : index);
   };
 
   return (

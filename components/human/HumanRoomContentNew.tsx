@@ -183,14 +183,7 @@ function HumanRoomContentNewInner({ room }: HumanRoomContentNewProps) {
             }}
             className="flex flex-col min-w-[30%] bg-[#161616]"
           >
-            <div className="flex items-center justify-between p-4 border-b border-[#393939]">
-              <h2 className="text-sm font-medium text-[#f4f4f4]">
-                Code Editor
-              </h2>
-            </div>
-            <div className="flex-1 bg-[#161616] overflow-hidden">
-              <CodeEditorBlock />
-            </div>
+            <CodeEditorBlock showHeader={true} headerTitle="Code Editor" />
           </div>
         </div>
       </div>
