@@ -116,13 +116,13 @@ const Output: React.FC<OutputProps> = ({
   const runCode = propsRunCode || localRunCode;
 
   return (
-    <div className=" h-full">
+    <div className="h-full flex flex-col overflow-hidden p-2">
       {showRunButton && (
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3 flex-shrink-0 mb-3">
           <Button
             variant={"dashboard"}
             color="green"
-            className="mb-5 border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
+            className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
             onClick={runCode}
             disabled={isLoading}
             aria-label={isLoading ? "Executing code, please wait" : "Run code"}
@@ -133,7 +133,7 @@ const Output: React.FC<OutputProps> = ({
       )}
       {/* P0.3: Add aria-live region for screen reader announcements */}
       <div 
-        className="h-full border border-carbon-border-medium rounded-sm"
+        className="flex-1 border border-carbon-border-medium rounded-sm overflow-y-auto p-2"
         role="region"
         aria-label="Code execution output"
       >
@@ -150,7 +150,7 @@ const Output: React.FC<OutputProps> = ({
           ) : output.length > 0 ? (
             output.map((line, index) => <p key={index}>{line}</p>)
           ) : (
-            <p>Click Run Code to see the output here...</p>
+            <p className="m-2 p-2">Click Run Code to see the output here...</p>
           )}
         </div>
         {/* Hidden message for screen readers */}

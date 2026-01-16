@@ -333,39 +333,43 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
       )}
       
       {/* Editor and Output Container - TOP TO BOTTOM LAYOUT */}
-      <div ref={containerRef} className="flex flex-col h-full flex-1 relative">
+      <div ref={containerRef} className="flex flex-col h-full flex-1 relative overflow-hidden">
         {/* Editor Panel - Top */}
         <div 
-          className="flex flex-col relative p-2" 
+          className="flex flex-col relative overflow-hidden" 
           style={{ height: isOutputVisible ? `${editorHeight}%` : '100%' }}
         >
-          <LanguageSelector language={language} onSelect={onSelect}/>
+          <div className="pt-2 pl-2 flex-shrink-0">
+            <LanguageSelector language={language} onSelect={onSelect}/>
+          </div>
           
-          <Editor
-            height="100%"
-            theme="vs-dark"
-            language={language[0]}
-            defaultValue={CODE_SNIPPETS[language[0]]}
-            value={value}
-            onMount={onMount}
-            onChange={(value) => handleEditorChange(value)}
-            options={{
-              padding: { top: 5 },
-              // P1.5: Monaco accessibility configuration
-              accessibilitySupport: "on",
-              ariaLabel: `Code editor for ${language[0]}`,
-              accessibilityHelpUrl: "https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide",
-              screenReaderAnnounceInlineSuggestion: true,
-              cursorBlinking: "smooth",
-              smoothScrolling: true,
-              // Better keyboard navigation
-              quickSuggestions: true,
-              tabCompletion: "on",
-              // Screen reader optimizations
-              renderWhitespace: "selection",
-              renderControlCharacters: true,
-            }}
-          />
+          <div className="flex-1 overflow-hidden">
+            <Editor
+              height="100%"
+              theme="vs-dark"
+              language={language[0]}
+              defaultValue={CODE_SNIPPETS[language[0]]}
+              value={value}
+              onMount={onMount}
+              onChange={(value) => handleEditorChange(value)}
+              options={{
+                // padding: { top: 5 },
+                // P1.5: Monaco accessibility configuration
+                accessibilitySupport: "on",
+                ariaLabel: `Code editor for ${language[0]}`,
+                accessibilityHelpUrl: "https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide",
+                screenReaderAnnounceInlineSuggestion: true,
+                cursorBlinking: "smooth",
+                smoothScrolling: true,
+                // Better keyboard navigation
+                quickSuggestions: true,
+                tabCompletion: "on",
+                // Screen reader optimizations
+                renderWhitespace: "selection",
+                renderControlCharacters: true,
+              }}
+            />
+          </div>
         </div>
         
         {/* Resizer Divider - Only show when output is visible */}
@@ -381,7 +385,7 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
         {/* Output Panel - Bottom - Only show when isOutputVisible is true */}
         {isOutputVisible && (
           <div 
-            className="flex flex-col flex-1"
+            className="flex flex-col overflow-hidden"
             style={{ height: `${100 - editorHeight}%` }}
           >
             <Output 
