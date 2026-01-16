@@ -37,7 +37,7 @@ export default function ResumeAIContent({ session, firstChat }: ResumeAIContentP
           <h1 className="text-6xl font-extrabold bg-hero-gradient bg-clip-text text-transparent">
             Resume AI
           </h1>
-          <p className="mt-1 text-lg text-muted">
+          <p className="mt-4 text-lg text-text">
             Upload your resume and let AI analyze and optimize it for your career growth.
           </p>
           <div className="flex mt-5">
