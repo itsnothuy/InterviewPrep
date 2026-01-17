@@ -24,6 +24,9 @@ const ChatComponent = ({ chatId }: Props) => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  // UX-003 FIX: Add error state tracking for failed messages
+  const [failedMessageId, setFailedMessageId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Set initial messages when data loads
   useEffect(() => {
@@ -36,12 +39,16 @@ const ChatComponent = ({ chatId }: Props) => {
     setInput(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, retryMessageId?: string) => {
     e.preventDefault();
     if (!input.trim() || isGenerating) return;
     
+    // UX-003 FIX: Clear any previous errors
+    setErrorMessage(null);
+    setFailedMessageId(null);
+    
     const userMessage: UIMessage = {
-      id: Date.now().toString(),
+      id: retryMessageId || Date.now().toString(),
       role: "user",
       parts: [{ type: "text", text: input }],
     };
@@ -66,7 +73,9 @@ const ChatComponent = ({ chatId }: Props) => {
       });
       
       if (!response.ok) {
-        throw new Error("Failed to get response");
+        // UX-003 FIX: Provide specific error messages
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
       
       // Read the streaming response
@@ -104,9 +113,36 @@ const ChatComponent = ({ chatId }: Props) => {
         }
       }
     } catch (error) {
+      // UX-003 FIX: Show user-friendly error and enable retry
       console.error("Error sending message:", error);
+      const errorMsg = error instanceof Error ? error.message : "Failed to send message";
+      setErrorMessage(errorMsg);
+      setFailedMessageId(userMessage.id);
+      
+      // Remove the failed assistant message if it was added
+      setMessages(prevMessages => {
+        const filtered = prevMessages.filter(msg => 
+          !(msg.role === "assistant" && msg.parts[0]?.type === "text" && msg.parts[0].text === "")
+        );
+        return filtered;
+      });
     } finally {
       setIsGenerating(false);
+    }
+  };
+  
+  // UX-003 FIX: Add retry handler
+  const handleRetry = () => {
+    if (failedMessageId) {
+      // Find the failed message
+      const failedMsg = messages.find(msg => msg.id === failedMessageId);
+      if (failedMsg && failedMsg.parts[0]?.type === "text") {
+        setInput(failedMsg.parts[0].text);
+        // Remove the failed message from display
+        setMessages(messages.filter(msg => msg.id !== failedMessageId));
+        setFailedMessageId(null);
+        setErrorMessage(null);
+      }
     }
   };
 
@@ -130,7 +166,14 @@ const ChatComponent = ({ chatId }: Props) => {
       </div>
 
       {/* message list */}
-      <div className="flex-grow relative overflow-y-auto hide-scrollbar">
+      {/* A11Y-006 FIX: Added role="log", aria-live, and aria-busy for screen readers */}
+      <div 
+        className="flex-grow relative overflow-y-auto hide-scrollbar"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-busy={isGenerating}
+      >
         {/* Placeholder message shown when there are no messages */}
         {!isLoading && messages.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -144,6 +187,12 @@ const ChatComponent = ({ chatId }: Props) => {
             </p>
           </div>
         )}
+        {/* A11Y-006 FIX: Screen reader announcement for loading state */}
+        {isGenerating && (
+          <div className="sr-only" role="status" aria-live="polite">
+            AI is generating a response...
+          </div>
+        )}
         <MessageList messages={messages} isLoading={isGenerating} />
       </div>
 
@@ -151,14 +200,34 @@ const ChatComponent = ({ chatId }: Props) => {
         onSubmit={handleSubmit}
         className="sticky bottom-0 inset-x-0 px-2 py-2 bg-[#2D2F36]"
       >
+        {/* UX-003 FIX: Show error message with retry button */}
+        {errorMessage && (
+          <div className="mb-2 p-3 bg-red-900/20 border border-red-500/50 rounded flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-red-400 text-sm font-medium">Failed to send message</p>
+              <p className="text-red-300/70 text-xs mt-1">{errorMessage}</p>
+            </div>
+            <Button
+              type="button"
+              onClick={handleRetry}
+              className="ml-2 bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 h-auto"
+            >
+              Retry
+            </Button>
+          </div>
+        )}
         <div className="flex mt-1">
           <Input
             value={input}
             onChange={handleInputChange}
             placeholder="Ask anything..."
             className="w-full bg-[#40414F] text-white placeholder-gray-400 border-none"
+            disabled={isGenerating}
           />
-          <Button className="bg-[#40414F] ml-2 hover:bg-gray-500/90">
+          <Button 
+            className="bg-[#40414F] ml-2 hover:bg-gray-500/90"
+            disabled={isGenerating || !input.trim()}
+          >
             <Send className="h-4 w-4 text-white" />
           </Button>
         </div>

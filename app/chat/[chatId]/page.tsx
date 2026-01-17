@@ -18,15 +18,25 @@ type Props = {
 const ChatPage = async ({ params: { chatId } }: Props) => {
   const session = await getServerSession(authConfig);
   const userId = session?.user?.id;
+  
+  // SEC-002 FIX: Validate redirect paths to prevent open redirect
+  const SAFE_REDIRECT_PATHS = ["/sign-in", "/resume-ai"];
+  const validateRedirect = (path: string) => {
+    if (!SAFE_REDIRECT_PATHS.includes(path)) {
+      throw new Error(`Invalid redirect path: ${path}`);
+    }
+    return path;
+  };
+  
   if (!userId) {
-    return redirect("/sign-in");
+    return redirect(validateRedirect("/sign-in"));
   }
   const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
-  if (!_chats) {
-    return redirect("/resume-ai");
+  if (!_chats || _chats.length === 0) {
+    return redirect(validateRedirect("/resume-ai"));
   }
   if (!_chats.find((chat) => chat.id === parseInt(chatId))) {
-    return redirect("/resume-ai");
+    return redirect(validateRedirect("/resume-ai"));
   }
 
   const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
