@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/utils/db";
 import { chats } from "@/utils/schema";
 import { getContext } from "@/app/context";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/lib/auth";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -10,6 +12,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: Request) {
   try {
+    // SEC-005 FIX: Add authentication check
+    const session = await getServerSession(authConfig);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
     const { messages, chatId } = await req.json();
     
     // Debug logging
@@ -25,6 +33,11 @@ export async function POST(req: Request) {
     const _chats = await db.select().from(chats).where(eq(chats.id, chatId));
     if (_chats.length !== 1) {
       return NextResponse.json({ error: "chat not found" }, { status: 404 });
+    }
+    
+    // SEC-001 FIX: Verify chat ownership to prevent IDOR
+    if (_chats[0].userId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     const fileKey = _chats[0].fileKey;
 
