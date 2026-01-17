@@ -304,15 +304,15 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
     <div className="flex flex-col h-full">
       {/* Optional Header */}
       {showHeader && (
-        <div className="flex items-center justify-between p-4 border-b border-[#393939] bg-[#161616]">
-          <h2 className="text-sm font-medium text-[#f4f4f4]">
+        <div className="flex items-center justify-between p-4 border-b border-[#393939] bg-[#161616] flex-shrink-0">
+          <h2 className="text-sm font-medium text-[#f4f4f4] flex-shrink-0">
             {headerTitle}
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {/* Toggle Output Button */}
             <Button
               variant={"dashboard"}
-              className="border border-carbon-border-strong text-black hover:bg-carbon-text-secondary hover:text-white"
+              className="border border-carbon-border-strong text-black hover:bg-carbon-text-secondary hover:text-white text-xs px-2 py-1 h-8 whitespace-nowrap"
               onClick={() => setIsOutputVisible(!isOutputVisible)}
               aria-label={isOutputVisible ? "Hide output panel" : "Show output panel"}
             >
@@ -321,12 +321,12 @@ const CodeEditorBlock: React.FC<CodeEditorBlockProps> = ({
             {/* Run Code Button */}
             <Button
               variant={"dashboard"}
-              className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white"
+              className="border border-carbon-border-strong text-black hover:bg-carbon-success hover:text-white text-xs px-2 py-1 h-8 whitespace-nowrap"
               onClick={runCode}
               disabled={isLoading}
               aria-label={isLoading ? "Executing code, please wait" : "Run code"}
             >
-              {isLoading ? <CircularProgress className="text-black" size={20} /> : "Run Code"}
+              {isLoading ? <CircularProgress className="text-black" size={16} /> : "Run Code"}
             </Button>
           </div>
         </div>
