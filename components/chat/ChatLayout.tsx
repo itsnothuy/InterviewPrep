@@ -15,14 +15,14 @@ interface ChatLayoutProps {
 
 export default function ChatLayout({ chats, chatId, currentChat }: ChatLayoutProps) {
   return (
-    <div className="flex w-full bg-bg pt-10 mt-8" style={{ height: 'calc(100vh - 50px)' }}>
-      <Group orientation="horizontal" className="w-full h-full">
+    <div className="w-full bg-bg pt-10 mt-8" style={{ height: 'calc(100vh - 50px)' }}>
+      <Group orientation="horizontal" style={{ width: '100%', height: '100%' }}>
         {/* Chat Sidebar Panel - Resizable */}
         <Panel
           defaultSize={20}
           minSize={15}
           maxSize={35}
-          className="h-full overflow-y-auto hide-scrollbar"
+          className="overflow-y-auto hide-scrollbar"
         >
           <ChatSideBar chats={chats} chatId={chatId} />
         </Panel>
@@ -39,7 +39,7 @@ export default function ChatLayout({ chats, chatId, currentChat }: ChatLayoutPro
         <Panel
           defaultSize={55}
           minSize={30}
-          className="h-full overflow-y-auto hide-scrollbar"
+          className="overflow-y-auto hide-scrollbar"
         >
           <PDFViewer pdf_url={currentChat?.pdfUrl || ''} />
         </Panel>
