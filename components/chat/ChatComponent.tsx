@@ -7,10 +7,14 @@ import { Send } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import MessageList from "./Message";
+import { useTranslations } from "next-intl";
 
 type Props = { chatId: number };
 
 const ChatComponent = ({ chatId }: Props) => {
+  // i18n: Use translations
+  const t = useTranslations('chat');
+  
   const { data, isLoading } = useQuery({
     queryKey: ["chat", chatId],
     queryFn: async () => {
@@ -39,19 +43,6 @@ const ChatComponent = ({ chatId }: Props) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
-  };
-
-  // A11Y-002 FIX: Add keyboard shortcut handler for Ctrl/Cmd+Enter
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Ctrl+Enter or Cmd+Enter: Add newline (but input doesn't support multiline)
-    // This is documented for future textarea upgrade
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      // Note: Input field doesn't support multiline, would need to change to textarea
-      console.warn('Multiline input not supported with <Input>. Consider upgrading to <textarea>.');
-      return;
-    }
-    // Enter alone: Submit form (default behavior, no need to handle)
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, retryMessageId?: string) => {
@@ -184,7 +175,7 @@ const ChatComponent = ({ chatId }: Props) => {
     >
       {/* header */}
       <div className="sticky top-0 inset-x-0 p-2 bg-[#2D2F36] h-fit mb-2">
-        <h3 className="text-xl font-bold text-gray-300">Chat</h3>
+        <h3 className="text-xl font-bold text-gray-300">{t('title')}</h3>
       </div>
 
       {/* message list */}
@@ -201,41 +192,41 @@ const ChatComponent = ({ chatId }: Props) => {
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <div className="max-w-2xl text-center">
               <h1 className="text-white text-3xl font-bold mb-4">
-                What can I help you with?
+                {t('emptyState.heading')}
               </h1>
               {/* A11Y-007 FIX: Improved contrast ratio from ~3.5:1 to 5.2:1 for WCAG AA compliance */}
               <p className="text-gray-300 mb-6">
-                I can help you analyze your resume and answer questions about it.
+                {t('emptyState.description')}
               </p>
               {/* UX-001 FIX: Add helpful suggestions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
                 <div className="bg-[#2D2F36] p-4 rounded-lg text-left">
-                  <p className="text-gray-200 text-sm font-medium mb-1">📝 Resume Analysis</p>
+                  <p className="text-gray-200 text-sm font-medium mb-1">{t('emptyState.suggestions.analysis.title')}</p>
                   <p className="text-gray-400 text-xs">
-                    "What are the key strengths in my resume?"
+                    &quot;{t('emptyState.suggestions.analysis.example')}&quot;
                   </p>
                 </div>
                 <div className="bg-[#2D2F36] p-4 rounded-lg text-left">
-                  <p className="text-gray-200 text-sm font-medium mb-1">💡 Suggestions</p>
+                  <p className="text-gray-200 text-sm font-medium mb-1">{t('emptyState.suggestions.suggestions.title')}</p>
                   <p className="text-gray-400 text-xs">
-                    "How can I improve this resume for tech roles?"
+                    &quot;{t('emptyState.suggestions.suggestions.example')}&quot;
                   </p>
                 </div>
                 <div className="bg-[#2D2F36] p-4 rounded-lg text-left">
-                  <p className="text-gray-200 text-sm font-medium mb-1">🎯 Formatting</p>
+                  <p className="text-gray-200 text-sm font-medium mb-1">{t('emptyState.suggestions.formatting.title')}</p>
                   <p className="text-gray-400 text-xs">
-                    "Is my resume format ATS-friendly?"
+                    &quot;{t('emptyState.suggestions.formatting.example')}&quot;
                   </p>
                 </div>
                 <div className="bg-[#2D2F36] p-4 rounded-lg text-left">
-                  <p className="text-gray-200 text-sm font-medium mb-1">📊 Skills Review</p>
+                  <p className="text-gray-200 text-sm font-medium mb-1">{t('emptyState.suggestions.skills.title')}</p>
                   <p className="text-gray-400 text-xs">
-                    "What skills should I highlight more?"
+                    &quot;{t('emptyState.suggestions.skills.example')}&quot;
                   </p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm">
-                Type your question below to get started
+                {t('emptyState.hint')}
               </p>
             </div>
           </div>
@@ -243,7 +234,7 @@ const ChatComponent = ({ chatId }: Props) => {
         {/* A11Y-006 FIX: Screen reader announcement for loading state */}
         {isGenerating && (
           <div className="sr-only" role="status" aria-live="polite">
-            AI is generating a response...
+            {t('loading')}
           </div>
         )}
         <MessageList messages={messages} isLoading={isGenerating} />
@@ -257,7 +248,7 @@ const ChatComponent = ({ chatId }: Props) => {
         {errorMessage && (
           <div className="mb-2 p-3 bg-red-900/20 border border-red-500/50 rounded flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-red-400 text-sm font-medium">Failed to send message</p>
+              <p className="text-red-400 text-sm font-medium">{t('error.sendFailed')}</p>
               <p className="text-red-300/70 text-xs mt-1">{errorMessage}</p>
             </div>
             <Button
@@ -265,7 +256,7 @@ const ChatComponent = ({ chatId }: Props) => {
               onClick={handleRetry}
               className="ml-2 bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 h-auto"
             >
-              Retry
+              {t('error.retry')}
             </Button>
           </div>
         )}
@@ -273,15 +264,15 @@ const ChatComponent = ({ chatId }: Props) => {
           <Input
             value={input}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask anything..."
+            placeholder={t('input.placeholder')}
             className="w-full bg-[#40414F] text-white placeholder-gray-300 border-none"
             disabled={isGenerating}
-            aria-label="Chat message input"
+            aria-label={t('input.placeholder')}
           />
           <Button 
             className="bg-[#40414F] ml-2 hover:bg-gray-500/90"
             disabled={isGenerating || !input.trim()}
+            aria-label={t('input.send')}
           >
             <Send className="h-4 w-4 text-white" />
           </Button>

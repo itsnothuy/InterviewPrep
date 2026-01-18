@@ -1,13 +1,17 @@
 import { cn } from "@/lib/utils";
 import { type UIMessage } from "@ai-sdk/react";
 import { Loader2, User2, Bot, Copy, Check } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Markdown from "./Markdown";
+import { Virtuoso } from "react-virtuoso";
 
 type Props = {
   isLoading: boolean;
   messages: UIMessage[];
 };
+
+// PERF-002 FIX: Threshold for virtualization - only virtualize for long conversations
+const VIRTUALIZATION_THRESHOLD = 50;
 
 const MessageList = ({ messages, isLoading }: Props) => {
   if (isLoading) {
@@ -19,7 +23,29 @@ const MessageList = ({ messages, isLoading }: Props) => {
   }
   if (!messages) return <></>;
   
-  // A11Y-009 FIX: Use semantic list structure for messages
+  // PERF-002 FIX: Use virtualization for long message lists (>50 messages)
+  const shouldVirtualize = messages.length > VIRTUALIZATION_THRESHOLD;
+  
+  if (shouldVirtualize) {
+    return (
+      <Virtuoso
+        style={{ height: "100%" }}
+        data={messages}
+        itemContent={(index, message) => (
+          <MessageItem key={message.id} message={message} />
+        )}
+        className="px-4"
+        // PERF-002: Start at bottom for chat-like behavior
+        initialTopMostItemIndex={messages.length - 1}
+        followOutput="smooth"
+        // A11Y-009: Maintain accessibility
+        role="list"
+        aria-label="Chat messages"
+      />
+    );
+  }
+  
+  // A11Y-009 FIX: Use semantic list structure for messages (short lists)
   return (
     <ul className="flex flex-col gap-2 px-4" role="list">
       {messages.map((message, index) => {

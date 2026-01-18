@@ -1,3 +1,7 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Exclude codepair reference folder from Next.js compilation
@@ -12,4 +16,4 @@ const nextConfig = {
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

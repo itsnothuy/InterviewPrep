@@ -3,6 +3,7 @@
 
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 
 export default function ChatError({
   error,
@@ -11,6 +12,8 @@ export default function ChatError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('errors');
+  
   useEffect(() => {
     // Log error to error reporting service (e.g., Sentry)
     console.error('Chat page error:', error);
@@ -37,7 +40,7 @@ export default function ChatError({
         </div>
         
         <h2 className="text-xl font-bold text-white mb-2">
-          Something went wrong!
+          {t('somethingWentWrong')}
         </h2>
         
         <p className="text-gray-400 mb-6">
@@ -49,7 +52,7 @@ export default function ChatError({
             onClick={reset}
             className="bg-blue-500 hover:bg-blue-600 text-white"
           >
-            Try again
+            {t('tryAgain')}
           </Button>
           
           <Button
@@ -57,7 +60,7 @@ export default function ChatError({
             variant="outline"
             className="border-gray-600 text-gray-300 hover:bg-gray-800"
           >
-            Go to Chats
+            {t('goToChats')}
           </Button>
         </div>
         

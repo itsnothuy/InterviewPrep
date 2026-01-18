@@ -1,0 +1,81 @@
+{
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "heading": "¿En qué puedo ayudarte?",
+      "description": "Puedo ayudarte a analizar tu currículum y responder preguntas sobre él.",
+      "suggestions": {
+        "analysis": {
+          "title": "📝 Análisis de Currículum",
+          "example": "¿Cuáles son las fortalezas principales de mi currículum?"
+        },
+        "suggestions": {
+          "title": "💡 Sugerencias",
+          "example": "¿Cómo puedo mejorar este currículum para roles técnicos?"
+        },
+        "formatting": {
+          "title": "🎯 Formato",
+          "example": "¿Mi formato de currículum es compatible con ATS?"
+        },
+        "skills": {
+          "title": "📊 Revisión de Habilidades",
+          "example": "¿Qué habilidades debería destacar más?"
+        }
+      },
+      "hint": "Escribe tu pregunta abajo para comenzar"
+    },
+    "input": {
+      "placeholder": "Pregunta lo que quieras...",
+      "send": "Enviar mensaje"
+    },
+    "loading": "La IA está generando una respuesta...",
+    "error": {
+      "sendFailed": "Error al enviar el mensaje",
+      "retry": "Reintentar"
+    },
+    "message": {
+      "copy": "Copiar mensaje",
+      "copied": "¡Copiado!"
+    }
+  },
+  "sidebar": {
+    "newChat": "Nuevo Chat",
+    "loadMore": "Cargar más ({count} más)",
+    "openChat": "Abrir chat para {name}",
+    "deleteChat": "Eliminar chat {name}",
+    "deleteConfirm": {
+      "title": "¿Eliminar Chat?",
+      "description": "¿Estás seguro de que quieres eliminar \"{name}\"?",
+      "warning": "Esta acción no se puede deshacer. Todos los mensajes de este chat se eliminarán permanentemente.",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "deleting": "Eliminando..."
+    }
+  },
+  "pdfViewer": {
+    "invalid": "URL de PDF inválida - Verificación de seguridad fallida",
+    "preparing": "Preparando visor de PDF...",
+    "loading": "Cargando PDF...",
+    "failed": "Error al cargar PDF",
+    "download": "Descargar PDF"
+  },
+  "fileUpload": {
+    "fileSizeError": "El tamaño del archivo debe ser menor a 10MB",
+    "uploadFailed": "Error al subir el archivo",
+    "loading": "PDF está cargando",
+    "dropHere": "Arrastra el PDF Aquí"
+  },
+  "errors": {
+    "somethingWentWrong": "¡Algo salió mal!",
+    "tryAgain": "Intentar de nuevo",
+    "goToChats": "Ir a Chats",
+    "unauthorized": "Inicio de Sesión Requerido"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "save": "Guardar"
+  }
+}
