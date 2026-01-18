@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Panel, Group, Separator } from 'react-resizable-panels';
 import ChatComponent from '@/components/chat/ChatComponent';
 import ChatSideBar from '@/components/chat/ChatSideBar';
 import PDFViewer from '@/components/chat/PDFViewer';
 import { DrizzleChat } from '@/utils/schema';
+import { useResizable } from '@/hooks/useResizable';
+import { ResizeHandle } from '@/components/ui/resize-handle';
 
 interface ChatLayoutProps {
   chats: DrizzleChat[];
@@ -13,55 +14,50 @@ interface ChatLayoutProps {
   currentChat: DrizzleChat;
 }
 
+/**
+ * ChatLayout - Resizable three-panel layout for chat page
+ * 
+ * IMPLEMENTATION PATTERN (from POSTMORTEM_CODE_EDITOR_REFACTOR.md):
+ * - Custom resize hook with proper event listener management
+ * - Sidebar has dynamic pixel width (user-controlled)
+ * - PDF and Chat share remaining space with fixed flex ratio
+ * - localStorage persistence for sidebar width
+ */
 export default function ChatLayout({ chats, chatId, currentChat }: ChatLayoutProps) {
+  // Resize only the sidebar (simple two-panel approach)
+  const { width: sidebarWidth, isResizing, handleMouseDown } = useResizable({
+    initialWidth: 280,
+    minWidth: 200,
+    maxWidth: 500,
+    storageKey: 'chat-sidebar-width',
+  });
+
   return (
-    <div className="w-full bg-bg pt-10 mt-8" style={{ height: 'calc(100vh - 50px)' }}>
-      <Group orientation="horizontal" style={{ width: '100%', height: '100%' }}>
-        {/* Chat Sidebar Panel - Resizable */}
-        <Panel
-          defaultSize={20}
-          minSize={15}
-          maxSize={35}
-          className="overflow-y-auto hide-scrollbar"
+    <div className="flex w-full bg-bg pt-10 mt-8" style={{ height: 'calc(100vh - 50px)' }}>
+      <div className="flex w-full h-full">
+        {/* Sidebar with dynamic width */}
+        <div
+          className="h-full overflow-y-auto hide-scrollbar flex-shrink-0"
+          style={{ width: `${sidebarWidth}px` }}
         >
           <ChatSideBar chats={chats} chatId={chatId} />
-        </Panel>
+        </div>
 
-        {/* Resize Handle between Sidebar and PDF */}
-        <Separator className="w-1 bg-transparent hover:bg-blue-500/30 transition-colors cursor-col-resize relative group">
-          {/* Visual indicator on hover */}
-          <div className="absolute inset-y-0 -left-1 -right-1 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-0.5 h-12 bg-blue-500 rounded-full" />
+        {/* Resize Handle */}
+        <ResizeHandle onMouseDown={handleMouseDown} isResizing={isResizing} />
+
+        {/* Main content (PDF + Chat) - shares remaining space */}
+        <div className="flex flex-1 h-full overflow-hidden">
+          {/* PDF Viewer - takes 6/9 of remaining space */}
+          <div className="h-full flex-[6] overflow-y-auto hide-scrollbar">
+            <PDFViewer pdf_url={currentChat?.pdfUrl || ''} />
           </div>
-        </Separator>
-
-        {/* PDF Viewer Panel - Resizable */}
-        <Panel
-          defaultSize={55}
-          minSize={30}
-          className="overflow-y-auto hide-scrollbar"
-        >
-          <PDFViewer pdf_url={currentChat?.pdfUrl || ''} />
-        </Panel>
-
-        {/* Resize Handle between PDF and Chat */}
-        <Separator className="w-1 bg-transparent hover:bg-blue-500/30 transition-colors cursor-col-resize relative group">
-          {/* Visual indicator on hover */}
-          <div className="absolute inset-y-0 -left-1 -right-1 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-0.5 h-12 bg-blue-500 rounded-full" />
+          {/* Chat Component - takes 3/9 of remaining space */}
+          <div className="flex-[3] overflow-y-auto hide-scrollbar">
+            <ChatComponent chatId={chatId} />
           </div>
-        </Separator>
-
-        {/* Chat Component Panel - Resizable */}
-        <Panel
-          defaultSize={25}
-          minSize={20}
-          maxSize={40}
-          className="overflow-y-auto hide-scrollbar"
-        >
-          <ChatComponent chatId={chatId} />
-        </Panel>
-      </Group>
+        </div>
+      </div>
     </div>
   );
 }
