@@ -35,10 +35,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .limit(1);
     
     if (chat[0] && chat[0].userId === userId) {
+      const title = `Chat: ${chat[0].pdfName || "Resume Chat"}`;
+      const description = "AI-powered resume analysis and chat";
+      
       return {
-        title: `Chat: ${chat[0].pdfName || "Resume Chat"}`,
-        description: "AI-powered resume analysis and chat",
+        title,
+        description,
         robots: "noindex, nofollow", // Private content
+        // SEO-002 FIX: OpenGraph tags for social sharing
+        openGraph: {
+          title,
+          description,
+          type: "website",
+          siteName: "InterviewPrep AI",
+        },
+        // SEO-002 FIX: Twitter Card metadata
+        twitter: {
+          card: "summary",
+          title,
+          description,
+        },
       };
     }
   } catch (error) {
@@ -82,7 +98,15 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
     return redirect(validateRedirect("/resume-ai"));
   }
   return (
-    <div className="flex w-full overflow-scroll hide-scrollbar bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
+    <>
+      {/* A11Y-008 FIX: Skip-to-content link for keyboard navigation */}
+      <a 
+        href="#main-chat"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded"
+      >
+        Skip to chat
+      </a>
+      <div className="flex w-full overflow-scroll hide-scrollbar bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
       <div className="flex w-full h-full overflow-scroll hide-scrollbar">
         {/* chat sidebar */}
         <div className="flex-[1] max-w-xs h-full">
@@ -93,11 +117,12 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
           <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
         </div>
         {/* chat component */}
-        <div className="flex-[3] ">
+        <div className="flex-[3]" id="main-chat">
           <ChatComponent chatId={parseInt(chatId)} />
         </div>
       </div>
     </div>
+    </>
   );
 };
 

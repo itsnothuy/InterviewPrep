@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { type UIMessage } from "@ai-sdk/react";
-import { Loader2, User2, Bot } from "lucide-react";
-import React from "react";
+import { Loader2, User2, Bot, Copy, Check } from "lucide-react";
+import React, { useState } from "react";
 import Markdown from "./Markdown";
 
 type Props = {
@@ -18,34 +18,100 @@ const MessageList = ({ messages, isLoading }: Props) => {
     );
   }
   if (!messages) return <></>;
+  
+  // A11Y-009 FIX: Use semantic list structure for messages
   return (
-    <div className="flex flex-col gap-2 px-4">
+    <ul className="flex flex-col gap-2 px-4" role="list">
       {messages.map((message, index) => {
         return (
-          <div
-            key={message.id}
-            className={cn("flex", {
-              "justify-end pl-10": message.role === "user",
-              "justify-start pr-10": message.role === "assistant",
-            })}
-          >
-            <div
-              className={cn(
-                "rounded-lg px-3 text-sm py-1 ring-1 ring-gray-500/20",
-                {
-                  "bg-gray-600 text-white": message.role === "user",
-                  "bg-[#40414F] text-white ring-0": message.role === "assistant",
-                }
-              )}
-            >
-              <Markdown text={
-                message.parts?.find(part => part.type === "text")?.text || ""
-              } />
-            </div>
-          </div>
+          <MessageItem key={message.id} message={message} />
         );
       })}
-    </div>
+    </ul>
+  );
+};
+
+// UX-005 & UX-006 FIX: Extract message item with timestamp and copy functionality
+const MessageItem = ({ message }: { message: UIMessage }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const messageText = message.parts?.find(part => part.type === "text")?.text || "";
+  
+  // UX-006 FIX: Copy message to clipboard
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(messageText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+  
+  // UX-005 FIX: Format timestamp
+  const getTimestamp = () => {
+    try {
+      const timestamp = parseInt(message.id);
+      if (isNaN(timestamp)) return null;
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    } catch {
+      return null;
+    }
+  };
+  
+  const timestamp = getTimestamp();
+  
+  return (
+    <li
+      className={cn("flex group", {
+        "justify-end pl-10": message.role === "user",
+        "justify-start pr-10": message.role === "assistant",
+      })}
+    >
+      <div className="flex flex-col gap-1 max-w-full">
+        <div
+          className={cn(
+            "rounded-lg px-3 text-sm py-1 ring-1 ring-gray-500/20 relative",
+            {
+              "bg-gray-600 text-white": message.role === "user",
+              "bg-[#40414F] text-white ring-0": message.role === "assistant",
+            }
+          )}
+        >
+          <Markdown text={messageText} />
+          {/* UX-006 FIX: Copy button */}
+          <button
+            onClick={handleCopy}
+            className={cn(
+              "absolute top-1 right-1 p-1 rounded",
+              "opacity-0 group-hover:opacity-100 transition-opacity",
+              "hover:bg-white/10"
+            )}
+            aria-label="Copy message"
+            title="Copy message"
+          >
+            {copied ? (
+              <Check className="h-3 w-3 text-green-400" />
+            ) : (
+              <Copy className="h-3 w-3 text-gray-400" />
+            )}
+          </button>
+        </div>
+        {/* UX-005 FIX: Timestamp */}
+        {timestamp && (
+          <span className={cn(
+            "text-xs text-gray-500 px-1",
+            message.role === "user" ? "text-right" : "text-left"
+          )}>
+            {timestamp}
+          </span>
+        )}
+      </div>
+    </li>
   );
 };
 

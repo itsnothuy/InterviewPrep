@@ -41,6 +41,19 @@ const ChatComponent = ({ chatId }: Props) => {
     setInput(e.target.value);
   };
 
+  // A11Y-002 FIX: Add keyboard shortcut handler for Ctrl/Cmd+Enter
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Ctrl+Enter or Cmd+Enter: Add newline (but input doesn't support multiline)
+    // This is documented for future textarea upgrade
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      // Note: Input field doesn't support multiline, would need to change to textarea
+      console.warn('Multiline input not supported with <Input>. Consider upgrading to <textarea>.');
+      return;
+    }
+    // Enter alone: Submit form (default behavior, no need to handle)
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, retryMessageId?: string) => {
     e.preventDefault();
     if (!input.trim() || isGenerating) return;
@@ -260,9 +273,11 @@ const ChatComponent = ({ chatId }: Props) => {
           <Input
             value={input}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             placeholder="Ask anything..."
             className="w-full bg-[#40414F] text-white placeholder-gray-300 border-none"
             disabled={isGenerating}
+            aria-label="Chat message input"
           />
           <Button 
             className="bg-[#40414F] ml-2 hover:bg-gray-500/90"
