@@ -98,18 +98,18 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
     return redirect(validateRedirect("/resume-ai"));
   }
   return (
-    <div className="flex w-full overflow-scroll hide-scrollbar bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
-      <div className="flex w-full h-full overflow-scroll hide-scrollbar">
-        {/* chat sidebar */}
-        <div className="flex-[1] max-w-xs h-full">
+    <div className="flex w-full bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
+      <div className="flex w-full h-full">
+        {/* chat sidebar - Independent scrolling */}
+        <div className="flex-[1] max-w-xs h-full overflow-y-auto hide-scrollbar">
           <ChatSideBar chats={_chats} chatId={parseInt(chatId)} />
         </div>
-        {/* pdf viewer */}
-        <div className="h-full flex-[6]">
+        {/* pdf viewer - Independent scrolling */}
+        <div className="h-full flex-[6] overflow-y-auto hide-scrollbar">
           <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
         </div>
-        {/* chat component */}
-        <div className="flex-[3]">
+        {/* chat component - Independent scrolling */}
+        <div className="flex-[3] overflow-y-auto hide-scrollbar">
           <ChatComponent chatId={parseInt(chatId)} />
         </div>
       </div>
