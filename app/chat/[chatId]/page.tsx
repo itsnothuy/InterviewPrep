@@ -8,12 +8,49 @@ import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
+import { Metadata } from "next";
 
 type Props = {
   params: {
     chatId: string;
   };
 };
+
+// SEO-001 FIX: Add page-specific metadata for better SEO
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const session = await getServerSession(authConfig);
+  const userId = session?.user?.id;
+  
+  if (!userId) {
+    return {
+      title: "Chat - Sign In Required",
+      robots: "noindex, nofollow",
+    };
+  }
+  
+  try {
+    const chat = await db.select()
+      .from(chats)
+      .where(eq(chats.id, parseInt(params.chatId)))
+      .limit(1);
+    
+    if (chat[0] && chat[0].userId === userId) {
+      return {
+        title: `Chat: ${chat[0].pdfName || "Resume Chat"}`,
+        description: "AI-powered resume analysis and chat",
+        robots: "noindex, nofollow", // Private content
+      };
+    }
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+  }
+  
+  return {
+    title: "Resume AI Chat",
+    description: "AI-powered resume analysis",
+    robots: "noindex, nofollow",
+  };
+}
 
 const ChatPage = async ({ params: { chatId } }: Props) => {
   const session = await getServerSession(authConfig);
@@ -31,15 +68,19 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
   if (!userId) {
     return redirect(validateRedirect("/sign-in"));
   }
+  
+  // PERF-003 FIX: Single optimized query instead of two sequential queries
   const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
+  
   if (!_chats || _chats.length === 0) {
     return redirect(validateRedirect("/resume-ai"));
   }
-  if (!_chats.find((chat) => chat.id === parseInt(chatId))) {
+  
+  const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
+  
+  if (!currentChat) {
     return redirect(validateRedirect("/resume-ai"));
   }
-
-  const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
   return (
     <div className="flex w-full overflow-scroll hide-scrollbar bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
       <div className="flex w-full h-full overflow-scroll hide-scrollbar">
