@@ -1,6 +1,4 @@
-import ChatComponent from "@/components/chat/ChatComponent";
-import ChatSideBar from "@/components/chat/ChatSideBar";
-import PDFViewer from "@/components/chat/PDFViewer";
+import ChatLayout from "@/components/chat/ChatLayout";
 import { authConfig } from "@/lib/auth";
 import { db } from "@/utils/db";
 import { chats } from "@/utils/schema";
@@ -97,23 +95,13 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
   if (!currentChat) {
     return redirect(validateRedirect("/resume-ai"));
   }
+  
   return (
-    <div className="flex w-full bg-bg pt-10 mt-8" style={{ height: "calc(100vh - 50px)" }}>
-      <div className="flex w-full h-full">
-        {/* chat sidebar - Independent scrolling */}
-        <div className="flex-[1] max-w-xs h-full overflow-y-auto hide-scrollbar">
-          <ChatSideBar chats={_chats} chatId={parseInt(chatId)} />
-        </div>
-        {/* pdf viewer - Independent scrolling */}
-        <div className="h-full flex-[6] overflow-y-auto hide-scrollbar">
-          <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
-        </div>
-        {/* chat component - Independent scrolling */}
-        <div className="flex-[3] overflow-y-auto hide-scrollbar">
-          <ChatComponent chatId={parseInt(chatId)} />
-        </div>
-      </div>
-    </div>
+    <ChatLayout 
+      chats={_chats} 
+      chatId={parseInt(chatId)} 
+      currentChat={currentChat} 
+    />
   );
 };
 
