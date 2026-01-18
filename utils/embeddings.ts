@@ -1,7 +1,9 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 // Access your API key as an environment variable
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY as string);
+const genAI = new GoogleGenAI({ 
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY as string 
+});
 
 export async function getEmbeddings(text: string) {
   try {
@@ -12,12 +14,12 @@ export async function getEmbeddings(text: string) {
     }
     
     // For embeddings, use the Text Embeddings model
-    const model: GenerativeModel = genAI.getGenerativeModel({
+    const response = await genAI.models.embedContent({
       model: "text-embedding-004",
+      contents: text.replace(/\n/g, " "),
     });
-    const result = await model.embedContent(text.replace(/\n/g, " "));
-    const embedding = result.embedding;
-    return embedding.values;
+    
+    return response.embeddings?.[0]?.values || [];
   } catch (error) {
     console.error("Error generating embedding from Gemini:", error);
     throw error;

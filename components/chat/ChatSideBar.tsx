@@ -69,7 +69,7 @@ const ChatSideBar = ({ chats: initialChats, chatId }: Props) => {
               aria-current={chat.id === chatId ? "page" : undefined}
             >
               <div
-                className={cn("rounded-lg p-3 text-black flex items-center pr-10", {
+                className={cn("rounded-lg p-3 text-black flex items-center pr-5", {
                   "bg-[#343541]": chat.id === chatId,
                   "hover:bg-[#2D2F36]": chat.id !== chatId,
                 })}

@@ -2,14 +2,12 @@
  * Server-only Gemini AI client.
  * This module MUST NOT be imported from client components.
  * The "server-only" import ensures build-time errors if imported from client.
+ * 
+ * Updated to use @google/genai (new SDK) instead of deprecated @google/generative-ai
  */
 import "server-only";
 
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 // Use non-public env var - this is server-only
 const apiKey = process.env.GEMINI_API_KEY;
@@ -21,66 +19,65 @@ if (!apiKey) {
   );
 }
 
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenAI({ apiKey });
 
 /**
  * Get a configured Gemini model for chat/generation
+ * Note: New API uses ai.models.generateContent() pattern
  */
 export function getGeminiModel(modelName: string = "gemini-2.0-flash-lite") {
-  return genAI.getGenerativeModel({ model: modelName });
+  return { genAI, modelName };
 }
 
 /**
- * Get a configured Gemini model with safety settings for chat
+ * Get generation config for Gemini chat
+ * New API: Safety settings and generation config are passed to generateContent()
  */
-export function getGeminiChatModel() {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-lite",
-  });
-
+export function getGeminiChatConfig() {
   const generationConfig = {
     temperature: 1,
     topP: 0.95,
     topK: 64,
     maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
   };
 
   const safetySettings = [
     {
-      category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      category: "HARM_CATEGORY_HARASSMENT",
+      threshold: "BLOCK_MEDIUM_AND_ABOVE",
     },
     {
-      category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      category: "HARM_CATEGORY_HATE_SPEECH",
+      threshold: "BLOCK_MEDIUM_AND_ABOVE",
     },
     {
-      category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      threshold: "BLOCK_MEDIUM_AND_ABOVE",
     },
     {
-      category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+      threshold: "BLOCK_MEDIUM_AND_ABOVE",
     },
   ];
 
-  return { model, generationConfig, safetySettings };
+  return { generationConfig, safetySettings };
 }
 
 /**
- * Start a chat session with the Gemini model
+ * Generate content using Gemini model
+ * New API pattern: ai.models.generateContent()
  */
-export function startGeminiChat() {
-  const { model, generationConfig, safetySettings } = getGeminiChatModel();
-  return model.startChat({
-    generationConfig,
-    safetySettings,
+export async function generateContent(prompt: string, modelName: string = "gemini-2.0-flash-lite") {
+  const response = await genAI.models.generateContent({
+    model: modelName,
+    contents: prompt,
   });
+  
+  return response;
 }
 
 /**
- * Get the raw GoogleGenerativeAI instance for advanced use cases
+ * Get the raw GoogleGenAI instance for advanced use cases
  */
 export function getGeminiClient() {
   return genAI;

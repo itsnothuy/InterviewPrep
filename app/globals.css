@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+
+@layer base {  
+  /* OR if that breaks responsive design: */
+  body {
+    zoom: 1; /* Chrome/Edge only, but simpler */
+  }
+
   :root {
     /* InterviewCoder Theme - Dark Charcoal + Gold */
     --bg: #101010;          /* dark charcoal background */
