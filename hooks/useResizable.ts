@@ -43,14 +43,19 @@ export function useResizable({
 
   const [isResizing, setIsResizing] = useState(false);
   const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(0);
 
   // Mouse move handler - must be useCallback for proper cleanup
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging.current) return;
 
-    const deltaX = e.clientX;
+    // Calculate delta from starting position
+    const deltaX = e.clientX - startX.current;
+    const newWidth = startWidth.current + deltaX;
+    
     // Clamp width between min and max
-    const clampedWidth = Math.min(Math.max(deltaX, minWidth), maxWidth);
+    const clampedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
     setWidth(clampedWidth);
   }, [minWidth, maxWidth]);
 
@@ -76,6 +81,11 @@ export function useResizable({
   // Mouse down handler - starts the resize
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Store starting position and width
+    startX.current = e.clientX;
+    startWidth.current = width;
+    
     isDragging.current = true;
     setIsResizing(true);
     document.body.style.cursor = 'col-resize';
