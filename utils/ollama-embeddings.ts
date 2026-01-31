@@ -1,15 +1,9 @@
 /**
- * Embeddings Utility - Using Ollama with nomic-embed-text
+ * Ollama Embeddings Utility
  * 
- * Replaces Google's text-embedding-004 with Ollama's nomic-embed-text.
+ * Replaces Google's text-embedding-004 with Ollama's nomic-embed-text
  * Both produce 768-dimensional vectors, so Pinecone index remains compatible.
  */
-
-// Keep old import for reference/fallback (commented out)
-// import { GoogleGenAI } from "@google/genai";
-// const genAI = new GoogleGenAI({ 
-//   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY as string 
-// });
 
 // Ollama configuration
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
@@ -19,10 +13,16 @@ interface OllamaEmbeddingResponse {
   embedding: number[];
 }
 
+/**
+ * Get embeddings for a text string using Ollama
+ * 
+ * @param text - The text to embed
+ * @returns Array of numbers representing the embedding vector (768 dimensions)
+ */
 export async function getEmbeddings(text: string): Promise<number[]> {
   try {
     // Ensure text is valid and not empty
-    if (!text || typeof text !== 'string') {
+    if (!text || typeof text !== "string") {
       console.warn("getEmbeddings received invalid text:", text);
       text = "";
     }
@@ -36,7 +36,6 @@ export async function getEmbeddings(text: string): Promise<number[]> {
       return new Array(768).fill(0);
     }
 
-    // Call Ollama embeddings API
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: "POST",
       headers: {
@@ -62,14 +61,57 @@ export async function getEmbeddings(text: string): Promise<number[]> {
     return data.embedding;
   } catch (error) {
     console.error("Error generating embedding from Ollama:", error);
-    
-    // Check if Ollama is not running
-    if (error instanceof Error && error.message.includes("fetch failed")) {
-      console.error("Ollama may not be running. Start it with: ollama serve");
-      console.error("Then pull the embedding model: ollama pull nomic-embed-text");
-    }
-    
     throw error;
   }
 }
 
+/**
+ * Get embeddings for multiple texts (batch processing)
+ * Note: Ollama doesn't natively support batch embeddings,
+ * so we process them sequentially
+ * 
+ * @param texts - Array of texts to embed
+ * @returns Array of embedding vectors
+ */
+export async function getBatchEmbeddings(texts: string[]): Promise<number[][]> {
+  const embeddings: number[][] = [];
+
+  for (const text of texts) {
+    const embedding = await getEmbeddings(text);
+    embeddings.push(embedding);
+  }
+
+  return embeddings;
+}
+
+/**
+ * Check if Ollama embedding model is available
+ */
+export async function checkEmbeddingModelAvailable(): Promise<boolean> {
+  try {
+    const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
+    if (!response.ok) return false;
+
+    const data = await response.json();
+    const models = data.models?.map((m: { name: string }) => m.name) || [];
+
+    return models.some(
+      (name: string) =>
+        name.includes("nomic-embed") || name === OLLAMA_EMBEDDING_MODEL
+    );
+  } catch (error) {
+    console.error("Error checking embedding model availability:", error);
+    return false;
+  }
+}
+
+/**
+ * Get embedding model info
+ */
+export function getEmbeddingModelInfo() {
+  return {
+    model: OLLAMA_EMBEDDING_MODEL,
+    dimensions: 768, // nomic-embed-text produces 768-dim vectors
+    baseUrl: OLLAMA_BASE_URL,
+  };
+}

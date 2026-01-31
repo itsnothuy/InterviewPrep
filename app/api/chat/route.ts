@@ -5,8 +5,19 @@ import { chats } from "@/utils/schema";
 import { getContext } from "@/app/context";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/lib/auth";
+import { streamGenerate } from "@/lib/server/ollama";
 
-import { GoogleGenAI } from "@google/genai";
+// Keep old import for fallback (commented out)
+// import { GoogleGenAI } from "@google/genai";
+
+// Ollama configuration
+const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3.1:70b";
+
+interface OllamaChatMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
 
 export async function POST(req: Request) {
   try {
@@ -40,63 +51,36 @@ export async function POST(req: Request) {
     const systemContent = `
 AI assistant is a brand new, powerful, human-like artificial intelligence.
 Traits: expert knowledge, helpfulness, cleverness, articulateness; friendly, kind, inspiring.
-Big fan of Pinecone and Vercel.
 START CONTEXT BLOCK
 ${context1}
 END OF CONTEXT BLOCK
 The assistant will consider any CONTEXT BLOCK provided. It will not apologize for previous responses but will indicate when new information was gained.
     `.trim();
 
-    const genAI = new GoogleGenAI({ 
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY! 
-    });
-
     const validMessages = messages.filter((msg: any) => msg && msg.role);
     console.log("Processing messages:", validMessages);
 
-    const systemHistory = [
+    // Convert messages to Ollama format
+    const ollamaMessages: OllamaChatMessage[] = [
       {
-        role: "user",
-        parts: [{ text: systemContent }]
+        role: "system",
+        content: systemContent,
       },
-      {
-        role: "model", 
-        parts: [{ text: "I understand. I am an AI assistant with expert knowledge, helpfulness, cleverness, and articulateness. I'm friendly, kind, and inspiring. I'll consider any context provided and indicate when new information was gained without apologizing for previous responses." }]
-      }
     ];
 
-    const messageHistory = validMessages
-      .filter((msg: any) => msg.role !== "system")
-      .map((msg: any) => ({
-        role: msg.role === "user" ? "user" : "model",
-        parts: [{ text: msg.parts?.find((part: any) => part.type === "text")?.text || msg.content || "" }]
-      }));
+    // Add conversation history
+    for (const msg of validMessages) {
+      if (msg.role === "system") continue;
+      
+      const content = msg.parts?.find((part: any) => part.type === "text")?.text || msg.content || "";
+      ollamaMessages.push({
+        role: msg.role === "user" ? "user" : "assistant",
+        content: content,
+      });
+    }
 
-    const allMessages = [...systemHistory, ...messageHistory];
-
-    const response = await genAI.models.generateContentStream({
-      model: "gemini-2.0-flash-lite",
-      contents: allMessages.map(msg => ({
-        role: msg.role,
-        parts: msg.parts
-      }))
-    });
-
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of response) {
-            const chunkText = chunk.text;
-            if (chunkText) {
-              controller.enqueue(new TextEncoder().encode(chunkText));
-            }
-          }
-          controller.close();
-        } catch (error) {
-          controller.error(error);
-        }
-      }
-    });
+    // Use Ollama streaming
+    const stream = await streamGenerate(ollamaMessages, OLLAMA_MODEL);
 
     return new Response(stream, {
       headers: {
@@ -107,8 +91,13 @@ The assistant will consider any CONTEXT BLOCK provided. It will not apologize fo
   } catch (error) {
     console.error("Chat API Error:", error);
     
-    if (error instanceof Error && error.message.includes("not found")) {
-      console.log("Model not found. You can check available models at: https://generativelanguage.googleapis.com/v1beta/models?key=YOUR_API_KEY");
+    // Check if Ollama is not running
+    if (error instanceof Error && error.message.includes("fetch failed")) {
+      console.error("Ollama may not be running. Start it with: ollama serve");
+      return NextResponse.json(
+        { error: "AI service unavailable. Please ensure Ollama is running." },
+        { status: 503 }
+      );
     }
     
     return NextResponse.json(
