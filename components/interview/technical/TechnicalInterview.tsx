@@ -302,6 +302,7 @@ import { Button } from "@/components/ui/button";
 import CodeEditorBlock from "@/components/code-editor/code-editor-block";
 import { chatSession } from "@/utils/GeminiAIModal";
 import toast from "react-hot-toast";
+import { sanitizeCodeInput, sanitizeForPrompt } from "@/utils/sanitize";
 
 interface TechnicalInterviewProps {
   mockId: string;
@@ -417,13 +418,18 @@ const TechnicalInterview: React.FC<TechnicalInterviewProps> = ({
         let rating = "";
         let feedback = "";
 
+        // SEC-004 FIX: Sanitize inputs before sending to AI
+        const sanitizedQuestionText = sanitizeForPrompt(question.questionText, 1000);
+        const sanitizedDifficulty = sanitizeForPrompt(question.difficulty, 50);
+        const sanitizedUserCode = sanitizeCodeInput(userCode || "", 10000);
+
         // Prompt for AI feedback
         const codeFeedbackPrompt = `
-Question: "${question.questionText}"
-Difficulty: ${question.difficulty}
+Question: "${sanitizedQuestionText}"
+Difficulty: ${sanitizedDifficulty}
 User's code:
 \`\`\`
-${userCode}
+${sanitizedUserCode}
 \`\`\`
 Please evaluate the code for correctness, efficiency, and clarity.
 Return a JSON response with "rating" (1-10) and "feedback" (a short review) only.

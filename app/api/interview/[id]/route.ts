@@ -1,11 +1,19 @@
 // app/api/interview/[id]/route.ts
 import { NextResponse } from 'next/server';
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/lib/auth";
 import { db } from '@/utils/db';
 import { eq } from 'drizzle-orm';
 import { MockInterview } from '@/utils/schema';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
+    // SEC-003 FIX: Add authentication check
+    const session = await getServerSession(authConfig);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     console.log("DEBUG: Fetching interview details for ID:", params.id);
     const result = await db
       .select()
@@ -15,6 +23,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!result || result.length === 0) {
       return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
     }
+
+    // SEC-003 FIX: Add authorization check - verify ownership
+    if (result[0].createdBy !== session.user.id) {
+      return NextResponse.json(
+        { error: 'Forbidden - You do not have access to this interview' },
+        { status: 403 }
+      );
+    }
+
     console.log("DEBUG: Fetched interview details:", result[0]);
     
     let jsonString = result[0].jsonMockResp;

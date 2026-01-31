@@ -158,8 +158,10 @@ import { Button } from "../../ui/button";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useEffect, useRef, useState } from "react";
 import { chatSession } from "@/utils/GeminiAIModal";
+import { useSession } from "next-auth/react";
 import moment from "moment";
 import toast from "react-hot-toast";
+import { sanitizeForPrompt } from "@/utils/sanitize";
 
 interface SpeechResult {
   transcript: string;
@@ -185,6 +187,9 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
   activeQuestionIndex,
   interviewData,
 }) => {
+  // Get user session
+  const { data: session } = useSession();
+  
   // State for display purposes (optional)
   const [userAnswer, setUserAnswer] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -272,13 +277,25 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       toast.error("Interview data is missing");
       return;
     }
+
+    // SEC-001 FIX: Check for user session
+    if (!session?.user?.id) {
+      console.error("User session not found");
+      toast.error("You must be logged in to submit answers");
+      return;
+    }
+
     setLoading(true);
+
+    // SEC-004 FIX: Sanitize user input before sending to AI
+    const sanitizedQuestion = sanitizeForPrompt(mockQuestions[activeQuestionIndex]?.question || "", 1000);
+    const sanitizedAnswer = sanitizeForPrompt(transcriptRef.current, 5000);
 
     const feedbackPrompt =
       "Question: " +
-      mockQuestions[activeQuestionIndex]?.question +
+      sanitizedQuestion +
       ", User answer: " +
-      transcriptRef.current +
+      sanitizedAnswer +
       ", Based on the question and the user answer, please rate the answer and give feedback for improvement in 3-5 lines, in JSON format with fields 'rating' and 'feedback'.";
     console.log("DEBUG: Sending Gemini API message with prompt:", feedbackPrompt);
 
@@ -310,7 +327,7 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       userAns: transcriptRef.current,
       feedback: JsonFeedbackResp.feedback,
       rating: JsonFeedbackResp.rating,
-      createdBy: "6b67e75e-ee67-4528-a653-3d696cedc40b",
+      createdBy: session.user.id, // SEC-001 FIX: Use actual user ID from session
     };
 
     console.log("DEBUG: Sending payload to /api/insertAnswer:", payload);
