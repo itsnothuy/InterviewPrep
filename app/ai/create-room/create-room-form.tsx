@@ -71,14 +71,16 @@ const CreateRoomForm = () => {
         setResumes(res.data.resumes);
       } catch (error) {
         console.error("Failed to fetch resumes:", error);
+        // UX-001 FIX: Non-critical error, don't show toast - user can still upload new resume
       }
     }
     fetchResumes();
   }, []);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // UX-001 FIX: Add toast notification for auth error
     if (!session) {
-      console.error("Unauthorized. You must be logged in to create a room.");
+      toast.error("Please log in to create an interview room.");
       return;
     }
 

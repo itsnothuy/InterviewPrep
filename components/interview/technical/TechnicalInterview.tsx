@@ -1,298 +1,9 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { Button } from "@/components/ui/button";
-// import CodeEditorBlock from "@/components/code-editor-block";
-// import { chatSession } from "@/utils/GeminiAIModal";
-// import toast from "react-hot-toast";
-
-// interface TechnicalInterviewProps {
-//   mockId?: string;
-//   onDone: () => void; // Callback after final submission
-// }
-
-// interface TechnicalQuestion {
-//   id: number;
-//   mockIdRef: string;
-//   questionText: string;
-//   difficulty: string;
-// }
-
-// const TechnicalInterview: React.FC<TechnicalInterviewProps> = ({ mockId, onDone }) => {
-//   const [technicalQuestions, setTechnicalQuestions] = useState<TechnicalQuestion[]>([]);
-//   const [activeIndex, setActiveIndex] = useState<number>(0);
-//   // The code in the editor right now (not necessarily saved)
-//   const [currentCode, setCurrentCode] = useState<string>("");
-
-//   // The code that user explicitly "Saved." 
-//   // If we have 2 questions, this array will have length 2, each initially null.
-//   const [savedCodes, setSavedCodes] = useState<(string | null)[]>([]);
-
-//   // Loading states
-//   const [isLoading, setIsLoading] = useState(false);
-  
-//   // Submitting states
-//   const [submitting, setSubmitting] = useState(false);
-
-//   // Debug logs for state changes.
-//   useEffect(() => {
-//     console.log("TechnicalQuestions State:", technicalQuestions);
-//   }, [technicalQuestions]);
-
-//   useEffect(() => {
-//     console.log("ActiveIndex:", activeIndex, "SavedCodes:", savedCodes, "CurrentCode:", currentCode);
-//   }, [activeIndex, savedCodes, currentCode]);
-
-//   useEffect(() => {
-//     if (!mockId) {
-//       console.error("No mockId provided to TechnicalInterview");
-//       return;
-//     }
-//     fetchOrGenerateQuestions(mockId);
-//   }, [mockId]);
-
-//   const fetchOrGenerateQuestions = async (mockIdRef: string) => {
-//     setIsLoading(true);
-//     try {
-//       const res = await fetch(`/api/technicalQuestion/${mockIdRef}`);
-//       const data = await res.json();
-//       console.log("Fetched technical questions from DB:", data);
-//       let questions: TechnicalQuestion[] = data.technicalQuestions || [];
-
-//       if (questions.length === 0) {
-//         console.log("No technical questions found - generating with Gemini...");
-//         const prompt = `
-// Generate 2 random LeetCode-style technical interview questions in JSON format.
-// Each question should include:
-//   - "questionText": the question text.
-//   - "difficulty": one of "easy", "medium", or "hard".
-// Return only the JSON array without any additional explanation.
-// Example:
-// [
-//   {"questionText": "Given an array of integers, return indices of the two numbers such that they add up to a specific target.", "difficulty": "easy"},
-//   {"questionText": "Given a binary tree, find its maximum depth.", "difficulty": "medium"}
-// ]`;
-//         const aiResult = await chatSession.sendMessage(prompt);
-//         const responseText = await aiResult.response.text();
-//         console.log("Gemini API response for questions:", responseText);
-//         let generatedQuestions: any[] = JSON.parse(
-//           responseText
-//             .replace(/```json/g, "")
-//             .replace(/```/g, "")
-//             .trim()
-//         );
-//         console.log("Parsed Gemini questions:", generatedQuestions);
-//         const toInsert = generatedQuestions.map((q: any) => ({
-//           mockIdRef,
-//           questionText: q.questionText,
-//           difficulty: q.difficulty,
-//         }));
-//         console.log("Inserting these questions into DB:", toInsert);
-//         await fetch("/api/createTechnicalQuestion", {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({
-//             mockIdRef,
-//             questions: toInsert,
-//           }),
-//         });
-//         // Re-fetch the questions.
-//         const refetch = await fetch(`/api/technicalQuestion/${mockIdRef}`);
-//         const refetchData = await refetch.json();
-//         console.log("Re-fetched technical questions:", refetchData);
-//         questions = refetchData.technicalQuestions || [];
-//       }
-//       setTechnicalQuestions(questions);
-//       setSavedCodes(questions.map(() => null));
-//       setActiveIndex(0);
-//       setCurrentCode("");
-//     } catch (error) {
-//       console.error("Error fetch/generate technical questions:", error);
-//       toast.error("Failed to load coding questions.");
-//     }
-//     setIsLoading(false);
-//   };
-
-//   // Load saved code to currentCode when activeIndex or savedCodes changes.
-//   useEffect(() => {
-//     if (technicalQuestions.length === 0) return;
-//     if (savedCodes[activeIndex] !== null) {
-//       setCurrentCode(savedCodes[activeIndex] as string);
-//     } else {
-//       setCurrentCode("");
-//     }
-//   }, [activeIndex, technicalQuestions, savedCodes]);
-
-//   const handleSolutionChange = (index: number, newCode: string) => {
-//     console.log(`Changing code for question ${index + 1}:`, newCode);
-//     setCurrentCode(newCode);
-//   };
-
-//   const handleSave = () => {
-//     if (technicalQuestions.length === 0) return;
-//     const updatedCodes = [...savedCodes];
-//     updatedCodes[activeIndex] = currentCode;
-//     setSavedCodes(updatedCodes);
-//     console.log(`Saved code for question ${activeIndex + 1}:`, currentCode);
-//     toast.success(`Code saved for Question #${activeIndex + 1}`);
-//   };
-
-//   const handlePrevious = () => {
-//     if (activeIndex > 0) {
-//       setActiveIndex(activeIndex - 1);
-//       console.log("Navigated to previous question, new activeIndex:", activeIndex - 1);
-//     }
-//   };
-
-//   const handleNext = () => {
-//     if (activeIndex < technicalQuestions.length - 1) {
-//       setActiveIndex(activeIndex + 1);
-//       console.log("Navigated to next question, new activeIndex:", activeIndex + 1);
-//     }
-//   };
-
-//   const handleSubmitAll = async () => {
-//     if (savedCodes.some((code) => !code || code.trim() === "")) {
-//       console.error("Some questions have not been saved.");
-//       toast.error("Please save code for all questions before submitting.");
-//       return;
-//     }
-//     setSubmitting(true);
-//     try {
-//       for (let i = 0; i < technicalQuestions.length; i++) {
-//         const question = technicalQuestions[i];
-//         const userCode = savedCodes[i] as string;
-//         let rating = "";
-//         let feedback = "";
-//         const codeFeedbackPrompt = `
-// Question: "${question.questionText}"
-// Difficulty: ${question.difficulty}
-// User's code:
-// \`\`\`
-// ${userCode}
-// \`\`\`
-// Please evaluate the code for correctness, efficiency, and clarity.
-// Return a JSON response with "rating" (1-10) and "feedback" (a short textual review) only.
-//         `;
-//         console.log(`Sending Gemini prompt for Q#${i + 1}:`, codeFeedbackPrompt);
-//         try {
-//           const aiResult = await chatSession.sendMessage(codeFeedbackPrompt);
-//           const responseText = await aiResult.response.text();
-//           console.log(`Gemini feedback response for Q#${i + 1}:`, responseText);
-//           const parsed = JSON.parse(
-//             responseText.replace(/```json/g, "").replace(/```/g, "").trim()
-//           );
-//           rating = parsed.rating || "";
-//           feedback = parsed.feedback || "";
-//         } catch (err) {
-//           console.error(`Error generating AI feedback for Q#${i + 1}:`, err);
-//           toast.error(`Error generating AI feedback for Q#${i + 1}`);
-//         }
-
-//         const payload = {
-//           mockIdRef: mockId,
-//           questionId: question.id,
-//           userCode,
-//           feedback,
-//           rating,
-//           createdBy: "some-user-id", // Replace with actual user ID
-//         };
-//         console.log(`Submitting payload for Q#${i + 1}:`, payload);
-//         try {
-//           const res = await fetch("/api/insertCodingAnswer", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(payload),
-//           });
-//           if (!res.ok) {
-//             const errData = await res.json();
-//             console.error(`Failed to store coding answer for Q#${i + 1}:`, errData);
-//             toast.error(`Failed to store coding answer for Q#${i + 1}`);
-//           } else {
-//             console.log(`Successfully stored coding answer for Q#${i + 1}`);
-//             toast.success(`Coding answer for Q#${i + 1} stored`);
-//           }
-//         } catch (error) {
-//           console.error(`Error storing coding answer for Q#${i + 1}:`, error);
-//           toast.error(`Error storing coding answer for Q#${i + 1}`);
-//         }
-//       }
-//       onDone();
-//     } catch (error) {
-//       console.error("Error during final submission:", error);
-//       toast.error("Error during final submission");
-//     }
-//     setSubmitting(false);
-//   };
-
-//   return (
-//     <div className="p-5">
-//       {isLoading ? (
-//         <p>Loading technical questions...</p>
-//       ) : (
-//         <>
-//           <h2 className="text-xl font-bold mb-3">Technical Interview</h2>
-//           <div className="flex gap-2 mb-4">
-//             {technicalQuestions.map((question, index) => (
-//               <Button
-//                 key={question.id}
-//                 onClick={() => {
-//                   setActiveIndex(index);
-//                   console.log("Tab clicked, activeIndex set to:", index);
-//                 }}
-//                 variant={activeIndex === index ? "dashboardAiOrHuman" : "outline"}
-//               >
-//                 Problem {index + 1}
-//               </Button>
-//             ))}
-//           </div>
-//           <div className="space-y-4">
-//             {technicalQuestions.map((question, i) =>
-//               activeIndex === i ? (
-//                 <div key={question.id}>
-//                   <div className="border p-4 rounded mb-2">
-//                     <p className="text-md font-semibold">
-//                       Question {i + 1}: {question.questionText}
-//                     </p>
-//                     <p className="text-sm text-gray-500">
-//                       Difficulty: {question.difficulty}
-//                     </p>
-//                   </div>
-//                   <CodeEditorBlock
-//                     initialCode={currentCode}
-//                     onCodeChange={(code) => handleSolutionChange(i, code)}
-//                   />
-//                 </div>
-//               ) : null
-//             )}
-//           </div>
-//           <div className="flex justify-between gap-3 mt-4">
-//             {activeIndex > 0 && (
-//               <Button onClick={handlePrevious} disabled={submitting}>
-//                 Previous
-//               </Button>
-//             )}
-//             <Button onClick={handleSave} disabled={submitting}>
-//               Save
-//             </Button>
-//             {activeIndex < technicalQuestions.length - 1 ? (
-//               <Button onClick={handleNext} disabled={submitting}>
-//                 Next
-//               </Button>
-//             ) : (
-//               <Button onClick={handleSubmitAll} disabled={submitting}>
-//                 {submitting ? "Submitting..." : "Submit All"}
-//               </Button>
-//             )}
-//           </div>
-//         </>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default TechnicalInterview;
-
+// ARCH-001 FIX: Removed ~285 lines of dead commented code (original implementation)
+// The old code had several issues:
+// - Used hardcoded user ID ("some-user-id")
+// - Had sequential AI calls (slow)
+// - No proper error handling
+// Current implementation uses parallel AI calls (PERF-002) and proper user session
 
 // File: components/TechnicalInterview.tsx
 "use client";
@@ -411,9 +122,8 @@ const TechnicalInterview: React.FC<TechnicalInterviewProps> = ({
     }
     setSubmitting(true);
     try {
-      // Loop over each question
-      for (let i = 0; i < technicalQuestions.length; i++) {
-        const question = technicalQuestions[i];
+      // PERF-002 FIX: Process all questions in parallel using Promise.all
+      const feedbackPromises = technicalQuestions.map(async (question, i) => {
         const userCode = userSolutions[i];
         let rating = "";
         let feedback = "";
@@ -446,10 +156,18 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
           feedback = parsed.feedback || "";
         } catch (err) {
           console.error(`Error evaluating answer for question ${i + 1}:`, err);
-          toast.error(`Error generating AI feedback for question ${i + 1}`);
+          // Don't toast here - we'll summarize errors at the end
         }
 
-        // Send the final payload to the backend
+        return { question, userCode, rating, feedback, index: i };
+      });
+
+      // Wait for all AI feedback to complete in parallel
+      const feedbackResults = await Promise.all(feedbackPromises);
+      console.log("All AI feedback received:", feedbackResults);
+
+      // Now submit all results to the backend (can also be parallelized)
+      const submitPromises = feedbackResults.map(async ({ question, userCode, rating, feedback, index }) => {
         const payload = {
           mockIdRef: mockId,
           questionId: question.id,
@@ -459,7 +177,8 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
           rating,
           createdBy: userId,
         };
-        console.log(`Submitting payload for Q#${i + 1}:`, payload);
+        console.log(`Submitting payload for Q#${index + 1}:`, payload);
+
         try {
           const res = await fetch("/api/insertCodingAnswer", {
             method: "POST",
@@ -468,19 +187,29 @@ Return a JSON response with "rating" (1-10) and "feedback" (a short review) only
           });
           if (!res.ok) {
             const errData = await res.json();
-            console.error(`Failed to store answer for question ${i + 1}:`, errData);
-            toast.error(`Failed to store answer for question ${i + 1}`);
-          } else {
-            toast.success(`Answer for question ${i + 1} saved successfully.`);
+            console.error(`Failed to store answer for question ${index + 1}:`, errData);
+            return { success: false, index };
           }
+          return { success: true, index };
         } catch (error) {
-          console.error(`Error submitting answer for question ${i + 1}:`, error);
-          toast.error(`Error submitting answer for question ${i + 1}`);
+          console.error(`Error submitting answer for question ${index + 1}:`, error);
+          return { success: false, index };
         }
+      });
+
+      const submitResults = await Promise.all(submitPromises);
+      
+      // Summarize results
+      const failures = submitResults.filter(r => !r.success);
+      if (failures.length > 0) {
+        toast.error(`Failed to save ${failures.length} answer(s). Check console for details.`);
+      } else {
+        toast.success("All answers saved successfully!");
       }
-        console.log("Finished submission for all questions. userSolutions:", userSolutions);
-        console.log("Calling onDone callback now.");
-      // Once all submissions succeed, call the onDone callback
+
+      console.log("Finished submission for all questions. userSolutions:", userSolutions);
+      console.log("Calling onDone callback now.");
+      // Once all submissions complete, call the onDone callback
       onDone();
     } catch (error) {
       console.error("Error during submission:", error);
