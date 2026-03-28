@@ -1,28 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { db } from "@/utils/db";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Room } from "@/utils/schema";
-import { GithubIcon } from "lucide-react";
 import { getHumanRooms } from "@/data-access/human-rooms";
-import { LanguagesList } from "@/components/code-editor/languages-list";
-import { splitLanguages } from "@/lib/utils";
-import { SearchBar } from "./search-bar";
-import RoomCard from "@/components/human/RoomCards";
+import { SearchBar } from "@/components/human/SearchBar";
+import RoomListContent from "@/components/human/RoomListContent";
 
 export default async function HumanInterviewRoom({
   searchParams,
 }: {
-  searchParams: { search: string };
+  searchParams: { search?: string; page?: string };
 }) {
-  const rooms = await getHumanRooms(searchParams.search || "");
+  const currentPage = parseInt(searchParams.page || "1", 10);
+  const pageSize = 12; // 12 rooms per page for a 3x4 grid on desktop
+  
+  const { rooms, total, totalPages } = await getHumanRooms(
+    searchParams.search,
+    currentPage,
+    pageSize
+  );
+  
   return (
     <main className="min-h-screen p-16">
       <div className="flex justify-between w-full items-center mb-10">
@@ -34,11 +29,13 @@ export default async function HumanInterviewRoom({
       <div className="mb-12">
         <SearchBar />
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {rooms.map((room) => {
-          return <RoomCard key={room.id} room={room} />;
-        })}
-      </div>
+      <RoomListContent 
+        rooms={rooms} 
+        searchTerm={searchParams.search}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRooms={total}
+      />
     </main>
   );
 }

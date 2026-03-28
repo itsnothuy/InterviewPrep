@@ -1,0 +1,81 @@
+{
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "heading": "What can I help you with?",
+      "description": "I can help you analyze your resume and answer questions about it.",
+      "suggestions": {
+        "analysis": {
+          "title": "📝 Resume Analysis",
+          "example": "What are the key strengths in my resume?"
+        },
+        "suggestions": {
+          "title": "💡 Suggestions",
+          "example": "How can I improve this resume for tech roles?"
+        },
+        "formatting": {
+          "title": "🎯 Formatting",
+          "example": "Is my resume format ATS-friendly?"
+        },
+        "skills": {
+          "title": "📊 Skills Review",
+          "example": "What skills should I highlight more?"
+        }
+      },
+      "hint": "Type your question below to get started"
+    },
+    "input": {
+      "placeholder": "Ask anything...",
+      "send": "Send message"
+    },
+    "loading": "AI is generating a response...",
+    "error": {
+      "sendFailed": "Failed to send message",
+      "retry": "Retry"
+    },
+    "message": {
+      "copy": "Copy message",
+      "copied": "Copied!"
+    }
+  },
+  "sidebar": {
+    "newChat": "New Chat",
+    "loadMore": "Load More ({count} more)",
+    "openChat": "Open chat for {name}",
+    "deleteChat": "Delete chat {name}",
+    "deleteConfirm": {
+      "title": "Delete Chat?",
+      "description": "Are you sure you want to delete \"{name}\"?",
+      "warning": "This action cannot be undone. All messages in this chat will be permanently deleted.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    }
+  },
+  "pdfViewer": {
+    "invalid": "Invalid PDF URL - Security check failed",
+    "preparing": "Preparing PDF viewer...",
+    "loading": "Loading PDF...",
+    "failed": "Failed to load PDF",
+    "download": "Download PDF"
+  },
+  "fileUpload": {
+    "fileSizeError": "File size must be less than 10MB",
+    "uploadFailed": "Failed to upload file",
+    "loading": "PDF is loading",
+    "dropHere": "Drop PDF Here"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong!",
+    "tryAgain": "Try again",
+    "goToChats": "Go to Chats",
+    "unauthorized": "Sign In Required"
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "save": "Save"
+  }
+}

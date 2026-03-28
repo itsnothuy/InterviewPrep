@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatSession } from "@/utils/GeminiAIModal";
 import { getContext } from "@/app/context";
+import { sanitizeForPrompt } from "@/utils/sanitize";
 
 // Define the expected request body schema
 const requestSchema = z.object({
@@ -27,12 +28,18 @@ export async function POST(req: Request) {
       resumeContext = await getContext("Extract full resume", resumeFileKey);
     }
 
+    // SEC-004 FIX: Sanitize user inputs before constructing AI prompt
+    const sanitizedRole = sanitizeForPrompt(role, 200);
+    const sanitizedDescription = sanitizeForPrompt(description, 2000);
+    const sanitizedExperience = sanitizeForPrompt(experience, 50);
+    const sanitizedResumeContext = sanitizeForPrompt(resumeContext, 5000);
+
     // Construct the enhanced prompt including resume data
     const prompt = `
-      Job position: ${role},
-      Job Description: ${description},
-      Years of Experience: ${experience}.
-      Resume Data: ${resumeContext}
+      Job position: ${sanitizedRole},
+      Job Description: ${sanitizedDescription},
+      Years of Experience: ${sanitizedExperience}.
+      Resume Data: ${sanitizedResumeContext}
       Based on this, give us ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions and answers in JSON format.
     `;
 

@@ -1,14 +1,16 @@
 "use client";
 
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
+// SEC-002 FIX: Removed direct DB imports
+// import { db } from "@/utils/db";
+// import { MockInterview } from "@/utils/schema";
 import { useEffect, useState } from "react";
-import { eq } from "drizzle-orm";
+// import { eq } from "drizzle-orm";
 import Webcam from "react-webcam";
 import { BellRing, WebcamIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getDisplayedFileName } from "@/components/utils/fileNameHelpers"; // Import the helper
+import { getDisplayedFileName } from "@/components/utils/fileNameHelpers";
+import toast from "react-hot-toast";
 
 
 interface Params {
@@ -30,25 +32,64 @@ interface InterviewData {
 const AIInterview = ({ params }: { params: Params }) => {
   const [interviewData, setInterviewData] = useState<InterviewData | null>(
     null
-  ); // Or `InterviewData[]` if it's an array.
+  );
   const [camEnabled, setCamEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getInterviewDetails();
   }, []);
 
-  //used to get interview details by mockid/interviewid
+  // SEC-002 FIX: Use API route instead of direct DB access
   const getInterviewDetails = async () => {
-    const result = await db
-      .select()
-      .from(MockInterview)
-      .where(eq(MockInterview.mockId, params.interviewId));
-    setInterviewData(result[0] as InterviewData);
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/interview/${params.interviewId}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          toast.error("Interview not found");
+        } else if (response.status === 403) {
+          toast.error("You don't have permission to access this interview");
+        } else {
+          toast.error("Failed to load interview details");
+        }
+        return;
+      }
+
+      const data = await response.json();
+      setInterviewData(data.interviewData);
+    } catch (error) {
+      console.error("Error fetching interview details:", error);
+      toast.error("Failed to load interview details");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 min-h-screen">
+        <p className="text-lg">Loading interview details...</p>
+      </div>
+    );
+  }
+
+  if (!interviewData) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 min-h-screen">
+        <p className="text-lg text-red-500">Interview not found</p>
+        <Link href="/dashboard">
+          <Button variant="dashboardAiOrHuman" className="mt-4">
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-20">
       <div className="p-5">
         <div className="text-center">
           <h1 className="lg:text-4xl text-3xl font-extrabold mb-2 bg-gradient-to-r from-white to-white bg-clip-text text-transparent">

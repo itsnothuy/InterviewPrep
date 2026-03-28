@@ -24,13 +24,23 @@ export const executeCode = async (
         content: sourceCode,
       },
     ],
+    // P0.2: Add 10-second timeout for code execution
+    compile_timeout: 10000,
+    run_timeout: 10000,
   };
 
   try {
-    const response = await API.post("/execute", payload);
+    // P0.2: Set axios request timeout to 12 seconds (slightly more than execution timeout)
+    const response = await API.post("/execute", payload, {
+      timeout: 12000,
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      // Handle timeout specifically
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('Code execution timed out after 10 seconds');
+      }
       console.error(
         "Error executing code:",
         error.response?.data || error.message

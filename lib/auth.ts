@@ -15,19 +15,15 @@ export const authConfig: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // e.g. fetch user from DB if needed
+      // Add user id to token on first sign in
       if (user) {
-        console.log("JWT callback - user object:", user);
         token.id = user.id;
       }
-      console.log("JWT callback - returning token:", token);
       return token;
     },
     async session({ token, session }) {
       if (token) {
-        console.log("Session callback - token:", token);
         session.user = { ...session.user, id: token.id as string };
-        console.log("Session callback - session:", session);
       }
       return session;
     },

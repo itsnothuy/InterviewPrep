@@ -1,154 +1,9 @@
-// "use client";
-
-// import { Mic, WebcamIcon } from "lucide-react";
-// import Webcam from "react-webcam";
-// import { Button } from "./ui/button";
-// import useSpeechToText from "react-hook-speech-to-text";
-// import { useEffect, useState } from "react";
-// import { chatSession } from "@/utils/GeminiAIModal";
-// import { db } from "@/utils/db";
-// import { UserAnswer } from "@/utils/schema";
-// import moment from "moment";
-// import toast from "react-hot-toast";
-
-// // Define a type for a speech result.
-// interface SpeechResult {
-//   transcript: string;
-// }
-
-// // Define props for RecordAnswer.
-// interface RecordAnswerProps {
-//   mockQuestions: Array<{ question: string; answer?: string }>;
-//   activeQuestionIndex: number;
-//   interviewData: { mockId: string } | null;
-// }
-
-// // Helper function to extract transcript.
-// // Some results may be a string, so handle the union type.
-// const getTranscript = (result: string | SpeechResult): string => {
-//   return typeof result === "string" ? result : result.transcript;
-// };
-
-// const RecordAnswer: React.FC<RecordAnswerProps> = ({
-//   mockQuestions,
-//   activeQuestionIndex,
-//   interviewData,
-// }) => {
-//   const [userAnswer, setUserAnswer] = useState("");
-//   const [isLoading, setLoading] = useState(false);
-//   const {
-//     error,
-//     interimResult,
-//     isRecording,
-//     results,
-//     startSpeechToText,
-//     stopSpeechToText,
-//     setResults,
-//   } = useSpeechToText({
-//     continuous: false,
-//     useLegacyResults: false,
-//   });
-
-//   useEffect(() => {
-//     console.log("DEBUG: Speech results:", results);
-//     results.forEach((result) =>
-//       setUserAnswer((prevAns) => prevAns + getTranscript(result))
-//     );
-//   }, [results]);
-
-//   useEffect(() => {
-//     if (!isRecording && userAnswer.length > 10) {
-//       updateUserAnswer();
-//     }
-//   }, [userAnswer]);
-
-//   const startStopRecording = async () => {
-//     if (isRecording) {
-//       stopSpeechToText();
-//     } else {
-//       startSpeechToText();
-//     }
-//   };
-//   const updateUserAnswer = async () => {
-//      // Ensure interviewData exists before proceeding.
-//      if (!interviewData || !interviewData.mockId) {
-//       console.error("Interview data is missing");
-//       toast.error("Interview data is missing");
-//       return;
-//     }
-//     setLoading(true);
-
-//     const feedbackPrompt =
-//       "Question: " +
-//       mockQuestions[activeQuestionIndex]?.question +
-//       ", User answer: " +
-//       userAnswer +
-//       ", Depends on question and user answer for give interview question, please give us rating for answer and feedback as area of improvement, in just 3 to 5 lines, in JSON format, with rating field and feedback field.";
-//     const result = await chatSession.sendMessage(feedbackPrompt);
-//     const mockJsonResp = result.response
-//       .text()
-//       .replace(/```json/g, "")
-//       .replace(/```/g, "")
-//       .replace(/\\n/g, "")
-//       .replace(/\r/g, "")
-//       .trim();
-//     console.log("DEBUG: Feedback response:", mockJsonResp);
-
-
-//     const JsonFeedbackResp = JSON.parse(mockJsonResp);
-
-//     const resp = await db.insert(UserAnswer).values({
-//       mockIdRef: interviewData.mockId,
-//       question: mockQuestions[activeQuestionIndex]?.question,
-//       correctAns: mockQuestions[activeQuestionIndex]?.answer,
-//       userAns: userAnswer,
-//       feedback: JsonFeedbackResp?.feedback,
-//       rating: JsonFeedbackResp?.rating,
-//       createdBy: "6b67e75e-ee67-4528-a653-3d696cedc40b",
-//       createdAt: moment().format("DD-MM-yyyy"),
-//     });
-//     if (resp) {
-//       toast.success("Successfully recorded!");
-//     }
-//     setUserAnswer("");
-//     setLoading(false);
-//     setResults([]);
-//   };
-
-//   return (
-//     <div className="flex justify-end items-center flex-col">
-//       <div className="flex flex-col mt-20 justify-center items-center rounded-lg p-5 bg-black">
-//         <WebcamIcon width={200} height={200} className="absolute text-white" />
-//         <Webcam
-//           mirrored={true}
-//           style={{
-//             height: 500,
-//             width: "100%",
-//             zIndex: 10,
-//           }}
-//         />
-//       </div>
-//       <div>
-//         <Button
-//           disabled={isLoading}
-//           variant={"outline"}
-//           className="my-10"
-//           onClick={startStopRecording}
-//         >
-//           {isRecording ? (
-//             <h2 className="text-red-600 flex gap-2 text-sm">
-//               <Mic />
-//               Recording...
-//             </h2>
-//           ) : (
-//             "Start Recording"
-//           )}
-//         </Button>
-//       </div>
-//     </div>
-//   );
-// };
-// export default RecordAnswer;
+// ARCH-001 FIX: Removed ~140 lines of dead commented code (original implementation)
+// The old code had several issues:
+// - Used hardcoded user ID (SEC-001)
+// - Used direct DB access (SEC-002)
+// - No input sanitization (SEC-004)
+// Current implementation uses proper session, API routes, and sanitization
 
 "use client";
 
@@ -158,8 +13,10 @@ import { Button } from "../../ui/button";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useEffect, useRef, useState } from "react";
 import { chatSession } from "@/utils/GeminiAIModal";
+import { useSession } from "next-auth/react";
 import moment from "moment";
 import toast from "react-hot-toast";
+import { sanitizeForPrompt } from "@/utils/sanitize";
 
 interface SpeechResult {
   transcript: string;
@@ -185,6 +42,9 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
   activeQuestionIndex,
   interviewData,
 }) => {
+  // Get user session
+  const { data: session } = useSession();
+  
   // State for display purposes (optional)
   const [userAnswer, setUserAnswer] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -272,13 +132,25 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       toast.error("Interview data is missing");
       return;
     }
+
+    // SEC-001 FIX: Check for user session
+    if (!session?.user?.id) {
+      console.error("User session not found");
+      toast.error("You must be logged in to submit answers");
+      return;
+    }
+
     setLoading(true);
+
+    // SEC-004 FIX: Sanitize user input before sending to AI
+    const sanitizedQuestion = sanitizeForPrompt(mockQuestions[activeQuestionIndex]?.question || "", 1000);
+    const sanitizedAnswer = sanitizeForPrompt(transcriptRef.current, 5000);
 
     const feedbackPrompt =
       "Question: " +
-      mockQuestions[activeQuestionIndex]?.question +
+      sanitizedQuestion +
       ", User answer: " +
-      transcriptRef.current +
+      sanitizedAnswer +
       ", Based on the question and the user answer, please rate the answer and give feedback for improvement in 3-5 lines, in JSON format with fields 'rating' and 'feedback'.";
     console.log("DEBUG: Sending Gemini API message with prompt:", feedbackPrompt);
 
@@ -310,7 +182,7 @@ const RecordAnswer: React.FC<RecordAnswerProps> = ({
       userAns: transcriptRef.current,
       feedback: JsonFeedbackResp.feedback,
       rating: JsonFeedbackResp.rating,
-      createdBy: "6b67e75e-ee67-4528-a653-3d696cedc40b",
+      createdBy: session.user.id, // SEC-001 FIX: Use actual user ID from session
     };
 
     console.log("DEBUG: Sending payload to /api/insertAnswer:", payload);

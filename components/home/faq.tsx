@@ -161,11 +161,20 @@ const FAQ: React.FC = () => {
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
       transition={{ duration: 1 }}
-      className="py-12 md:py-16 lg:py-20 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden"
     >
-      <div className="container max-w-4xl px-4 md:px-6">
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{
+            backgroundImage: "url('/code-matrix.gif')",
+            backgroundSize: "cover",
+          }}
+        ></div>
+      </div>
+      <div className="relative z-10 container max-w-4xl px-4 md:px-6">
         <div className="mb-8 md:mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="text-3xl bg-hero-gradient bg-clip-text text-transparent md:text-4xl font-bold">
             Frequently Asked Questions
           </h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400">
@@ -176,12 +185,12 @@ const FAQ: React.FC = () => {
           {/* Who Can Benefit */}
           <Collapsible>
             <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
-              <h3 className="text-lg font-medium">
+              <h3 className="text-lg text-gray-900/70 font-medium">
                 Who can benefit from Interview Prep?
               </h3>
               <PlusIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <CollapsibleContent className="px-6 py-4">
               <div className="text-gray-500 dark:text-gray-400">
                 <p>
                   <strong>Software Engineers (SWE):</strong> They can practice technical questions, coding challenges, and receive detailed feedback on their answers.
@@ -198,12 +207,12 @@ const FAQ: React.FC = () => {
           {/* Code Editor Feature */}
           <Collapsible>
             <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
-              <h3 className="text-lg font-medium">
+              <h3 className="text-lg text-gray-900/70 font-medium">
                 How does the code editor feature work?
               </h3>
               <PlusIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <CollapsibleContent className="px-6 py-4">
               <div className="text-gray-500 dark:text-gray-400">
                 <p>
                   <strong>Language Support:</strong> It includes default code snippets for popular languages such as JavaScript, TypeScript, Python, Java, C#, and PHP.
@@ -217,12 +226,12 @@ const FAQ: React.FC = () => {
           {/* Human (Peer-to-Peer) Interviews */}
           <Collapsible>
             <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
-              <h3 className="text-lg font-medium">
+              <h3 className="text-lg text-gray-900/70 font-medium">
                 How are human (peer-to-peer) interviews conducted?
               </h3>
               <PlusIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <CollapsibleContent className="px-6 py-4">
               <div className="text-gray-500 dark:text-gray-400">
                 <p>
                   <strong>Room Creation:</strong> Users can create a room for live interviews by providing a brief description of their target interview style or job role.
@@ -239,12 +248,12 @@ const FAQ: React.FC = () => {
           {/* AI Interview Simulation */}
           <Collapsible>
             <CollapsibleTrigger className="flex items-center justify-between w-full px-6 py-4 bg-gray-200 rounded-md dark:bg-gray-800">
-              <h3 className="text-lg font-medium">
+              <h3 className="text-lg text-gray-900/70 font-medium">
                 How does the AI interview simulation work?
               </h3>
               <PlusIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <CollapsibleContent className="px-6 py-4">
               <div className="text-gray-500 dark:text-gray-400">
                 <p>
                   Interview Prep utilizes advanced machine learning models and the Google Gemini API to generate interview questions based on your target job role. The process includes:

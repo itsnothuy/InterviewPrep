@@ -32,20 +32,21 @@ const HowItWorks = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleCardClick = (index: number) => {
-    setSelectedCard(index);
+    // Toggle: if clicking the same card, hide it; otherwise show the new one
+    setSelectedCard(selectedCard === index ? null : index);
   };
 
   return (
     <div className="justify-center items-center p-4 flex flex-col">
       <div className="text-center p-5">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-5">How It Works</h1>
+        <h1 className="bg-hero-gradient bg-clip-text text-transparent text-3xl sm:text-5xl font-bold mb-5">How It Works</h1>
         <p className="text-gray-500 dark:text-gray-400">
           Practice mock interview in just these simple steps
         </p>
       </div>
       <div
         ref={ref}
-        className="flex flex-row justify-center items-center gap-5 p-4 mx-5 mb-7 w-full"
+        className="flex flex-col lg:flex-row justify-center items-stretch gap-5 p-4 mx-auto mb-7 w-full max-w-7xl"
       >
         {CardValues.map((card, index) => (
           <motion.div
@@ -53,7 +54,7 @@ const HowItWorks = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 1, delay: index * 0.3 }}
-            className="list-none w-full md:w-auto"
+            className="w-full lg:flex-1"
           >
             <Homecard
               title={card.title}
@@ -64,11 +65,11 @@ const HowItWorks = () => {
         ))}
       </div>
       {selectedCard !== null && (
-        <div className="mt-7 mb-7">
+        <div className="mt-7 mb-7 px-4 w-full max-w-4xl mx-auto">
           <img
             src={CardValues[selectedCard].imageUrl}
             alt={`Image for ${CardValues[selectedCard].title}`}
-            className="w-full max-w-3xl mx-auto shadow-lg rounded-lg"
+            className="w-full h-auto shadow-lg rounded-lg object-cover"
           />
         </div>
       )}

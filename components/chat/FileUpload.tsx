@@ -76,19 +76,19 @@ export const FileUpload = () => {
         <div
           {...getRootProps({
             className:
-              "border-dashed border-2 border-gray-300 py-8 rounded-xl cursor-pointer bg-gray-50 flex justify-center items-center flex-col",
+              "border-dashed border-2 border-black py-8 rounded-xl cursor-pointer bg-gray-50 flex justify-center items-center flex-col",
           })}
         >
           <input {...getInputProps()}></input>
           {uploading ? (
             <>
-              <Loader2Icon className="w-10 h-10 text-gray-400"></Loader2Icon>
-              <p className="mt-2 text-sm text-slate-400">PDF is loading</p>
+              <Loader2Icon className="w-10 h-10 text-black"></Loader2Icon>
+              <p className="mt-2 text-sm text-black">PDF is loading</p>
             </>
           ) : (
             <>
-              <Inbox className="w-10 h-10 text-gray-400"></Inbox>
-              <p className="mt-2 text-sm text-slate-400">Drop PDF Here</p>
+              <Inbox className="w-10 h-10 text-black"></Inbox>
+              <p className="mt-2 text-sm text-black">Drop PDF Here</p>
             </>
           )}
         </div>

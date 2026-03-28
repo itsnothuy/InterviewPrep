@@ -16,15 +16,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { chatSession } from "@/utils/GeminiAIModal";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
+// SEC-002 FIX: Removed direct DB imports
+// import { chatSession } from "@/utils/GeminiAIModal";
+// import { db } from "@/utils/db";
+// import { MockInterview } from "@/utils/schema";
 import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";  // No longer needed here
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { uploadToS3 } from "@/app/s3";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   role: z.string().min(2, {
@@ -69,14 +71,16 @@ const CreateRoomForm = () => {
         setResumes(res.data.resumes);
       } catch (error) {
         console.error("Failed to fetch resumes:", error);
+        // UX-001 FIX: Non-critical error, don't show toast - user can still upload new resume
       }
     }
     fetchResumes();
   }, []);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // UX-001 FIX: Add toast notification for auth error
     if (!session) {
-      console.error("Unauthorized. You must be logged in to create a room.");
+      toast.error("Please log in to create an interview room.");
       return;
     }
 
@@ -108,27 +112,21 @@ const CreateRoomForm = () => {
       });
       const output = behavioralRes.data.output; // the generated JSON string
 
-      // Insert into db
+      // SEC-002 FIX: Use API route instead of direct DB access
       if (output) {
-        const resp = await db
-          .insert(MockInterview)
-          .values({
-            mockId: uuidv4(),
-            jsonMockResp: output,
-            jobPosition: values.role,
-            jobDescription: values.description,
-            jobExperience: values.experience,
-            createdBy: session.user.id as string,
-            createdAt: moment().format("DD-MM-yyyy"),
-            resumeFile: resumeData ? resumeData.file_key : null,
-          })
-          .returning({ mockId: MockInterview.mockId });
-      
-        const mockId = resp[0]?.mockId;
-        if (!mockId) {
-          throw new Error("Error inserting MockInterview or retrieving mockId.");
+        const createInterviewRes = await axios.post("/api/create-interview", {
+          jsonMockResp: output,
+          jobPosition: values.role,
+          jobDescription: values.description,
+          jobExperience: values.experience,
+          resumeFile: resumeData ? resumeData.file_key : null,
+        });
+
+        if (!createInterviewRes.data.success || !createInterviewRes.data.mockId) {
+          throw new Error("Error creating interview");
         }
 
+        const mockId = createInterviewRes.data.mockId;
         setJsonResponse(output);
         
         // Generate technical questions
@@ -150,17 +148,15 @@ const CreateRoomForm = () => {
           questions: generatedTechQuestions,
         });
         
-      
-
         // If successful, go to the interview room with the id
-        if (resp) {
-          router.push("/ai/interview/" + mockId);
-        }
+        router.push("/ai/interview/" + mockId);
       } else {
-        console.log("Error in generating mock interview response");
+        console.error("Error in generating mock interview response");
+        toast.error("Failed to generate interview questions");
       }
     } catch (error) {
       console.error("Failed to generate interview questions:", error);
+      toast.error("Failed to generate interview. Please try again.");
       setLoading(false);
     }
   }

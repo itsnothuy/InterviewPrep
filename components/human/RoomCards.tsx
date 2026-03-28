@@ -13,16 +13,14 @@ import {
 import { Room } from "@/utils/schema";
 import { GithubIcon, File } from "lucide-react";
 import { LanguagesList } from "@/components/code-editor/languages-list";
-import { splitLanguages } from "@/lib/utils";
-import { useState } from "react";
-import PDFViewer from "@/components/chat/PDFViewer";
+import { splitLanguages, isValidGitHubUrl } from "@/lib/utils";
 
 interface RoomCardProps {
   room: Room;
+  onViewResume?: () => void;
 }
 
-export default function RoomCard({ room }: RoomCardProps) {
-    const [showResume, setShowResume] = useState(false);
+export default function RoomCard({ room, onViewResume }: RoomCardProps) {
 
     // Helper function to truncate text to a maximum length with ellipsis in the middle.
     const truncate = (text: string | null, maxLength: number) => {
@@ -44,52 +42,39 @@ export default function RoomCard({ room }: RoomCardProps) {
     }
   };
   return (
-    <>
-        <Card>
-            <CardHeader>
-                <CardTitle>{room.name}</CardTitle>
-                <CardDescription>{truncate(room.description, 28)}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                <LanguagesList languages={splitLanguages(room?.language || "")} />
-                {room.githubRepo && (
-                <Link
-                    href={`${room.githubRepo}`}
-                    className="flex items-center gap-2"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <GithubIcon />
-                    {getShortRepoName(room.githubRepo)}
-                </Link>
-                )}
-            </CardContent>
-            <CardFooter>
-                <Button variant={"dashboardAiOrHuman"} asChild>
-                    <Link href={`/human-rooms/${room.id}`}>Join Room</Link>
-                </Button>
-                {room.pdfUrl && (
-                    <button onClick={() => setShowResume(true)} className="p-2">
-                        <File className="w-6 h-6" />
-                        
-                    </button>
-                )}
-            </CardFooter>
-        </Card>
-        {showResume && room.pdfUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white w-3/4 h-3/4 relative">
-            <Button
-              onClick={() => setShowResume(false)}
-              className="absolute top-3 left-2 p-3"
-              variant={"dashboard"}
-            >
-              Close
-            </Button>
-            <PDFViewer pdf_url={room.pdfUrl} />
-          </div>
-        </div>
-      )}
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle>{room.name}</CardTitle>
+        <CardDescription>{truncate(room.description, 28)}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <LanguagesList languages={splitLanguages(room?.language || "")} />
+        {room.githubRepo && isValidGitHubUrl(room.githubRepo) && (
+          <Link
+            href={room.githubRepo}
+            className="flex items-center gap-2"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GithubIcon />
+            {getShortRepoName(room.githubRepo)}
+          </Link>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Button variant={"dashboardAiOrHuman"} asChild>
+          <Link href={`/human-rooms/${room.id}`}>Join Room</Link>
+        </Button>
+        {room.pdfUrl && onViewResume && (
+          <button 
+            onClick={onViewResume} 
+            className="p-2 hover:bg-muted rounded-md transition-colors"
+            aria-label={`View resume for ${room.name}`}
+          >
+            <File className="w-6 h-6" />
+          </button>
+        )}
+      </CardFooter>
+    </Card>
   );
 }

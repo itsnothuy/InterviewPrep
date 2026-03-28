@@ -26,13 +26,13 @@ export function Info() {
       <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-gray-500/50 px-3 py-1 text-sm text-white">
+            <div className="inline-block rounded-lg bg-gray-500/50 px-3 py-1 text-sm text-gold">
               New Features
             </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
+            <h2 className="text-3xl bg-hero-gradient bg-clip-text text-transparent font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
               Work Smarter!
             </h2>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
+            <h2 className="text-3xl bg-hero-gradient bg-clip-text text-transparent font-bold tracking-tighter sm:text-5xl mb-2 mt-2">
               Get Better!
             </h2>
             <p className=" text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
@@ -42,15 +42,15 @@ export function Info() {
           <ul className="grid gap-2 py-4">
             <li>Benefits:</li>
             <li>
-              <CheckIcon className="mr-2 inline-block h-4 w-4" />
+              <CheckIcon className="mr-2 inline-block h-4 w-4 text-gold" />
               Practice with peers in live sessions or use our AI-driven features for instant insights, ensuring you’re always moving forward.
             </li>
             <li>
-              <CheckIcon className="mr-2 inline-block h-4 w-4" />
+              <CheckIcon className="mr-2 inline-block h-4 w-4 text-gold" />
               Leverage ResumeAi to quickly tailor key points from documents—like job descriptions or study materials—to your resume so you can prepare and stay focused on what truly matters.
             </li>
             <li>
-              <CheckIcon className="mr-2 inline-block h-4 w-4" />
+              <CheckIcon className="mr-2 inline-block h-4 w-4 text-gold" />
               Easily create or join interview rooms with just a single click,
               allowing you to focus on practicing rather than managing the
               details.

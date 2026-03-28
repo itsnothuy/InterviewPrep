@@ -5,13 +5,21 @@ import { cn } from "@/lib/utils"
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
+/**
+ * Standard Input component with consistent focus ring
+ */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground transition-colors duration-150 ease-in-out",
+          "placeholder:text-muted-foreground",
+          "hover:border-border/80",
+          "focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium",
           className
         )}
         ref={ref}
@@ -22,4 +30,144 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 )
 Input.displayName = "Input"
 
-export { Input }
+/**
+ * Floating Label Input - IBM Carbon Design pattern
+ * Label floats above the input field
+ */
+export interface FloatingLabelInputProps extends InputProps {
+  label: string;
+  error?: string;
+  containerClassName?: string;
+}
+
+const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInputProps>(
+  ({ className, label, error, containerClassName, id, ...props }, ref) => {
+    const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
+    
+    return (
+      <div className={cn("relative", containerClassName)}>
+        <input
+          id={inputId}
+          className={cn(
+            "peer flex h-10 w-full rounded-none border border-border bg-card px-4 py-2 text-sm text-foreground transition-colors duration-150 ease-in-out",
+            "placeholder:text-muted-foreground",
+            "hover:border-border/80",
+            "focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        <label
+          htmlFor={inputId}
+          className={cn(
+            "absolute -top-2 left-2 bg-card px-1 text-xs text-muted-foreground transition-all duration-150",
+            error && "text-destructive"
+          )}
+        >
+          {label}
+        </label>
+        {error && (
+          <p className="mt-1 text-xs text-destructive">{error}</p>
+        )}
+      </div>
+    )
+  }
+)
+FloatingLabelInput.displayName = "FloatingLabelInput"
+
+/**
+ * Number Input with custom spinner controls - IBM Carbon pattern
+ */
+export interface NumberInputProps extends Omit<InputProps, 'type' | 'onChange'> {
+  label?: string;
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  containerClassName?: string;
+}
+
+const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
+  ({ className, label, value, onChange, min, max, step = 1, containerClassName, id, ...props }, ref) => {
+    const inputId = id || `number-input-${label?.toLowerCase().replace(/\s+/g, '-') || 'default'}`;
+    
+    const handleIncrement = () => {
+      const newValue = value + step;
+      if (max === undefined || newValue <= max) {
+        onChange(newValue);
+      }
+    };
+    
+    const handleDecrement = () => {
+      const newValue = value - step;
+      if (min === undefined || newValue >= min) {
+        onChange(newValue);
+      }
+    };
+    
+    return (
+      <div className={cn("relative", containerClassName)}>
+        <input
+          id={inputId}
+          type="number"
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className={cn(
+            "peer flex h-10 w-full rounded-none border border-border bg-card pl-4 pr-10 py-2 text-sm text-foreground transition-colors duration-150 ease-in-out",
+            "hover:border-border/80",
+            "focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            // Hide default browser spinners
+            "[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]",
+            className
+          )}
+          ref={ref}
+          min={min}
+          max={max}
+          step={step}
+          {...props}
+        />
+        {label && (
+          <label
+            htmlFor={inputId}
+            className="absolute -top-2 left-2 bg-carbon-bg-secondary px-1 text-xs text-carbon-text-secondary"
+          >
+            {label}
+          </label>
+        )}
+        {/* Custom spinner buttons */}
+        <div className="absolute right-0 top-0 h-full flex flex-col border-l border-carbon-border-medium divide-y divide-carbon-border-medium">
+          <button
+            type="button"
+            onClick={handleIncrement}
+            className="flex items-center justify-center w-10 h-5 text-carbon-text-tertiary hover:text-carbon-text-primary hover:bg-carbon-bg-tertiary transition-colors"
+            tabIndex={-1}
+            aria-label="Increment"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={handleDecrement}
+            className="flex items-center justify-center w-10 h-5 text-carbon-text-tertiary hover:text-carbon-text-primary hover:bg-carbon-bg-tertiary transition-colors"
+            tabIndex={-1}
+            aria-label="Decrement"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    )
+  }
+)
+NumberInput.displayName = "NumberInput"
+
+export { Input, FloatingLabelInput, NumberInput }

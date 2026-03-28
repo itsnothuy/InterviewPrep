@@ -4,29 +4,89 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Button Component - InterviewCoder Gold Theme
+ * 
+ * A comprehensive button component with multiple variants and sizes.
+ * Uses gold accent colors as the primary theme throughout the application.
+ * 
+ * Variants:
+ * - default: Gold gradient primary action button
+ * - destructive: Red error/delete actions
+ * - outline: Bordered button with transparent background
+ * - secondary: Muted emphasis button
+ * - ghost: Minimal button without background
+ * - link: Text link styled as button
+ * - dashboard: Custom gray button for dashboard
+ * - dashboardAiOrHuman: Alternative dashboard button style
+ * - interviewCoder: Hero gradient CTA with shadow effects
+ * - danger: Destructive action with subtle background
+ * - success: Green success actions
+ * 
+ * Sizes:
+ * - default: 40px height (standard)
+ * - sm: 32px height (compact)
+ * - lg: 44px height (prominent)
+ * - icon: 40px × 40px square (icon buttons)
+ * - compact: 32px height with small text (Carbon-inspired)
+ * 
+ * Accessibility:
+ * - Focus visible ring with gold accent
+ * - Disabled state with reduced opacity
+ * - Keyboard navigation support
+ * 
+ * Updated: Removed old commented code as part of P2.3 cleanup
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  // Base styles with gold focus ring
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        // Primary action - Gold CTA button
+        default: "bg-primary text-primary-foreground hover:bg-gold-dark active:bg-gold-dark/90 font-semibold",
+        
+        // Destructive - Red pattern
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80",
+        
+        // Outline style
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-border bg-transparent text-foreground hover:bg-muted hover:text-foreground active:bg-muted/80",
+        
+        // Secondary - Muted emphasis
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: " underline-offset-4",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
+        
+        // Ghost - Minimal style
+        ghost: "hover:bg-muted hover:text-foreground active:bg-muted/80",
+        
+        // Link style with gold
+        link: "underline-offset-4 hover:underline text-primary hover:text-gold-light",
 
-        dashboard: "bg-customGray text-white hover:bg-gray-500/90",
-        dashboardAiOrHuman: "bg-gray-500/50 text-white hover:bg-customGray",
+        // Dashboard styles (preserved for compatibility)
+        dashboard: "bg-customGray text-white hover:bg-gray-500/90 active:bg-gray-600/90",
+        dashboardAiOrHuman: "bg-gray-500/50 text-white hover:bg-customGray active:bg-gray-400/50",
+        
+        // Interview coder gold gradient CTA
+        interviewCoder:
+          "bg-hero-gradient text-primary-foreground rounded-full px-6 py-3 font-bold shadow-ring shadow-glow transition-all duration-150 ease-in-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:brightness-95",
+        
+        // Danger button
+        danger:
+          "bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive hover:text-destructive-foreground active:bg-destructive/90",
+        
+        // Success button  
+        success:
+          "bg-green-600 text-white hover:bg-green-700 active:bg-green-800",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
+        sm: "h-8 px-3 text-xs",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        // Carbon-style compact button
+        compact: "h-8 px-4 text-xs font-medium",
       },
     },
     defaultVariants: {

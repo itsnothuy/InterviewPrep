@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { chatSession } from "@/utils/GeminiAIModal";
 import { z } from "zod";
+import { sanitizeForPrompt } from "@/utils/sanitize";
 
 // Define the request body schema for generating technical questions.
 const techRequestSchema = z.object({
@@ -16,11 +17,16 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { role, description, experience, mockId } = techRequestSchema.parse(body);
 
+    // SEC-004 FIX: Sanitize user inputs before constructing AI prompt
+    const sanitizedRole = sanitizeForPrompt(role, 200);
+    const sanitizedDescription = sanitizeForPrompt(description, 2000);
+    const sanitizedExperience = sanitizeForPrompt(experience, 50);
+
     const technicalPrompt = `
 Using the following job context:
-Job Role: ${role}
-Job Description: ${description}
-Years of Experience: ${experience}
+Job Role: ${sanitizedRole}
+Job Description: ${sanitizedDescription}
+Years of Experience: ${sanitizedExperience}
 Generate 2 LeetCode-style technical interview questions in JSON format.
 Each question should include "questionText" and "difficulty" (one of "easy", "medium", or "hard").
 Return only the JSON array.
